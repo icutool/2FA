@@ -501,7 +501,7 @@
           <button onClick="{{ onToggleQr }}" style="width:100%;height:40px;border:1px solid rgba(255,255,255,.16);border-radius:9999px;background:rgba(255,255,255,.05);color:#eaf2f5;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(255,255,255,.1);">{{ qrLabel }}</button>
           <sc-if value="{{ showQr }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px;border-radius:12px;background:#fff;">
-              <img src="{{ qrDataUrl }}" alt="otpauth QR" loading="lazy" decoding="async" style="width:180px;height:180px;image-rendering:pixelated;display:block;">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" ref="{{ qrRef }}" alt="otpauth QR" loading="lazy" decoding="async" style="width:180px;height:180px;image-rendering:pixelated;display:block;">
             </div>
           </sc-if>
         </sc-if>
@@ -578,7 +578,7 @@
             <button onClick="{{ onToggleQr }}" style="width:100%;height:42px;border:1px solid rgba(255,255,255,.16);border-radius:9999px;background:rgba(255,255,255,.05);color:#eaf2f5;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(255,255,255,.1);">{{ qrLabel }}</button>
             <sc-if value="{{ showQr }}" hint-placeholder-val="{{ false }}">
               <div style="display:flex;justify-content:center;padding:14px;border-radius:12px;background:#fff;">
-                <img src="{{ qrDataUrl }}" alt="otpauth QR" loading="lazy" decoding="async" style="width:180px;height:180px;image-rendering:pixelated;display:block;">
+                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" ref="{{ qrRef }}" alt="otpauth QR" loading="lazy" decoding="async" style="width:180px;height:180px;image-rendering:pixelated;display:block;">
               </div>
             </sc-if>
 
@@ -677,7 +677,7 @@
               <div style="display:flex;align-items:center;gap:10px;min-width:0;">
                 <button class="account-icon" onClick="{{ card.onPickIcon }}" title="{{ t.cardIconTitle }}" aria-label="{{ card.iconAria }}" style="flex:none;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:14px;font-weight:700;color:#04060a;background:var(--c);padding:0;cursor:pointer;overflow:hidden;">
                   <sc-if value="{{ card.hasIcon }}" hint-placeholder-val="{{ false }}">
-                    <img src="{{ card.icon }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" ref="{{ card.iconRef }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">
                   </sc-if>
                   <sc-if value="{{ card.hasNoIcon }}" hint-placeholder-val="{{ true }}">
                     <span>{{ card.initial }}</span>
@@ -2021,6 +2021,11 @@ class Component extends DCLogic {
         onCopyLink: (e) => { e.stopPropagation(); this.copyAccountLink(i); },
         onRemove: (e) => { e.stopPropagation(); this.armOrRemove(i); },
         onPickIcon: (e) => { e.stopPropagation(); this.pickAccountIcon(i); },
+        // The browser prefetches literal src values before template binding, so assign
+        // the Base64 image only after React has created the real <img> node.
+        iconRef: (img) => {
+          if (img && a.icon && img.getAttribute('src') !== a.icon) img.setAttribute('src', a.icon);
+        },
         iconAria: t.cardIconAria(labelTxt),
         removeTitle: removeArmed ? t.cardRemoveConfirm : t.cardRemoveTitle,
         removeColor: removeArmed ? '#fb7185' : 'rgba(234,242,245,.45)',
@@ -2054,6 +2059,9 @@ class Component extends DCLogic {
       ringR: R, ringC: C, ringOffset: C * (1 - frac),
       ringCsm: Csm, ringOffsetSm: Csm * (1 - frac),
       barWidth: (frac * 100).toFixed(2) + '%',
+      qrRef: (img) => {
+        if (img && s.qrDataUrl && img.getAttribute('src') !== s.qrDataUrl) img.setAttribute('src', s.qrDataUrl);
+      },
       copyLabel: s.copied ? t.copied : t.copyCode,
       onCopyCode: () => { if (code && code.length) this.copyText(code, 'copied'); },
       onCopyKey: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (code && code.length) this.copyText(code, 'copied'); } },
