@@ -9,7 +9,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#edf7ff">
 <title>2FA</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ffffff'/%3E%3Cpath d='M32 8 52 16v14c0 13-8.5 21-20 26-11.5-5-20-13-20-26V16z' fill='none' stroke='%231d1d1f' stroke-width='4' stroke-linejoin='round'/%3E%3Cpath d='M23 32l7 7 12-13' fill='none' stroke='%230071e3' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <!-- iOS 加主屏不认 SVG 图标（会拿白底截图充数）——补一张 180×180 不透明 PNG，方角由 iOS 自己裁圆 -->
@@ -34,12 +34,27 @@
       --fill:#f5f5f7;
       --fill-strong:#ececef;
       --accent:#0071e3;
+      --sky-top:#f9fcff;
+      --sky-mid:#eaf6ff;
+      --sky-bottom:#dceeff;
+      --glass:rgba(255,255,255,.64);
+      --glass-strong:rgba(255,255,255,.8);
+      --glass-line:rgba(255,255,255,.86);
+      --glass-shadow:0 22px 60px rgba(42,91,134,.12);
     }
     *{box-sizing:border-box;}
-    html,body{margin:0;width:100%;min-height:100%;background:#fff;color:var(--ink);}
+    html,body{margin:0;width:100%;min-height:100%;background:var(--sky-mid);color:var(--ink);}
     html{overflow-x:hidden;}
     body{overflow-x:hidden;font-family:var(--font-sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
     @keyframes cardIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+    @keyframes cloudDrift{
+      0%{transform:translate3d(-1.2%,-.6%,0) scale(1.02);}
+      100%{transform:translate3d(1.4%,1%,0) scale(1.05);}
+    }
+    @keyframes rainGlint{
+      0%,100%{opacity:.56;transform:translate3d(0,0,0);}
+      50%{opacity:.74;transform:translate3d(-.35%,.45%,0);}
+    }
     textarea::placeholder,input::placeholder{color:var(--tertiary)!important;}
     ::selection{background:rgba(0,113,227,.18);color:var(--ink);}
     :focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
@@ -50,23 +65,82 @@
       min-height:100dvh;
       padding:clamp(16px,4vw,56px)!important;
       align-items:center!important;
-      background:#fff!important;
+      isolation:isolate;
+      background:
+        radial-gradient(1000px 760px at 8% -8%,rgba(255,255,255,.96) 0%,rgba(255,255,255,0) 58%),
+        radial-gradient(920px 700px at 94% 4%,rgba(113,196,255,.4) 0%,rgba(113,196,255,0) 66%),
+        radial-gradient(1100px 760px at 34% 108%,rgba(183,224,255,.68) 0%,rgba(183,224,255,0) 68%),
+        linear-gradient(155deg,var(--sky-top) 0%,var(--sky-mid) 46%,var(--sky-bottom) 100%)!important;
       color:var(--ink)!important;
       overflow-x:clip!important;
     }
+    .app-shell::before{
+      content:"";
+      position:fixed;
+      inset:-12%;
+      z-index:0;
+      pointer-events:none;
+      background:
+        radial-gradient(ellipse 34% 24% at 14% 21%,rgba(255,255,255,.82) 0%,rgba(255,255,255,0) 72%),
+        radial-gradient(ellipse 29% 22% at 83% 13%,rgba(255,255,255,.68) 0%,rgba(255,255,255,0) 74%),
+        radial-gradient(ellipse 38% 25% at 61% 88%,rgba(255,255,255,.58) 0%,rgba(255,255,255,0) 76%);
+      filter:blur(24px);
+      animation:cloudDrift 24s ease-in-out infinite alternate;
+    }
+    .app-shell::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+      opacity:.64;
+      background-repeat:no-repeat;
+      background-image:
+        radial-gradient(ellipse 3px 9px at 7% 15%,rgba(255,255,255,.9) 0 8%,rgba(104,177,235,.28) 38%,transparent 72%),
+        radial-gradient(ellipse 5px 12px at 19% 33%,rgba(255,255,255,.68) 0 7%,rgba(104,177,235,.2) 42%,transparent 74%),
+        radial-gradient(ellipse 2px 6px at 37% 11%,rgba(255,255,255,.82) 0 8%,rgba(104,177,235,.22) 42%,transparent 74%),
+        radial-gradient(ellipse 4px 10px at 52% 27%,rgba(255,255,255,.6) 0 7%,rgba(104,177,235,.18) 42%,transparent 74%),
+        radial-gradient(ellipse 3px 8px at 73% 14%,rgba(255,255,255,.8) 0 8%,rgba(104,177,235,.24) 40%,transparent 74%),
+        radial-gradient(ellipse 6px 14px at 91% 31%,rgba(255,255,255,.58) 0 6%,rgba(104,177,235,.17) 42%,transparent 74%),
+        radial-gradient(ellipse 4px 10px at 12% 73%,rgba(255,255,255,.64) 0 7%,rgba(104,177,235,.17) 42%,transparent 74%),
+        radial-gradient(ellipse 3px 8px at 31% 88%,rgba(255,255,255,.72) 0 8%,rgba(104,177,235,.2) 42%,transparent 74%),
+        radial-gradient(ellipse 5px 12px at 61% 78%,rgba(255,255,255,.58) 0 7%,rgba(104,177,235,.16) 42%,transparent 74%),
+        radial-gradient(ellipse 3px 7px at 83% 67%,rgba(255,255,255,.76) 0 8%,rgba(104,177,235,.21) 42%,transparent 74%),
+        radial-gradient(ellipse 4px 9px at 96% 84%,rgba(255,255,255,.62) 0 7%,rgba(104,177,235,.18) 42%,transparent 74%),
+        radial-gradient(ellipse 2px 6px at 46% 56%,rgba(255,255,255,.7) 0 8%,rgba(104,177,235,.18) 42%,transparent 74%);
+      animation:rainGlint 18s ease-in-out infinite;
+    }
     .app-shell [style*="background:linear-gradient(180deg,rgba(18,28,34"],
     .app-shell [style*="rgba(18, 28, 34"]{
-      background:#fff!important;
-      border:1px solid var(--line)!important;
-      box-shadow:0 12px 40px rgba(0,0,0,.045)!important;
-      -webkit-backdrop-filter:none!important;
-      backdrop-filter:none!important;
+      background:linear-gradient(145deg,rgba(255,255,255,.67),rgba(238,248,255,.48))!important;
+      border:1px solid var(--glass-line)!important;
+      box-shadow:var(--glass-shadow),inset 0 1px 0 rgba(255,255,255,.94)!important;
+      -webkit-backdrop-filter:blur(28px) saturate(1.35)!important;
+      backdrop-filter:blur(28px) saturate(1.35)!important;
       animation:none!important;
       color:var(--ink)!important;
     }
     .view-card{border-radius:28px!important;padding:clamp(24px,6vw,40px)!important;}
     .setup-card{border-radius:28px!important;padding:clamp(22px,5vw,30px)!important;}
     .panel-card{border-radius:22px!important;}
+    .app-shell .view-card{
+      background:linear-gradient(145deg,rgba(255,255,255,.64),rgba(237,248,255,.46))!important;
+    }
+    .app-shell .setup-card{
+      background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(238,248,255,.52))!important;
+    }
+    .app-shell .panel-card{
+      background:linear-gradient(145deg,rgba(255,255,255,.7),rgba(238,248,255,.5))!important;
+    }
+    .board-toolbar{
+      padding:16px 18px;
+      border:1px solid rgba(255,255,255,.8);
+      border-radius:22px;
+      background:linear-gradient(145deg,rgba(255,255,255,.58),rgba(235,247,255,.38));
+      box-shadow:0 18px 46px rgba(42,91,134,.1),inset 0 1px 0 rgba(255,255,255,.92);
+      -webkit-backdrop-filter:blur(24px) saturate(1.3);
+      backdrop-filter:blur(24px) saturate(1.3);
+    }
     .app-shell [style*="color:#eaf2f5"],
     .app-shell [style*="color:#fff"],
     .app-shell [style*="color: rgb(234, 242, 245)"],
@@ -121,15 +195,17 @@
 
     .app-shell textarea,
     .app-shell input{
-      background:var(--fill)!important;
+      background:rgba(255,255,255,.62)!important;
       color:var(--ink)!important;
-      border:1px solid transparent!important;
+      border:1px solid rgba(255,255,255,.76)!important;
       border-radius:14px!important;
-      box-shadow:none!important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.76)!important;
+      -webkit-backdrop-filter:blur(16px)!important;
+      backdrop-filter:blur(16px)!important;
     }
     .app-shell textarea:focus,
     .app-shell input:focus{
-      background:#fff!important;
+      background:rgba(255,255,255,.86)!important;
       border-color:var(--accent)!important;
       box-shadow:0 0 0 4px rgba(0,113,227,.12)!important;
       outline:none!important;
@@ -215,14 +291,40 @@
     }
     .code-row{width:100%;justify-content:center;gap:clamp(5px,1.5vw,12px)!important;}
     .code-group{gap:clamp(3px,1vw,8px)!important;}
-    .account-card{
-      background:#fff!important;
-      border:1px solid var(--line)!important;
+    .app-shell .account-card{
+      isolation:isolate;
+      background:
+        radial-gradient(150% 95% at 0% 0%,color-mix(in srgb,var(--c) 11%,transparent) 0%,transparent 58%),
+        linear-gradient(145deg,rgba(255,255,255,.8),rgba(238,248,255,.61))!important;
+      border:1px solid rgba(255,255,255,.9)!important;
       border-radius:22px!important;
-      box-shadow:0 6px 20px rgba(0,0,0,.035)!important;
+      box-shadow:0 14px 34px rgba(42,91,134,.11),inset 0 1px 0 rgba(255,255,255,.96)!important;
+      -webkit-backdrop-filter:blur(24px) saturate(1.4);
+      backdrop-filter:blur(24px) saturate(1.4);
       transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease!important;
     }
-    .account-card:hover{transform:translateY(-2px);border-color:#d2d2d7!important;box-shadow:0 14px 36px rgba(0,0,0,.075)!important;}
+    .app-shell .account-card::before{
+      content:"";
+      position:absolute;
+      top:-40px;
+      right:-28px;
+      width:104px;
+      height:104px;
+      z-index:0;
+      border-radius:50%;
+      pointer-events:none;
+      background:radial-gradient(circle at 36% 38%,rgba(255,255,255,.95) 0 5%,rgba(255,255,255,.34) 32%,rgba(113,190,247,.12) 53%,transparent 72%);
+      filter:blur(1px);
+    }
+    .app-shell .account-card > *{
+      position:relative;
+      z-index:1;
+    }
+    .app-shell .account-card:hover{
+      transform:translateY(-3px);
+      border-color:color-mix(in srgb,var(--c) 24%,rgba(255,255,255,.92))!important;
+      box-shadow:0 22px 48px rgba(42,91,134,.16),0 0 0 1px color-mix(in srgb,var(--c) 9%,transparent),inset 0 1px 0 rgba(255,255,255,.98)!important;
+    }
     .account-card [style*="width:30px;height:30px"],
     .account-card [style*="width: 30px; height: 30px"]{
       background:color-mix(in srgb,var(--c) 12%,#fff)!important;
@@ -264,16 +366,16 @@
       box-shadow:0 16px 50px rgba(0,0,0,.08);
     }
     .lang-toggle{
-      border:1px solid var(--line)!important;
-      background:rgba(255,255,255,.9)!important;
+      border:1px solid var(--glass-line)!important;
+      background:rgba(255,255,255,.58)!important;
       color:var(--ink)!important;
       font-family:var(--font-sans)!important;
       font-size:12px!important;
-      box-shadow:0 4px 16px rgba(0,0,0,.06)!important;
-      -webkit-backdrop-filter:blur(16px)!important;
-      backdrop-filter:blur(16px)!important;
+      box-shadow:0 8px 24px rgba(42,91,134,.11),inset 0 1px 0 rgba(255,255,255,.9)!important;
+      -webkit-backdrop-filter:blur(20px) saturate(1.3)!important;
+      backdrop-filter:blur(20px) saturate(1.3)!important;
     }
-    .lang-toggle:hover{background:#fff!important;color:var(--accent)!important;}
+    .lang-toggle:hover{background:rgba(255,255,255,.78)!important;color:var(--accent)!important;}
     @media (max-width:480px){
       .app-shell{padding:16px!important;}
       .view-card{padding:22px!important;}
@@ -469,9 +571,9 @@
 
   <!-- ============ BOARD MODE ============ -->
   <sc-if value="{{ isBoard }}" hint-placeholder-val="{{ false }}">
-    <div style="position:relative;z-index:1;width:100%;max-width:920px;display:flex;flex-direction:column;gap:18px;animation:cardIn .6s cubic-bezier(.2,.8,.2,1) both;">
+    <div class="board-view" style="position:relative;z-index:1;width:100%;max-width:920px;display:flex;flex-direction:column;gap:18px;animation:cardIn .6s cubic-bezier(.2,.8,.2,1) both;">
 
-      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+      <div class="board-toolbar" style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;">
         <div style="display:flex;flex-direction:column;gap:5px;">
           <div style="font-family:var(--font-mono);font-size:13px;letter-spacing:.26em;text-transform:uppercase;color:var(--accent,#22d3ee);">{{ t.boardTitle }}</div>
           <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:rgba(234,242,245,.5);">{{ boardCount }}</div>
@@ -524,7 +626,7 @@
       </sc-if>
 
       <sc-if value="{{ hasAccounts }}" hint-placeholder-val="{{ true }}">
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(208px,1fr));gap:14px;">
+        <div class="board-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(208px,1fr));gap:14px;">
           <sc-for list="{{ boardCards }}" as="card" hint-placeholder-count="6">
             <div class="account-card" onClick="{{ card.onCopy }}" onKeyDown="{{ card.onKey }}" role="button" tabindex="0" aria-label="{{ card.copyAria }}" title="{{ card.copyAria }}" style="--c:{{ card.color }};position:relative;cursor:pointer;padding:16px 17px 14px;background:linear-gradient(180deg,rgba(18,28,34,.6),rgba(8,13,17,.6));overflow:hidden;display:flex;flex-direction:column;gap:11px;">
               <div style="display:flex;align-items:center;gap:10px;min-width:0;">
