@@ -1422,9 +1422,9 @@
 
   // src/index.ts
   var REACT_URL = "./vendor/react.production.min.js";
-  var REACT_SRI = "sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z";
+  var REACT_SRI = "sha384-t63xaoqI4/tnZOZs58Xd/POzyY+r0ZlL3MZJsg5uEpKiDX6mJDAaS/KuesDjH55i";
   var REACT_DOM_URL = "./vendor/react-dom.production.min.js";
-  var REACT_DOM_SRI = "sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1";
+  var REACT_DOM_SRI = "sha384-8Y1L+f1y2tWRffeBSFDSl0M0VN4EevwrTLXRQyhfXCTukfuKEvApVoVps3phj/Vp";
   function hideRawTemplate() {
     const s = document.createElement("style");
     s.textContent = "x-dc{display:none!important}";

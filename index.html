@@ -9,9 +9,9 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#06090c">
+<meta name="theme-color" content="#ffffff">
 <title>2FA</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2306090c'/%3E%3Cpath d='M32 8 52 16v14c0 13-8.5 21-20 26-11.5-5-20-13-20-26V16z' fill='none' stroke='%2322d3ee' stroke-width='4' stroke-linejoin='round'/%3E%3Cpath d='M23 32l7 7 12-13' fill='none' stroke='%2322d3ee' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ffffff'/%3E%3Cpath d='M32 8 52 16v14c0 13-8.5 21-20 26-11.5-5-20-13-20-26V16z' fill='none' stroke='%231d1d1f' stroke-width='4' stroke-linejoin='round'/%3E%3Cpath d='M23 32l7 7 12-13' fill='none' stroke='%230071e3' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <!-- iOS 加主屏不认 SVG 图标（会拿白底截图充数）——补一张 180×180 不透明 PNG，方角由 iOS 自己裁圆 -->
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <link rel="manifest" href="./manifest.json">
@@ -23,72 +23,291 @@
 <x-dc>
 <helmet>
   <style>
-    /* 本工具仅用到原 _ds/colors_and_type.css 里的这两个字体变量。
-       已移除 10MB 的 Alibaba PuHuiTi 网络字体，--font-sans 回退到系统中文字体。 */
     :root{
-      --font-sans:'PingFang SC','Microsoft YaHei',system-ui,-apple-system,sans-serif;
-      --font-mono:ui-monospace,SFMono-Regular,Menlo,Monaco,'Liberation Mono',monospace;
+      color-scheme:light;
+      --font-sans:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','PingFang SC','Helvetica Neue','Microsoft YaHei',sans-serif;
+      --font-mono:'SF Mono',ui-monospace,SFMono-Regular,Menlo,Monaco,'Liberation Mono',monospace;
+      --ink:#1d1d1f;
+      --secondary:#6e6e73;
+      --tertiary:#86868b;
+      --line:#e5e5e7;
+      --fill:#f5f5f7;
+      --fill-strong:#ececef;
+      --accent:#0071e3;
     }
     *{box-sizing:border-box;}
-    html,body{background:#06090c;}
-    @keyframes gridPan{from{background-position:0 0,0 0;}to{background-position:64px 64px,64px 64px;}}
-    @keyframes auroraA{0%{transform:translate(-12%,-8%) scale(1);}50%{transform:translate(14%,12%) scale(1.3);}100%{transform:translate(-12%,-8%) scale(1);}}
-    @keyframes auroraB{0%{transform:translate(12%,14%) scale(1.15);}50%{transform:translate(-16%,-10%) scale(1);}100%{transform:translate(12%,14%) scale(1.15);}}
-    @keyframes scanMove{0%{transform:translateY(-10vh);opacity:0;}10%{opacity:.7;}90%{opacity:.7;}100%{transform:translateY(110vh);opacity:0;}}
-    @keyframes spinSlow{to{transform:rotate(360deg);}}
-    @keyframes spinRev{to{transform:rotate(-360deg);}}
-    @keyframes pulseDot{0%,100%{opacity:.4;transform:scale(.85);}50%{opacity:1;transform:scale(1.1);}}
-    @keyframes cardIn{from{transform:translateY(26px) scale(.965);}to{transform:none;}}
-    @keyframes borderGlow{0%,100%{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent,#22d3ee) 22%,transparent),0 0 50px -14px color-mix(in srgb,var(--accent,#22d3ee) 50%,transparent);}50%{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent,#22d3ee) 45%,transparent),0 0 80px -10px color-mix(in srgb,var(--accent,#22d3ee) 60%,transparent);}}
-    @keyframes codeGlow{0%,100%{text-shadow:0 0 14px color-mix(in srgb,var(--accent,#22d3ee) 45%,transparent);}50%{text-shadow:0 0 26px color-mix(in srgb,var(--accent,#22d3ee) 80%,transparent);}}
-    @keyframes flick{0%,100%{opacity:1;}50%{opacity:.82;}}
-    @keyframes sweepX{0%{transform:translateX(-130%);}100%{transform:translateX(130%);}}
-    textarea::placeholder,input::placeholder{color:rgba(255,255,255,.3);}
-    ::selection{background:color-mix(in srgb,var(--accent,#22d3ee) 40%,transparent);}
-    /* a11y: 键盘焦点环——深色主题默认环几乎看不见。:focus-visible 只在键盘聚焦时显示，不打扰鼠标用户。 */
-    :focus-visible{outline:2px solid var(--accent,#22d3ee);outline-offset:2px;}
-    /* a11y: 尊重"减少动态效果"——关掉所有装饰性无限动画（省电 + 防前庭不适）。倒计时环 stroke 由内联 transition 表达真实状态，不受影响。 */
+    html,body{margin:0;width:100%;min-height:100%;background:#fff;color:var(--ink);}
+    html{overflow-x:hidden;}
+    body{overflow-x:hidden;font-family:var(--font-sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+    @keyframes cardIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+    textarea::placeholder,input::placeholder{color:var(--tertiary)!important;}
+    ::selection{background:rgba(0,113,227,.18);color:var(--ink);}
+    :focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+
+    /* Apple-inspired light theme overrides for the generated inline styles. */
+    .app-shell{
+      min-height:100vh;
+      min-height:100dvh;
+      padding:clamp(16px,4vw,56px)!important;
+      align-items:center!important;
+      background:#fff!important;
+      color:var(--ink)!important;
+      overflow-x:clip!important;
+    }
+    .app-shell [style*="background:linear-gradient(180deg,rgba(18,28,34"],
+    .app-shell [style*="rgba(18, 28, 34"]{
+      background:#fff!important;
+      border:1px solid var(--line)!important;
+      box-shadow:0 12px 40px rgba(0,0,0,.045)!important;
+      -webkit-backdrop-filter:none!important;
+      backdrop-filter:none!important;
+      animation:none!important;
+      color:var(--ink)!important;
+    }
+    .view-card{border-radius:28px!important;padding:clamp(24px,6vw,40px)!important;}
+    .setup-card{border-radius:28px!important;padding:clamp(22px,5vw,30px)!important;}
+    .panel-card{border-radius:22px!important;}
+    .app-shell [style*="color:#eaf2f5"],
+    .app-shell [style*="color:#fff"],
+    .app-shell [style*="color: rgb(234, 242, 245)"],
+    .app-shell [style*="color: rgb(255, 255, 255)"]{color:var(--ink)!important;}
+    .app-shell [style*="rgba(234,242,245"],
+    .app-shell [style*="rgba(234, 242, 245"]{color:var(--secondary)!important;}
+    .app-shell [style*="color:var(--accent"],
+    .app-shell [style*="color: var(--accent"]{color:var(--accent)!important;}
+    .app-shell [style*="color:#f0a"]{color:#ff3b30!important;}
+    .app-shell [style*="color:#fbbf24"]{color:#b25000!important;}
+    .app-shell [style*="text-shadow"]{text-shadow:none!important;}
+    .app-shell [style*="codeGlow"],
+    .app-shell [style*="borderGlow"],
+    .app-shell [style*="pulseDot"],
+    .app-shell [style*="spinSlow"]{animation:none!important;}
+    .app-shell [style*="box-shadow:0 0 10px var(--accent"],
+    .app-shell [style*="box-shadow:0 0 12px var(--accent"],
+    .app-shell [style*="box-shadow:0 0 8px var(--accent"],
+    .app-shell [style*="box-shadow: 0 0 10px var(--accent"],
+    .app-shell [style*="box-shadow: 0 0 12px var(--accent"],
+    .app-shell [style*="box-shadow: 0 0 8px var(--accent"]{box-shadow:none!important;}
+    .app-shell [style*="background:rgba(255,255,255,.04)"],
+    .app-shell [style*="background:rgba(255,255,255,.03)"],
+    .app-shell [style*="background:rgba(255,255,255,.05)"],
+    .app-shell [style*="background:rgba(255,255,255,.015)"],
+    .app-shell [style*="background: rgba(255, 255, 255, 0.04)"],
+    .app-shell [style*="background: rgba(255, 255, 255, 0.03)"],
+    .app-shell [style*="background: rgba(255, 255, 255, 0.05)"],
+    .app-shell [style*="background: rgba(255, 255, 255, 0.015)"]{background:var(--fill)!important;}
+    .app-shell [style*="background:rgba(255,255,255,.08)"],
+    .app-shell [style*="background: rgba(255, 255, 255, 0.08)"]{background:var(--fill-strong)!important;}
+    .app-shell [style*="border:1px solid rgba(255,255,255,.08)"],
+    .app-shell [style*="border:1px solid rgba(255,255,255,.1"],
+    .app-shell [style*="border:1px solid rgba(255,255,255,.12"],
+    .app-shell [style*="border:1px solid rgba(255,255,255,.14"],
+    .app-shell [style*="border:1px solid rgba(255,255,255,.16"],
+    .app-shell [style*="border: 1px solid rgba(255, 255, 255"]{border-color:var(--line)!important;}
+    .app-shell [style*="border-top:1px solid rgba(255,255,255"],
+    .app-shell [style*="border-top: 1px solid rgba(255, 255, 255"]{border-top-color:var(--line)!important;}
+    .app-shell [style*="border:1px dashed"]{
+      border-color:#d2d2d7!important;
+      background:var(--fill)!important;
+    }
+    .app-shell [style*="color-mix(in srgb,var(--accent,#22d3ee) 7%"]{
+      background:var(--fill)!important;
+      border-color:transparent!important;
+      color:var(--ink)!important;
+      animation:none!important;
+    }
+    .app-shell svg circle[stroke="rgba(255,255,255,.09)"]{stroke:var(--line)!important;}
+    .app-shell svg{filter:none!important;}
+
+    .app-shell textarea,
+    .app-shell input{
+      background:var(--fill)!important;
+      color:var(--ink)!important;
+      border:1px solid transparent!important;
+      border-radius:14px!important;
+      box-shadow:none!important;
+    }
+    .app-shell textarea:focus,
+    .app-shell input:focus{
+      background:#fff!important;
+      border-color:var(--accent)!important;
+      box-shadow:0 0 0 4px rgba(0,113,227,.12)!important;
+      outline:none!important;
+    }
+
+    .app-shell button{
+      -webkit-tap-highlight-color:transparent;
+      transition:transform .16s ease,background-color .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease!important;
+    }
+    .app-shell button:active{transform:scale(.97);}
+    .app-shell button[style*="color-mix(in srgb,var(--accent"]{
+      background:var(--accent)!important;
+      border-color:transparent!important;
+      color:#fff!important;
+      font-family:var(--font-sans)!important;
+      font-size:14px!important;
+      font-weight:600!important;
+      letter-spacing:-.01em!important;
+      text-transform:none!important;
+      box-shadow:none!important;
+    }
+    .app-shell button[style*="color-mix(in srgb,var(--accent"]:hover{
+      background:color-mix(in srgb,var(--accent) 86%,#000)!important;
+    }
+    .app-shell button[style*="background:rgba(255,255,255,.05)"],
+    .app-shell button[style*="background:rgba(255,255,255,.1)"],
+    .app-shell button[style*="background: rgba(255, 255, 255, 0.05)"],
+    .app-shell button[style*="background: rgba(255, 255, 255, 0.1)"]{
+      background:var(--fill)!important;
+      border-color:transparent!important;
+      color:var(--ink)!important;
+      font-family:var(--font-sans)!important;
+      font-size:14px!important;
+      font-weight:500!important;
+      letter-spacing:-.01em!important;
+      text-transform:none!important;
+      box-shadow:none!important;
+    }
+    .app-shell button[style*="background:rgba(255,255,255,.05)"]:hover,
+    .app-shell button[style*="background:rgba(255,255,255,.1)"]:hover,
+    .app-shell button[style*="background: rgba(255, 255, 255, 0.05)"]:hover,
+    .app-shell button[style*="background: rgba(255, 255, 255, 0.1)"]:hover{background:var(--fill-strong)!important;}
+    .app-shell button[style*="background:none"],
+    .app-shell button[style*="background: none"]{
+      color:var(--secondary)!important;
+      font-family:var(--font-sans)!important;
+      font-size:13px!important;
+      font-weight:500!important;
+      letter-spacing:-.01em!important;
+      text-transform:none!important;
+    }
+    .app-shell button[style*="background:none"]:hover,
+    .app-shell button[style*="background: none"]:hover{color:var(--accent)!important;}
+    .app-shell [style*="letter-spacing:.2em"],
+    .app-shell [style*="letter-spacing:.22em"],
+    .app-shell [style*="letter-spacing:.24em"],
+    .app-shell [style*="letter-spacing:.26em"],
+    .app-shell [style*="letter-spacing:.28em"],
+    .app-shell [style*="letter-spacing: 0.2em"],
+    .app-shell [style*="letter-spacing: 0.22em"],
+    .app-shell [style*="letter-spacing: 0.24em"],
+    .app-shell [style*="letter-spacing: 0.26em"],
+    .app-shell [style*="letter-spacing: 0.28em"]{
+      font-family:var(--font-sans)!important;
+      letter-spacing:-.01em!important;
+      text-transform:none!important;
+    }
+    .app-shell [style*="font-size:11px"][style*="letter-spacing"],
+    .app-shell [style*="font-size: 11px"][style*="letter-spacing"]{font-size:13px!important;}
+    .app-shell [style*="width:46px;height:66px"],
+    .app-shell [style*="width: 46px; height: 66px"]{
+      width:clamp(30px,8vw,46px)!important;
+      height:clamp(48px,12vw,66px)!important;
+      border-radius:14px!important;
+      font-size:clamp(27px,7.2vw,40px)!important;
+    }
+    .app-shell [style*="width:38px;height:52px"],
+    .app-shell [style*="width: 38px; height: 52px"]{
+      width:clamp(28px,7.5vw,38px)!important;
+      height:clamp(44px,11vw,52px)!important;
+      border-radius:12px!important;
+      font-size:clamp(24px,6.5vw,30px)!important;
+    }
+    .code-row{width:100%;justify-content:center;gap:clamp(5px,1.5vw,12px)!important;}
+    .code-group{gap:clamp(3px,1vw,8px)!important;}
+    .account-card{
+      background:#fff!important;
+      border:1px solid var(--line)!important;
+      border-radius:22px!important;
+      box-shadow:0 6px 20px rgba(0,0,0,.035)!important;
+      transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease!important;
+    }
+    .account-card:hover{transform:translateY(-2px);border-color:#d2d2d7!important;box-shadow:0 14px 36px rgba(0,0,0,.075)!important;}
+    .account-card [style*="width:30px;height:30px"],
+    .account-card [style*="width: 30px; height: 30px"]{
+      background:color-mix(in srgb,var(--c) 12%,#fff)!important;
+      color:var(--c)!important;
+      border-radius:10px!important;
+      box-shadow:none!important;
+      font-family:var(--font-sans)!important;
+    }
+    .account-card [style*="font-size:29px"]{
+      color:var(--ink)!important;
+      font-size:32px!important;
+      letter-spacing:.035em!important;
+    }
+    .account-card button{
+      width:28px!important;
+      height:28px!important;
+      border-radius:8px!important;
+      background:transparent!important;
+      color:var(--tertiary)!important;
+    }
+    .account-card button:hover{background:var(--fill)!important;color:var(--accent)!important;}
+    .notice-light{
+      border:1px solid rgba(255,159,10,.22)!important;
+      background:rgba(255,248,235,.96)!important;
+      color:#8a4b00!important;
+      box-shadow:0 8px 24px rgba(0,0,0,.06)!important;
+      -webkit-backdrop-filter:blur(16px)!important;
+      backdrop-filter:blur(16px)!important;
+    }
+    .drop-overlay{
+      background:rgba(255,255,255,.86)!important;
+      -webkit-backdrop-filter:blur(18px)!important;
+      backdrop-filter:blur(18px)!important;
+    }
+    .drop-overlay-inner{
+      border:1.5px dashed var(--accent)!important;
+      background:#fff!important;
+      color:var(--accent)!important;
+      box-shadow:0 16px 50px rgba(0,0,0,.08);
+    }
+    .lang-toggle{
+      border:1px solid var(--line)!important;
+      background:rgba(255,255,255,.9)!important;
+      color:var(--ink)!important;
+      font-family:var(--font-sans)!important;
+      font-size:12px!important;
+      box-shadow:0 4px 16px rgba(0,0,0,.06)!important;
+      -webkit-backdrop-filter:blur(16px)!important;
+      backdrop-filter:blur(16px)!important;
+    }
+    .lang-toggle:hover{background:#fff!important;color:var(--accent)!important;}
+    @media (max-width:480px){
+      .app-shell{padding:16px!important;}
+      .view-card{padding:22px!important;}
+      .setup-card{padding:22px!important;}
+    }
     @media (prefers-reduced-motion: reduce){
       *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;animation-delay:0s !important;}
     }
   </style>
 </helmet>
 
-<div ref="{{ rootRef }}" role="main" style="position:relative;min-height:100vh;width:100%;display:flex;align-items:safe center;justify-content:center;padding:28px;overflow-x:hidden;overflow-y:auto;background:radial-gradient(120% 120% at 50% 0%,#0c151b 0%,#070b0e 55%,#04060800 100%),#06090c;font-family:var(--font-sans);color:#eaf2f5;">
-
-  <!-- ===== animated background ===== -->
-  <div style="position:absolute;inset:-2px;pointer-events:none;background-image:linear-gradient(to right,color-mix(in srgb,var(--accent,#22d3ee) 11%,transparent) 1px,transparent 1px),linear-gradient(to bottom,color-mix(in srgb,var(--accent,#22d3ee) 11%,transparent) 1px,transparent 1px);background-size:64px 64px;animation:gridPan 9s linear infinite;-webkit-mask-image:radial-gradient(110% 90% at 50% 45%,#000 25%,transparent 78%);mask-image:radial-gradient(110% 90% at 50% 45%,#000 25%,transparent 78%);opacity:.7;"></div>
-  <div style="position:absolute;top:-10%;left:-10%;width:55vmax;height:55vmax;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent,#22d3ee) 38%,transparent),transparent 68%);filter:blur(48px);opacity:.55;pointer-events:none;animation:auroraA 20s ease-in-out infinite;"></div>
-  <div style="position:absolute;bottom:-14%;right:-12%;width:50vmax;height:50vmax;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent,#22d3ee) 30%,transparent),transparent 70%);filter:blur(60px);opacity:.45;pointer-events:none;animation:auroraB 24s ease-in-out infinite;"></div>
-  <div style="position:absolute;left:0;right:0;height:18vh;pointer-events:none;background:linear-gradient(to bottom,transparent,color-mix(in srgb,var(--accent,#22d3ee) 9%,transparent),transparent);animation:scanMove 7s linear infinite;"></div>
-  <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(130% 110% at 50% 50%,transparent 55%,rgba(2,4,6,.85) 100%);"></div>
+<div class="app-shell" ref="{{ rootRef }}" role="main" style="position:relative;min-height:100vh;width:100%;display:flex;align-items:center;justify-content:center;overflow-x:hidden;overflow-y:auto;font-family:var(--font-sans);">
 
   <!-- ===== drag-to-import overlay ===== -->
   <sc-if value="{{ dragging }}" hint-placeholder-val="{{ false }}">
-    <div style="position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;background:rgba(4,8,12,.8);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);pointer-events:none;">
-      <div style="border:2px dashed var(--accent,#22d3ee);border-radius:18px;padding:38px 56px;font-family:var(--font-mono);font-size:14px;letter-spacing:.12em;color:var(--accent,#22d3ee);text-transform:uppercase;">{{ t.dropToImport }}</div>
+    <div class="drop-overlay" style="position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+      <div class="drop-overlay-inner" style="border-radius:22px;padding:34px 44px;font-family:var(--font-sans);font-size:16px;font-weight:600;letter-spacing:-.01em;">{{ t.dropToImport }}</div>
     </div>
   </sc-if>
 
   <!-- ===== 时钟偏差警告（所有模式，含演示——码可能无效比投屏干净更要紧）===== -->
   <sc-if value="{{ clockWarn }}" hint-placeholder-val="">
-    <div role="alert" style="position:fixed;top:52px;left:50%;transform:translateX(-50%);z-index:56;max-width:min(92vw,560px);padding:9px 16px;border:1px solid rgba(251,191,36,.4);border-radius:9999px;background:rgba(30,20,4,.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fbbf24;font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;text-align:center;">{{ clockWarn }}</div>
+    <div class="notice-light" role="alert" style="position:fixed;top:52px;left:50%;transform:translateX(-50%);z-index:56;max-width:min(92vw,560px);padding:10px 16px;border-radius:9999px;font-family:var(--font-sans);font-size:12px;letter-spacing:-.01em;text-align:center;">{{ clockWarn }}</div>
   </sc-if>
 
   <!-- ===== language toggle（演示模式下隐藏）===== -->
   <sc-if value="{{ showLangToggle }}" hint-placeholder-val="{{ true }}">
-    <button onClick="{{ onToggleLang }}" aria-label="{{ langSwitchAria }}" style="position:fixed;top:14px;right:14px;z-index:55;height:30px;min-width:40px;padding:0 12px;border:1px solid rgba(255,255,255,.16);border-radius:9999px;background:rgba(8,13,17,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#eaf2f5;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.08em;cursor:pointer;" style-hover="background:rgba(255,255,255,.12);color:var(--accent,#22d3ee);">{{ langToggleLabel }}</button>
+    <button class="lang-toggle" onClick="{{ onToggleLang }}" aria-label="{{ langSwitchAria }}" style="position:fixed;top:16px;right:16px;z-index:55;height:34px;min-width:44px;padding:0 14px;border-radius:9999px;font-weight:600;cursor:pointer;">{{ langToggleLabel }}</button>
   </sc-if>
 
   <!-- ============ VIEW MODE ============ -->
   <sc-if value="{{ isView }}" hint-placeholder-val="{{ false }}">
     <div style="position:relative;z-index:1;width:100%;max-width:{{ viewMaxW }};display:flex;flex-direction:column;align-items:center;gap:24px;animation:cardIn .6s cubic-bezier(.2,.8,.2,1) both;">
-      <div style="position:relative;width:100%;border-radius:18px;padding:40px 34px 36px;background:linear-gradient(180deg,rgba(18,28,34,.66),rgba(8,13,17,.66));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);animation:borderGlow 4.5s ease-in-out infinite;display:flex;flex-direction:column;align-items:center;gap:26px;overflow:hidden;">
-
-        <div style="position:absolute;top:14px;left:14px;width:18px;height:18px;border-top:2px solid var(--accent,#22d3ee);border-left:2px solid var(--accent,#22d3ee);opacity:.8;"></div>
-        <div style="position:absolute;top:14px;right:14px;width:18px;height:18px;border-top:2px solid var(--accent,#22d3ee);border-right:2px solid var(--accent,#22d3ee);opacity:.8;"></div>
-        <div style="position:absolute;bottom:14px;left:14px;width:18px;height:18px;border-bottom:2px solid var(--accent,#22d3ee);border-left:2px solid var(--accent,#22d3ee);opacity:.8;"></div>
-        <div style="position:absolute;bottom:14px;right:14px;width:18px;height:18px;border-bottom:2px solid var(--accent,#22d3ee);border-right:2px solid var(--accent,#22d3ee);opacity:.8;"></div>
+      <div class="view-card" style="position:relative;width:100%;background:linear-gradient(180deg,rgba(18,28,34,.66),rgba(8,13,17,.66));display:flex;flex-direction:column;align-items:center;gap:26px;overflow:hidden;">
 
         <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
           <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent,#22d3ee);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ labelName }}</div>
@@ -97,14 +316,14 @@
           </div>
         </div>
 
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div style="display:flex;gap:8px;">
+        <div class="code-row" style="display:flex;align-items:center;">
+          <div class="code-group" style="display:flex;">
             <sc-for list="{{ leftDigits }}" as="d" hint-placeholder-count="3">
               <div style="width:{{ digitW }};height:{{ digitH }};display:flex;align-items:center;justify-content:center;border-radius:9px;border:1px solid color-mix(in srgb,var(--accent,#22d3ee) 28%,transparent);background:color-mix(in srgb,var(--accent,#22d3ee) 7%,rgba(255,255,255,.015));font-family:var(--font-mono);font-size:{{ digitF }};font-weight:600;color:#fff;animation:codeGlow 3s ease-in-out infinite;">{{ d }}</div>
             </sc-for>
           </div>
           <div style="width:7px;height:7px;border-radius:50%;background:var(--accent,#22d3ee);box-shadow:0 0 12px var(--accent,#22d3ee);"></div>
-          <div style="display:flex;gap:8px;">
+          <div class="code-group" style="display:flex;">
             <sc-for list="{{ rightDigits }}" as="d" hint-placeholder-count="3">
               <div style="width:{{ digitW }};height:{{ digitH }};display:flex;align-items:center;justify-content:center;border-radius:9px;border:1px solid color-mix(in srgb,var(--accent,#22d3ee) 28%,transparent);background:color-mix(in srgb,var(--accent,#22d3ee) 7%,rgba(255,255,255,.015));font-family:var(--font-mono);font-size:{{ digitF }};font-weight:600;color:#fff;animation:codeGlow 3s ease-in-out infinite;">{{ d }}</div>
             </sc-for>
@@ -113,8 +332,7 @@
 
         <sc-if value="{{ useRing }}" hint-placeholder-val="{{ true }}">
           <div style="position:relative;width:64px;height:64px;">
-            <div style="position:absolute;inset:-3px;border-radius:50%;background:conic-gradient(from 0deg,transparent 0%,var(--accent,#22d3ee) 70%,transparent 100%);-webkit-mask:radial-gradient(circle,transparent 24px,#000 25px);mask:radial-gradient(circle,transparent 24px,#000 25px);opacity:.5;animation:spinSlow 3.5s linear infinite;"></div>
-            <svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg);filter:drop-shadow(0 0 6px color-mix(in srgb,var(--accent,#22d3ee) 70%,transparent));">
+            <svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg);">
               <circle cx="32" cy="32" r="{{ ringR }}" fill="none" stroke="rgba(255,255,255,.09)" stroke-width="3"></circle>
               <circle cx="32" cy="32" r="{{ ringR }}" fill="none" stroke="var(--accent,#22d3ee)" stroke-width="3" stroke-linecap="round" stroke-dasharray="{{ ringC }}" stroke-dashoffset="{{ ringOffset }}"></circle>
             </svg>
@@ -160,12 +378,7 @@
   <!-- ============ SETUP MODE ============ -->
   <sc-if value="{{ isSetup }}" hint-placeholder-val="{{ true }}">
     <div style="position:relative;z-index:1;width:100%;max-width:480px;animation:cardIn .6s cubic-bezier(.2,.8,.2,1) both;">
-      <div style="position:relative;border-radius:18px;padding:30px;background:linear-gradient(180deg,rgba(18,28,34,.66),rgba(8,13,17,.66));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);animation:borderGlow 4.5s ease-in-out infinite;display:flex;flex-direction:column;gap:20px;overflow:hidden;">
-
-        <div style="position:absolute;top:14px;left:14px;width:16px;height:16px;border-top:2px solid var(--accent,#22d3ee);border-left:2px solid var(--accent,#22d3ee);opacity:.8;"></div>
-        <div style="position:absolute;top:14px;right:14px;width:16px;height:16px;border-top:2px solid var(--accent,#22d3ee);border-right:2px solid var(--accent,#22d3ee);opacity:.8;"></div>
-        <div style="position:absolute;bottom:14px;left:14px;width:16px;height:16px;border-bottom:2px solid var(--accent,#22d3ee);border-left:2px solid var(--accent,#22d3ee);opacity:.8;"></div>
-        <div style="position:absolute;bottom:14px;right:14px;width:16px;height:16px;border-bottom:2px solid var(--accent,#22d3ee);border-right:2px solid var(--accent,#22d3ee);opacity:.8;"></div>
+      <div class="setup-card" style="position:relative;background:linear-gradient(180deg,rgba(18,28,34,.66),rgba(8,13,17,.66));display:flex;flex-direction:column;gap:20px;overflow:hidden;">
 
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
           <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:rgba(234,242,245,.55);">{{ t.newCodeTitle }}</div>
@@ -276,7 +489,7 @@
       </sc-if>
 
       <sc-if value="{{ importOpen }}" hint-placeholder-val="{{ false }}">
-        <div style="border-radius:14px;padding:18px;background:linear-gradient(180deg,rgba(18,28,34,.62),rgba(8,13,17,.62));border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:13px;">
+        <div class="panel-card" style="padding:20px;background:linear-gradient(180deg,rgba(18,28,34,.62),rgba(8,13,17,.62));display:flex;flex-direction:column;gap:13px;">
           <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent,#22d3ee);">{{ t.importTitle }}</div>
           <div style="display:flex;gap:9px;flex-wrap:wrap;">
             <button onClick="{{ onPickFile }}" style="height:38px;padding:0 15px;border:1px solid rgba(255,255,255,.16);border-radius:10px;background:rgba(255,255,255,.05);color:#eaf2f5;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;cursor:pointer;" style-hover="background:rgba(255,255,255,.1);">{{ t.pickFile }}</button>
@@ -290,7 +503,7 @@
       </sc-if>
 
       <sc-if value="{{ exportOpen }}" hint-placeholder-val="{{ false }}">
-        <div style="border-radius:14px;padding:18px;background:linear-gradient(180deg,rgba(18,28,34,.62),rgba(8,13,17,.62));border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:13px;">
+        <div class="panel-card" style="padding:20px;background:linear-gradient(180deg,rgba(18,28,34,.62),rgba(8,13,17,.62));display:flex;flex-direction:column;gap:13px;">
           <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent,#22d3ee);">{{ t.exportTitle }}</div>
           <textarea readonly rows="3" value="{{ exportText }}" spellcheck="false" style="width:100%;font-family:var(--font-mono);font-size:11px;line-height:1.6;resize:vertical;padding:12px 14px;border:1px solid rgba(255,255,255,.12);border-radius:10px;background:rgba(255,255,255,.03);color:rgba(234,242,245,.75);outline:none;word-break:break-all;"></textarea>
           <div style="display:flex;gap:9px;flex-wrap:wrap;">
@@ -313,7 +526,7 @@
       <sc-if value="{{ hasAccounts }}" hint-placeholder-val="{{ true }}">
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(208px,1fr));gap:14px;">
           <sc-for list="{{ boardCards }}" as="card" hint-placeholder-count="6">
-            <div onClick="{{ card.onCopy }}" onKeyDown="{{ card.onKey }}" role="button" tabindex="0" aria-label="{{ card.copyAria }}" title="{{ card.copyAria }}" style="--c:{{ card.color }};position:relative;cursor:pointer;border-radius:14px;padding:15px 16px 13px;background:linear-gradient(180deg,rgba(18,28,34,.6),rgba(8,13,17,.6));border:1px solid color-mix(in srgb,var(--c) 26%,transparent);box-shadow:0 0 26px -16px var(--c);overflow:hidden;display:flex;flex-direction:column;gap:11px;" style-hover="border-color:color-mix(in srgb,var(--c) 55%,transparent);box-shadow:0 0 32px -10px var(--c);">
+            <div class="account-card" onClick="{{ card.onCopy }}" onKeyDown="{{ card.onKey }}" role="button" tabindex="0" aria-label="{{ card.copyAria }}" title="{{ card.copyAria }}" style="--c:{{ card.color }};position:relative;cursor:pointer;padding:16px 17px 14px;background:linear-gradient(180deg,rgba(18,28,34,.6),rgba(8,13,17,.6));overflow:hidden;display:flex;flex-direction:column;gap:11px;">
               <div style="display:flex;align-items:center;gap:10px;min-width:0;">
                 <div style="flex:none;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:14px;font-weight:700;color:#04060a;background:var(--c);box-shadow:0 0 14px -4px var(--c);">{{ card.initial }}</div>
                 <div style="min-width:0;display:flex;flex-direction:column;gap:1px;flex:1;">
@@ -343,7 +556,7 @@
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:600,&quot;height&quot;:760},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#22d3ee&quot;,&quot;#34d399&quot;,&quot;#a78bfa&quot;,&quot;#8fb0c4&quot;,&quot;#fb7185&quot;],&quot;default&quot;:&quot;#22d3ee&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;progressStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;ring&quot;,&quot;bar&quot;],&quot;default&quot;:&quot;ring&quot;,&quot;tsType&quot;:&quot;'ring'|'bar'&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:600,&quot;height&quot;:760},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#0071e3&quot;,&quot;#34c759&quot;,&quot;#ff9f0a&quot;,&quot;#ff3b30&quot;,&quot;#5856d6&quot;],&quot;default&quot;:&quot;#0071e3&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;progressStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;ring&quot;,&quot;bar&quot;],&quot;default&quot;:&quot;ring&quot;,&quot;tsType&quot;:&quot;'ring'|'bar'&quot;}}">
 // ==================== i18n 文案字典（无构建：纯对象 + 路径绑定） ====================
 const STR = {
   zh: {
@@ -444,7 +657,7 @@ function initialLang() {
 
 class Component extends DCLogic {
   rootRef = React.createRef();
-  ACCENTS = ['#22d3ee', '#34d399', '#a78bfa', '#fb7185', '#fbbf24', '#60a5fa', '#f472b6', '#4ade80', '#facc15', '#38bdf8'];
+  ACCENTS = ['#0071e3', '#34c759', '#ff9f0a', '#ff3b30', '#5856d6', '#30b0c7', '#af52de', '#ff2d55', '#ffcc00', '#5ac8fa'];
   _boardCounters = [];
   state = {
     lang: initialLang(),
@@ -551,7 +764,7 @@ class Component extends DCLogic {
   }
 
   applyAccent() {
-    const a = this.props.accentColor ?? '#22d3ee';
+    const a = this.props.accentColor ?? '#0071e3';
     // accent 来自 props、运行时基本不变——只在变化时写 DOM，避免每秒 componentDidUpdate 都触发样式写入
     if (a !== this._lastAccent && this.rootRef.current) { this.rootRef.current.style.setProperty('--accent', a); this._lastAccent = a; }
   }
@@ -1526,7 +1739,7 @@ class Component extends DCLogic {
       const frac = (lv.frac != null) ? lv.frac : 1;
       const removeArmed = s.removeArmedIdx === i;
       return {
-        color: a.color || '#22d3ee',
+        color: a.color || '#0071e3',
         initial: ((labelTxt.trim()[0]) || '#').toUpperCase(),
         label: labelTxt,
         sub: (a.issuer && a.label) ? a.issuer : (a.algorithm + ' · ' + a.period + 's'),

@@ -1,16 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" fill="#06090c"/>
-  <rect width="512" height="512" fill="url(#g)"/>
-  <defs>
-    <radialGradient id="g" cx="50%" cy="0%" r="100%">
-      <stop offset="0%" stop-color="#0c151b"/>
-      <stop offset="60%" stop-color="#070b0e"/>
-      <stop offset="100%" stop-color="#06090c"/>
-    </radialGradient>
-  </defs>
+  <rect width="512" height="512" fill="#ffffff"/>
   <!-- shield kept within central safe zone for maskable icons -->
   <path d="M256 120 372 168 V272 C372 348 322 396 256 420 C190 396 140 348 140 272 V168 Z"
-        fill="none" stroke="#22d3ee" stroke-width="20" stroke-linejoin="round"/>
+        fill="none" stroke="#1d1d1f" stroke-width="20" stroke-linejoin="round"/>
   <path d="M212 268 L246 302 L304 232"
-        fill="none" stroke="#22d3ee" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+        fill="none" stroke="#0071e3" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
