@@ -234,6 +234,30 @@ async function run(){
   const mig = app.parseMigration('otpauth-migration://offline?data=' + b64url(payload));
   check('parseMigration 全链路解出 1 个', mig.length === 1 && mig[0].secret === 'JBSWY3DPEHPK3PXP');
   check('parseMigration 坏 data → []', app.parseMigration('otpauth-migration://offline?data=%%%').length === 0);
+  const otp2 = [
+    ...pbField(0x0A, secretBytes), ...pbField(0x12, [...ascii('alice')]), ...pbField(0x1A, [...ascii('GitHub')]),
+    0x20,2, 0x28,2, 0x30,2,
+  ];
+  const multiPayload = new Uint8Array([
+    ...pbField(0x0A, otp), ...pbField(0x0A, otp2),
+    0x10,1, 0x18,2, 0x20,1, 0x28,7,
+  ]);
+  const multiUrl = 'otpauth-migration://offline?data=' + b64url(multiPayload);
+  const multi = app.parseMigration(multiUrl);
+  check('迁移码多账号 + 批次字段解出 2 个', multi.length === 2, 'got ' + multi.length);
+  check('迁移码第二条保留 SHA-256 / 8 位', multi[1] && multi[1].algorithm === 'SHA-256' && multi[1].digits === 8);
+  check('文本导入识别 otpauth-migration://', app.parseAccountsFromText('Google 导出:\n' + multiUrl).length === 2);
+  const migUi = Object.create(app);
+  migUi.t = () => ({ errMigration: 'bad migration' });
+  migUi.setState = function(patch) { this.state = { ...(this.state || {}), ...patch }; };
+  migUi.invalidateCodeWork = () => {};
+  migUi.addAccounts = function(list) { this.imported = list; };
+  migUi.commitParse(multiUrl);
+  check('设置页粘贴迁移码自动导入看板', migUi.imported && migUi.imported.length === 2);
+  migUi.imported = null;
+  migUi.state = {};
+  migUi.commitParse('otpauth-migration://offline?data=%%%');
+  check('设置页坏迁移码给出明确错误', migUi.state.error === 'bad migration');
   // ---- 损坏/截断的迁移码：干净失败，不产出垃圾账号（issue #4）----
   const truncated = payload.subarray(0, payload.length - 6); // 掐掉尾部：内层长度前缀声明的字节不够
   check('截断的迁移码 → []（不产出垃圾账号）', app.decodeMigration(truncated).length === 0, 'got ' + app.decodeMigration(truncated).length);

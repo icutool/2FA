@@ -14,7 +14,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-22d3ee?labelColor=06090c)](LICENSE)
 [![Build: none](https://img.shields.io/badge/build-none-22d3ee?labelColor=06090c)](#deployment)
 [![Backend: none](https://img.shields.io/badge/backend-none-22d3ee?labelColor=06090c)](#how-it-works)
-[![Self-tests: 367](https://img.shields.io/badge/self--tests-367%20passing-22d3ee?labelColor=06090c)](tests.html)
+[![Self-tests: 372](https://img.shields.io/badge/self--tests-372%20passing-22d3ee?labelColor=06090c)](tests.html)
 [![CI](https://github.com/zeropl/2FA/actions/workflows/tests.yml/badge.svg)](https://github.com/zeropl/2FA/actions/workflows/tests.yml)
 
 English · [简体中文](README.zh-CN.md)
@@ -69,7 +69,7 @@ Anyone can claim "we don't upload your data". Easy2FA makes **the browser verify
 
 For a 2FA tool, **calmly displaying a wrong code is worse than crashing** — you'll retry it until the account locks you out. So:
 
-- The algorithm is pinned by the official RFC 6238 test vectors, and the **367 self-tests in [`tests.html`](tests.html) execute the production code itself** — extracted straight out of `index.html`, so tests and implementation cannot drift, and CI runs them headlessly on every push;
+- The algorithm is pinned by the official RFC 6238 test vectors, and the **372 self-tests in [`tests.html`](tests.html) execute the production code itself** — extracted straight out of `index.html`, so tests and implementation cannot drift, and CI runs them headlessly on every push;
 - OTP parameters are validated at every input: omitted values use SHA-1 / 6 digits / 30 seconds; explicit invalid algorithms, digit counts (6–8), or periods (10–300 integer seconds) are rejected. Deduplication includes all three parameters, with exact label/issuer matching.
 - Unsupported means refused: HOTP links are **rejected outright** (not silently computed as TOTP), and unknown algorithms / digit counts in migration QRs are **dropped** (not guessed at);
 - On load, it compares your device clock against the server's `Date` response header and **warns loudly** when it's ≥10s off. Clock skew is the most invisible way TOTP fails — and most tools stay silent about it.
@@ -87,7 +87,7 @@ For a 2FA tool, **calmly displaying a wrong code is worse than crashing** — yo
 
 - 🔐 **Real TOTP** (RFC 6238) computed locally via Web Crypto — SHA-1/256/512, configurable digits & period
 - 🔗 **Every account is a link** — `#secret=…` lives in the URL hash, never sent to any server
-- 🧮 **Multi-account board** — drop a file of links (or scan a Google Authenticator migration QR) → a color-coded grid of live codes; export back to a `.txt` list or a single board link
+- 🧮 **Multi-account board** — drop a file of links, scan a Google Authenticator migration QR, or paste its `otpauth-migration://` link → a color-coded grid of live codes; export back to a `.txt` list or a single board link
 - 📷 **QR import** (scan a QR image) & **QR export** (`otpauth://` for your phone)
 - 🖥️ **Presentation mode** (`&present=1`) — shows just the big rotating code with the QR / secret-revealing UI hidden, for projecting or screen-sharing; honest about what it does (and doesn't) protect
 - 🕰 **Clock check** — warns loudly when your device clock is skewed, instead of letting you hammer a wrong code
@@ -192,7 +192,7 @@ A tool that touches secrets deserves to be read before it's trusted. Easy2FA kee
 - All application logic lives in **one [`index.html`](index.html)** (~1,500 lines — UI templates and both languages included);
 - **No build step, no `node_modules`** — every line you read on GitHub is exactly what your browser executes;
 - The entire supply chain is four files under `vendor/`: React, ReactDOM (official UMD builds) and two QR libraries (qrcode.js to generate, jsQR as the decode fallback);
-- Open `/tests.html` on your own deployment and **run all 367 self-tests on the spot** — it fetches and tests the very `index.html` you're using.
+- Open `/tests.html` on your own deployment and **run all 372 self-tests on the spot** — it fetches and tests the very `index.html` you're using.
 
 ## Security notes
 
@@ -213,6 +213,7 @@ Easy2FA has no cloud service, no Pro tier, and collects nothing — **stars are 
 
 ## Changelog
 
+- **2026-10** — **Google Authenticator migration links work at every import entry point**: pasting `otpauth-migration://offline?data=…` into the setup field or board importer now converts its protobuf payload into accounts and opens the board; the home-screen QR import follows the same path instead of rejecting it as an `otpauth://` link. Multi-account payloads, batch fields, SHA-256 / 8-digit accounts, standard or URL-safe base64, and malformed payloads are covered by 5 new tests (372 total).
 - **2026-07** — **Per-card board actions + QR scanning in every browser + CI**: every board card now has **↗ open single view / 🔗 copy account link / ✕ remove** (two-step confirm) — no more “clear everything to delete one account”, and each card can now reach the single-view QR export; QR scanning no longer requires Chromium's `BarcodeDetector` — a vendored **jsQR** fallback (lazy-loaded, same-origin, SW-precached for offline) makes scanning work in **Safari / Firefox too** (incl. GA migration codes), and also retries when the native engine misses; new **GitHub Actions CI** runs all 98 `tests.html` self-tests headlessly on every push and verifies the `support.js` vendor patch is intact (see PATCHES.md).
 - **2026-07** — **Import now actually reads JSON / CSV**: the file picker had always advertised `.csv` / `.json`, but the parser only scraped URLs — feed it a real JSON / CSV export and you got “no accounts recognized” ([issue #5](https://github.com/zeropl/2FA/issues/5)). Structured parsing is now real — JSON accepts an array / a single object / a one-level array wrapper, with case-insensitive keys and common aliases (`name`/`account`→label, `service`→issuer, `timer`→period, `algo`→algorithm); CSV keys off a `secret` header column and handles comma / semicolon / tab delimiters plus quoted commas, while ordinary comma text without a `secret` header is not mistaken for a table. 15 new parser tests (98 total).
 - **2026-07** — **Clock check + auto-update + CSP**: on load, the device clock is compared against the same-origin `Date` response header, with a loud warning when it's ≥10s off (closing the last “confidently wrong code” path); the service worker now uses **stale-while-revalidate**, so deployed updates reach visitors automatically — no more manual cache-version bumps; added a **CSP** (`connect-src 'self'`) that makes “secrets never leave” browser-enforced; `tests.html` was rebuilt to **extract the real implementation straight out of `index.html`** (zero mirror drift) with new parser-layer tests (78 checks). Same batch: fixed the stale `#secret=` hash after “Add to board”, iOS home-screen icon, a warning for over-long board links, and autocomplete off on secret inputs.

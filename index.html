@@ -354,7 +354,7 @@ const STR = {
     copyCode: '复制验证码', showQr: '显示二维码 ⃞', hideQr: '隐藏二维码',
     newCode: '+ 新建验证码', addToBoard: '加入看板', presentMode: '🖥 演示模式', exitPresent: '✕ 退出演示',
     newCodeTitle: '新建验证码', boardNav: '▦ 多账号看板',
-    secretLabel: '密钥 / SECRET', scanImport: '⃞ 扫码导入', secretPlaceholder: '粘贴 2FA 密钥，或 otpauth:// 链接',
+    secretLabel: '密钥 / SECRET', scanImport: '⃞ 扫码导入', secretPlaceholder: '粘贴 2FA 密钥、otpauth:// 或 Google Authenticator 迁移链接',
     labelLabel: '账号名称 / LABEL', labelPlaceholder: '例如 GitHub',
     bookmark: '专属链接 / BOOKMARK', copyLink: '复制链接',
     presentLinkShow: '🖥 演示模式链接', presentLinkHide: '🖥 隐藏演示链接',
@@ -363,8 +363,8 @@ const STR = {
     nolabelOff: '☐ 连账号名也隐藏', nolabelOn: '☑ 连账号名也隐藏', copyPresentLink: '复制演示链接',
     boardTitle: '▦ 多号看板', boardImport: '＋ 导入', boardExport: '导出', boardClear: '清空', boardClearConfirm: '再点一次确认清空', boardSingle: '单条',
     importTitle: '导入账号', pickFile: '选择文件 .txt/.csv/.json', readClipboard: '读取剪贴板', scanGA: '扫码 (含 GA 迁移码)',
-    pastePlaceholder: '或在此粘贴多个链接，每行一个（otpauth:// 或本工具的书签链接）', parseImport: '解析并导入',
-    importHint: '也可把文件直接拖到页面任意位置。本地仅作缓存，清空无妨——重新导入即恢复。',
+    pastePlaceholder: '或在此粘贴多个链接（otpauth://、otpauth-migration:// 或本工具的书签链接）', parseImport: '解析并导入',
+    importHint: 'Google Authenticator 导出的 otpauth-migration:// 链接可直接粘贴；也可把文件拖到页面任意位置。本地仅作缓存，清空无妨——重新导入即恢复。',
     exportTitle: '导出账号', copyAllLinks: '复制全部链接', downloadTxt: '下载 .txt', copyBoardLink: '复制看板链接',
     exportHint: '「复制全部链接」可粘回你的 txt；「看板链接」把整组编码进一个书签，换设备打开即恢复——注意它包含全部密钥，请妥善保存。',
     emptyDrop: '把账号链接文件拖到这里', emptyHint1: '支持 .txt / .md / .yaml（每行一个链接）', emptyHint2: '或点此粘贴链接 / 扫 Google Authenticator 迁移码',
@@ -385,6 +385,7 @@ const STR = {
     qrImported: '已从二维码导入 ✓', qrNotFound: '未识别到二维码', qrFail: '二维码解析失败', qrUnavailable: '二维码不可用', qrGenFail: '二维码生成失败',
     errDigits: '验证码位数无效：必须是 6 到 8 的整数', errPeriod: '验证码周期无效：必须是 10 到 300 秒的整数', errAlgorithm: '不支持该算法：仅支持 SHA-1、SHA-256 和 SHA-512',
     errInvalid: '密钥无效：只能含 A–Z 和 2–7（base32）', errHotp: '暂不支持 HOTP（基于计数器）链接，本工具只算 TOTP', errNoSecret: 'otpauth 链接里没有有效的 secret', errBookmarkBad: '链接里的密钥无效或被截断，请检查后重新粘贴',
+    errMigration: 'Google Authenticator 迁移码无效、已损坏，或其中没有可用的 TOTP 账号',
     titleApp: '2FA', titleBoard: '多号看板 · 2FA', titleSuffix: ' · 2FA',
   },
   en: {
@@ -395,7 +396,7 @@ const STR = {
     copyCode: 'Copy code', showQr: 'Show QR ⃞', hideQr: 'Hide QR',
     newCode: '+ New code', addToBoard: 'Add to board', presentMode: '🖥 Presentation', exitPresent: '✕ Exit',
     newCodeTitle: 'New code', boardNav: '▦ Multi-account board',
-    secretLabel: 'SECRET', scanImport: '⃞ Scan QR', secretPlaceholder: 'Paste a 2FA secret, or an otpauth:// link',
+    secretLabel: 'SECRET', scanImport: '⃞ Scan QR', secretPlaceholder: 'Paste a 2FA secret, an otpauth:// link, or a Google Authenticator migration link',
     labelLabel: 'LABEL', labelPlaceholder: 'e.g. GitHub',
     bookmark: 'BOOKMARK LINK', copyLink: 'Copy link',
     presentLinkShow: '🖥 Presentation link', presentLinkHide: '🖥 Hide presentation link',
@@ -404,8 +405,8 @@ const STR = {
     nolabelOff: '☐ Also hide the account name', nolabelOn: '☑ Also hide the account name', copyPresentLink: 'Copy presentation link',
     boardTitle: '▦ Board', boardImport: '＋ Import', boardExport: 'Export', boardClear: 'Clear', boardClearConfirm: 'Click again to confirm', boardSingle: 'Single',
     importTitle: 'Import accounts', pickFile: 'Choose file .txt/.csv/.json', readClipboard: 'Read clipboard', scanGA: 'Scan QR (incl. GA export)',
-    pastePlaceholder: 'Or paste multiple links here, one per line (otpauth:// or this tool’s bookmark links)', parseImport: 'Parse & import',
-    importHint: 'You can also drop a file anywhere on the page. Local cache only — clearing is fine, just re-import to restore.',
+    pastePlaceholder: 'Or paste links here (otpauth://, otpauth-migration://, or this tool’s bookmark links)', parseImport: 'Parse & import',
+    importHint: 'Paste a Google Authenticator otpauth-migration:// link directly, or drop a file anywhere on the page. Local cache only — clearing is fine, just re-import to restore.',
     exportTitle: 'Export accounts', copyAllLinks: 'Copy all links', downloadTxt: 'Download .txt', copyBoardLink: 'Copy board link',
     exportHint: '“Copy all links” pastes back into your txt; “board link” encodes the whole set into one bookmark that restores on any device — note it contains every secret, keep it safe.',
     emptyDrop: 'Drop your account-links file here', emptyHint1: 'Supports .txt / .md / .yaml (one link per line)', emptyHint2: 'or click to paste links / scan a Google Authenticator export',
@@ -426,6 +427,7 @@ const STR = {
     qrImported: 'Imported from QR ✓', qrNotFound: 'No QR detected', qrFail: 'Failed to parse the QR', qrUnavailable: 'QR unavailable', qrGenFail: 'Failed to generate the QR',
     errDigits: 'Invalid OTP digits: use a whole number from 6 to 8', errPeriod: 'Invalid OTP period: use a whole number from 10 to 300 seconds', errAlgorithm: 'Unsupported OTP algorithm: use SHA-1, SHA-256 or SHA-512',
     errInvalid: 'Invalid secret: only A–Z and 2–7 (base32) allowed', errHotp: 'HOTP (counter-based) links aren’t supported — this tool only does TOTP', errNoSecret: 'No valid secret in the otpauth link', errBookmarkBad: 'The secret in the link is invalid or truncated — check and paste again',
+    errMigration: 'Invalid or corrupted Google Authenticator migration code, or it contains no supported TOTP accounts',
     titleApp: '2FA', titleBoard: 'Board · 2FA', titleSuffix: ' · 2FA',
   },
 };
@@ -796,6 +798,18 @@ class Component extends DCLogic {
 
   commitParse(v) {
     this.invalidateCodeWork();
+    const raw = (v || '').trim();
+    if (/^otpauth-migration:\/\//i.test(raw)) {
+      const accounts = this.parseMigration(raw);
+      this._lastPrevCounter = null;
+      this._animCode = null;
+      if (accounts.length) {
+        this.addAccounts(accounts);
+      } else {
+        this.setState({ parsed: null, previewCode: '', shownDigits: null, error: this.t().errMigration });
+      }
+      return;
+    }
     const parsed = this.parseInput(v);
     const ok = parsed && parsed.valid;
     this._lastPrevCounter = null;
@@ -870,7 +884,12 @@ class Component extends DCLogic {
       if (!file) return;
       try {
         const val = await this.detectQr(file);
-        if (val && /^otpauth:\/\//i.test(val)) { this.onInput(val); this.setState({ importMsg: this.t().qrImported }); }
+        if (val && /^otpauth-migration:\/\//i.test(val)) {
+          const accounts = this.parseMigration(val);
+          if (accounts.length) this.addAccounts(accounts);
+          else this.setState({ importMsg: this.t().errMigration });
+        }
+        else if (val && /^otpauth:\/\//i.test(val)) { this.onInput(val); this.setState({ importMsg: this.t().qrImported }); }
         else if (val) { this.onInput(val); }
         else this.setState({ importMsg: this.t().qrNotFound });
       } catch (e) { this.setState({ importMsg: (e && e.message === 'jsqr-unavailable') ? this.t().scanNoSupport : this.t().qrFail }); }
@@ -1098,8 +1117,8 @@ class Component extends DCLogic {
   parseAccountsFromText(text) {
     if (!text) return [];
     let out = [];
-    const mig = text.match(/otpauth-migration:\/\/[^\s'"<>]+/i);
-    if (mig) out = out.concat(this.parseMigration(mig[0]));
+    const migs = text.match(/otpauth-migration:\/\/[^\s'"<>]+/gi) || [];
+    for (const url of migs) out = out.concat(this.parseMigration(url));
     // JSON 记录 / CSV 表（picker 里 .json/.csv 的真实解析）——与下面的 URL 抠取互补、可叠加
     out = out.concat(this.parseStructured(text));
     const re = /(otpauth:\/\/totp\/[^\s'"<>]+|https?:\/\/[^\s'"<>]*#[^\s'"<>]+)/gi;
@@ -1221,7 +1240,7 @@ class Component extends DCLogic {
   // —— Google Authenticator 迁移码（otpauth-migration://，protobuf）——
   parseMigration(url) {
     try {
-      const m = /[?&]data=([^&\s]+)/.exec(url);
+      const m = /[?&]data=([^&#\s]+)/.exec(url || '');
       if (!m) return [];
       const bytes = this.b64ToBytes(decodeURIComponent(m[1]));
       if (!bytes) return [];
@@ -1230,7 +1249,10 @@ class Component extends DCLogic {
   }
   b64ToBytes(b64) {
     try {
-      const bin = atob((b64 || '').replace(/-/g, '+').replace(/_/g, '/'));
+      let s = (b64 || '').replace(/ /g, '+').replace(/-/g, '+').replace(/_/g, '/');
+      const rem = s.length % 4;
+      if (rem) s += '='.repeat(4 - rem);
+      const bin = atob(s);
       const out = new Uint8Array(bin.length);
       for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
       return out;
