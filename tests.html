@@ -41,7 +41,7 @@ const METHODS = [
   'parseInput', 'parseAccountUrl', 'parseAccountsFromText',
   'parseStructured', 'accountFromRecord', 'csvSplit',
   'hashStr', 'pickColor', 'normalizeIcon', 'iconFromFile', 'normalizeAccount', 'otpIdentity', 'accountIdentity',
-  'refresh', 'refreshPreview', 'computeBoardCodes', 'invalidateCodeWork', 'addAccounts', 'armOrRemove', 'removeAccount', 'animateTo', 'goBoard', 'goSetup', 'boardTick', 'tick',
+  'refresh', 'refreshPreview', 'computeBoardCodes', 'invalidateCodeWork', 'addAccounts', 'armOrRemove', 'removeAccount', 'moveAccount', 'animateTo', 'goBoard', 'goSetup', 'boardTick', 'tick',
   'encodeBoardParam', 'decodeBoardParam', 'buildAccountUrl', 'fmtCode',
 ];
 
@@ -479,6 +479,28 @@ async function run(){
     check('remove needs a first confirmation click', rx.state.removeArmedIdx === 0 && rx.state.accounts.length === 1);
     app.armOrRemove.call(rx, 0);
     check('remove only deletes on the second click', rx.state.accounts.length === 0 && rx.state.removeArmedIdx === null && rx.saved.length === 0);
+    const mx = {
+      state: {
+        accounts: [{ label: 'A' }, { label: 'B' }, { label: 'C' }],
+        boardLive: [{ code: '111111' }, { code: '222222' }, { code: '333333' }],
+        dragFromIdx: 0,
+        dragOverIdx: 2,
+        removeArmedIdx: 0,
+        copiedIdx: 1,
+      },
+      t: () => ({ orderSaved: 'saved' }),
+      invalidateCodeWork() {},
+      saveBoard(accounts) { mx.saved = accounts.slice(); },
+      syncBoardHash(accounts) { mx.synced = accounts.slice(); },
+      refreshBoardAll() { mx.refreshed = true; },
+      setState(update, callback) { mx.state = { ...mx.state, ...update }; if (callback) callback(); },
+    };
+    mx.moveAccount = app.moveAccount;
+    app.moveAccount.call(mx, 0, 2);
+    check('drag reorder moves the account to the drop index', mx.state.accounts.map((a) => a.label).join('') === 'BCA');
+    check('drag reorder keeps each live code attached to its account', mx.state.boardLive.map((x) => x.code).join(',') === '222222,333333,111111');
+    check('drag reorder is persisted in the saved board order', mx.saved.map((a) => a.label).join('') === 'BCA' && mx.synced.map((a) => a.label).join('') === 'BCA');
+    check('drag reorder clears transient card state and refreshes codes', mx.state.dragFromIdx === null && mx.state.dragOverIdx === null && mx.state.removeArmedIdx === null && mx.state.copiedIdx === null && mx.refreshed === true);
     check('实际加入看板保留四种配置并跳过规范化重复',x.state.accounts.length===4);
   } finally { Date.now=originalNow; }
 

@@ -1,7 +1,7 @@
 /* 离线缓存核心资源。策略：stale-while-revalidate——先回缓存秒开，后台同时拉最新覆盖缓存，
    下次刷新即新版。部署后不再依赖"记得升 CACHE 版本"：版本号只用于大扫除（清掉整套旧缓存），
    平时改静态资源无需动它。 */
-const CACHE = '2fa-v15';
+const CACHE = '2fa-v17';
 const CORE = [
   './',
   './index.html',

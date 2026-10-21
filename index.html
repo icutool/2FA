@@ -184,8 +184,8 @@
       height:auto!important;
       aspect-ratio:1;
       display:block;
-      border-radius:12px;
-      background:#fff;
+      border-radius:0;
+      background:transparent;
     }
     .app-shell .setup-card{
       background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(238,248,255,.52))!important;
@@ -386,6 +386,15 @@
       border-color:color-mix(in srgb,var(--c) 24%,rgba(255,255,255,.92))!important;
       box-shadow:0 22px 48px rgba(42,91,134,.16),0 0 0 1px color-mix(in srgb,var(--c) 9%,transparent),inset 0 1px 0 rgba(255,255,255,.98)!important;
     }
+    .app-shell .account-card.is-account-dragging{
+      opacity:.42!important;
+      transform:scale(.985)!important;
+      border-style:dashed!important;
+    }
+    .app-shell .account-card.is-account-drag-over{
+      outline:2px solid color-mix(in srgb,var(--c) 58%,var(--accent))!important;
+      outline-offset:2px;
+    }
     .account-card .account-meta{
       width:100%;
       min-width:0;
@@ -431,6 +440,30 @@
       color:var(--tertiary)!important;
     }
     .account-card button:hover{background:var(--fill)!important;color:var(--accent)!important;}
+    .account-card .account-drag-handle{
+      width:16px!important;
+      height:30px!important;
+      display:inline-flex!important;
+      align-items:center;
+      justify-content:center;
+      flex:none;
+      padding:0!important;
+      border:0!important;
+      border-radius:6px!important;
+      background:transparent!important;
+      color:var(--tertiary)!important;
+      font-family:var(--font-sans)!important;
+      font-size:16px!important;
+      line-height:1!important;
+      letter-spacing:-2px;
+      cursor:grab!important;
+      touch-action:none;
+      user-select:none;
+    }
+    .account-card .account-drag-handle:hover{
+      background:var(--fill)!important;
+      color:var(--secondary)!important;
+    }
     .account-card .account-icon{
       position:relative;
       width:30px!important;
@@ -716,7 +749,7 @@
 
   <!-- ============ BOARD MODE ============ -->
   <sc-if value="{{ isBoard }}" hint-placeholder-val="{{ false }}">
-    <div class="board-view" style="position:relative;z-index:1;width:100%;max-width:920px;display:flex;flex-direction:column;gap:18px;animation:cardIn .6s cubic-bezier(.2,.8,.2,1) both;">
+    <div class="board-view" style="position:relative;z-index:1;width:100%;max-width:1180px;display:flex;flex-direction:column;gap:18px;animation:cardIn .6s cubic-bezier(.2,.8,.2,1) both;">
 
       <div class="board-toolbar" style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;">
         <div style="display:flex;flex-direction:column;gap:5px;">
@@ -773,17 +806,20 @@
       <sc-if value="{{ hasAccounts }}" hint-placeholder-val="{{ true }}">
         <div class="board-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(208px,1fr));gap:14px;">
           <sc-for list="{{ boardCards }}" as="card" hint-placeholder-count="6">
-            <div class="account-card" onClick="{{ card.onCopy }}" onKeyDown="{{ card.onKey }}" role="button" tabindex="0" aria-label="{{ card.copyAria }}" title="{{ card.copyAria }}" style="--c:{{ card.color }};position:relative;cursor:pointer;padding:16px 17px 14px;background:linear-gradient(180deg,rgba(18,28,34,.6),rgba(8,13,17,.6));overflow:hidden;display:flex;flex-direction:column;gap:11px;">
+            <div class="account-card{{ card.dragClass }}" data-board-index="{{ card.index }}" onClick="{{ card.onCopy }}" onKeyDown="{{ card.onKey }}" role="button" tabindex="0" aria-label="{{ card.copyAria }}" title="{{ card.copyAria }}" style="--c:{{ card.color }};position:relative;cursor:pointer;padding:16px 17px 14px;background:linear-gradient(180deg,rgba(18,28,34,.6),rgba(8,13,17,.6));overflow:hidden;display:flex;flex-direction:column;gap:11px;">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-width:0;">
-                <button class="account-icon" onClick="{{ card.onPickIcon }}" title="{{ t.cardIconTitle }}" aria-label="{{ card.iconAria }}" style="flex:none;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:14px;font-weight:700;color:#04060a;background:var(--c);padding:0;cursor:pointer;overflow:hidden;">
-                  <sc-if value="{{ card.hasIcon }}" hint-placeholder-val="{{ false }}">
-                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" ref="{{ card.iconRef }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">
-                  </sc-if>
-                  <sc-if value="{{ card.hasNoIcon }}" hint-placeholder-val="{{ true }}">
-                    <span>{{ card.initial }}</span>
-                  </sc-if>
-                  <span class="account-icon-edit" aria-hidden="true">✎</span>
-                </button>
+                <div style="display:flex;align-items:center;gap:7px;min-width:0;">
+                  <button type="button" class="account-drag-handle" onPointerDown="{{ card.onDragStart }}" onClick="{{ card.onDragClick }}" onKeyDown="{{ card.onDragKey }}" title="{{ card.dragTitle }}" aria-label="{{ card.dragAria }}">⠿</button>
+                  <button class="account-icon" onClick="{{ card.onPickIcon }}" title="{{ t.cardIconTitle }}" aria-label="{{ card.iconAria }}" style="flex:none;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:14px;font-weight:700;color:#04060a;background:var(--c);padding:0;cursor:pointer;overflow:hidden;">
+                    <sc-if value="{{ card.hasIcon }}" hint-placeholder-val="{{ false }}">
+                      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" ref="{{ card.iconRef }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">
+                    </sc-if>
+                    <sc-if value="{{ card.hasNoIcon }}" hint-placeholder-val="{{ true }}">
+                      <span>{{ card.initial }}</span>
+                    </sc-if>
+                    <span class="account-icon-edit" aria-hidden="true">✎</span>
+                  </button>
+                </div>
                 <div style="display:flex;gap:2px;flex:none;">
                   <button onClick="{{ card.onOpen }}" title="{{ t.cardOpenTitle }}" aria-label="{{ t.cardOpenTitle }}" style="width:24px;height:24px;border:none;border-radius:6px;background:transparent;color:rgba(234,242,245,.45);font-family:var(--font-mono);font-size:13px;line-height:1;padding:0;cursor:pointer;" style-hover="background:rgba(255,255,255,.09);color:var(--accent,#22d3ee);">↗</button>
                   <button onClick="{{ card.onCopyLink }}" title="{{ t.cardLinkTitle }}" aria-label="{{ t.cardLinkTitle }}" style="width:24px;height:24px;border:none;border-radius:6px;background:transparent;color:rgba(234,242,245,.45);font-size:11px;line-height:1;padding:0;cursor:pointer;" style-hover="background:rgba(255,255,255,.09);color:var(--accent,#22d3ee);">🔗</button>
@@ -838,12 +874,12 @@ const STR = {
     emptyDrop: '把账号链接文件拖到这里', emptyHint1: '支持 .txt / .md / .yaml（每行一个链接）', emptyHint2: '或点此粘贴链接 / 扫 Google Authenticator 迁移码',
     boardNone: '还没有账号', accountFallback: (i) => '账号 ' + i,
     accountsCount: (n) => n + ' 个账号', copyCodeOf: (l) => '复制 ' + l + ' 的验证码',
-    cardOpenTitle: '打开单号页', cardLinkTitle: '复制该号链接', cardRemoveTitle: '移除',
+    cardOpenTitle: '打开单号页', cardLinkTitle: '复制该号链接', cardRemoveTitle: '移除', cardDragTitle: '拖动调整顺序', cardDragAria: (l) => '拖动 ' + l + ' 调整顺序',
     cardRemoveConfirm: '再点一次确认移除', cardRemoveArmed: (l) => '再点一次移除「' + l + '」',
     cardIconTitle: '设置自定义图标', cardIconAria: (l) => '设置 ' + l + ' 的图标',
     iconUpdated: (l) => (l ? l + ' 的图标已更新' : '图标已更新'), iconType: '请选择 PNG、JPEG、WebP、GIF、AVIF 或 ICO 图片',
     iconTooLarge: '图片不能超过 5MB', iconFail: '图标处理失败，请换一张图片',
-    removedMsg: (l) => '已移除「' + l + '」（重新导入即可恢复）',
+    removedMsg: (l) => '已移除「' + l + '」（重新导入即可恢复）', orderSaved: '顺序已保存',
     cardLinkCopied: '已复制该账号链接 ✓——链接含密钥，请走可信渠道',
     imported: (n) => '已导入 ' + n + ' 个账号 ✓', importCap: (n) => '已达上限 ' + n + ' 个账号，多余的已忽略',
     alreadyInBoard: '这些账号已在看板中', noLinksFound: '未识别到账号链接', noLinksInFile: '文件中未识别到账号链接', noLinksDrop: '未在拖入内容中识别到账号链接',
@@ -883,12 +919,12 @@ const STR = {
     emptyDrop: 'Drop your account-links file here', emptyHint1: 'Supports .txt / .md / .yaml (one link per line)', emptyHint2: 'or click to paste links / scan a Google Authenticator export',
     boardNone: 'No accounts yet', accountFallback: (i) => 'Account ' + i,
     accountsCount: (n) => n + (n === 1 ? ' account' : ' accounts'), copyCodeOf: (l) => 'Copy code for ' + l,
-    cardOpenTitle: 'Open single view', cardLinkTitle: 'Copy account link', cardRemoveTitle: 'Remove',
+    cardOpenTitle: 'Open single view', cardLinkTitle: 'Copy account link', cardRemoveTitle: 'Remove', cardDragTitle: 'Drag to reorder', cardDragAria: (l) => 'Drag ' + l + ' to reorder',
     cardRemoveConfirm: 'Click again to confirm removal', cardRemoveArmed: (l) => 'Click again to remove “' + l + '”',
     cardIconTitle: 'Set a custom icon', cardIconAria: (l) => 'Set icon for ' + l,
     iconUpdated: (l) => (l ? l + ' icon updated' : 'Icon updated'), iconType: 'Choose a PNG, JPEG, WebP, GIF, AVIF, or ICO image',
     iconTooLarge: 'The image must be 5MB or smaller', iconFail: 'Could not process that image',
-    removedMsg: (l) => 'Removed “' + l + '” (re-import to restore)',
+    removedMsg: (l) => 'Removed “' + l + '” (re-import to restore)', orderSaved: 'Order saved',
     cardLinkCopied: 'Account link copied ✓ — it contains the secret, share with care',
     imported: (n) => 'Imported ' + n + (n === 1 ? ' account ✓' : ' accounts ✓'), importCap: (n) => 'Reached the ' + n + '-account limit, extras ignored',
     alreadyInBoard: 'These accounts are already on the board', noLinksFound: 'No account links found', noLinksInFile: 'No account links found in the file', noLinksDrop: 'No account links found in what you dropped',
@@ -932,6 +968,7 @@ class Component extends DCLogic {
     accounts: [], boardLive: [], copiedIdx: null,
     importOpen: false, exportOpen: false, boardMsg: '', dragging: false,
     pasteValue: '', linksCopied: false, boardUrlCopied: false, clearArmed: false, removeArmedIdx: null,
+    dragFromIdx: null, dragOverIdx: null,
     // —— 演示模式 ——
     present: false, nolabel: false,
     presentPanel: false, presentNolabel: false, presentUrlCopied: false,
@@ -966,6 +1003,11 @@ class Component extends DCLogic {
     window.addEventListener('dragover', this._onDragOver);
     window.addEventListener('dragleave', this._onDragLeave);
     window.addEventListener('drop', this._onDrop);
+    this._onAccountPointerMove = (e) => this.updateAccountDrag(e);
+    this._onAccountPointerUp = (e) => this.finishAccountDrag(e);
+    window.addEventListener('pointermove', this._onAccountPointerMove, { passive: false });
+    window.addEventListener('pointerup', this._onAccountPointerUp);
+    window.addEventListener('pointercancel', this._onAccountPointerUp);
     // a11y: 投屏时 Esc 一键退出演示模式（原来只有一个低对比度的小链接）
     this._onKey = (e) => { if (e.key === 'Escape' && this.state.mode === 'view' && this.state.present) this.exitPresent(); };
     window.addEventListener('keydown', this._onKey);
@@ -999,6 +1041,9 @@ class Component extends DCLogic {
     window.removeEventListener('dragover', this._onDragOver);
     window.removeEventListener('dragleave', this._onDragLeave);
     window.removeEventListener('drop', this._onDrop);
+    window.removeEventListener('pointermove', this._onAccountPointerMove);
+    window.removeEventListener('pointerup', this._onAccountPointerUp);
+    window.removeEventListener('pointercancel', this._onAccountPointerUp);
     window.removeEventListener('keydown', this._onKey);
   }
 
@@ -1395,7 +1440,23 @@ class Component extends DCLogic {
     if (!url || typeof qrcode === 'undefined') { this.setState({ importMsg: this.t().qrUnavailable }); return; }
     try {
       const qr = qrcode(0, 'M'); qr.addData(url); qr.make();
-      this.setState({ showQr: true, qrDataUrl: qr.createDataURL(5, 2) });
+      const count = qr.getModuleCount();
+      const cell = 6;
+      const quiet = 4;
+      // Transparent quiet zone avoids baking a white square behind the QR.
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = (count + quiet * 2) * cell;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('canvas-unavailable');
+      ctx.fillStyle = '#1d1d1f';
+      for (let row = 0; row < count; row++) {
+        for (let col = 0; col < count; col++) {
+          if (qr.isDark(row, col)) {
+            ctx.fillRect((col + quiet) * cell, (row + quiet) * cell, cell, cell);
+          }
+        }
+      }
+      this.setState({ showQr: true, qrDataUrl: canvas.toDataURL('image/png') });
     } catch (e) { this.setState({ importMsg: this.t().qrGenFail }); }
   }
 
@@ -1657,6 +1718,71 @@ class Component extends DCLogic {
     const live = (this.state.boardLive || []).slice(); live.splice(i, 1);
     const labelTxt = rm.label || rm.issuer || this.t().accountFallback(i + 1);
     this.setState({ accounts: accts, boardLive: live, removeArmedIdx: null, copiedIdx: null, boardMsg: this.t().removedMsg(labelTxt) }, () => this.refreshBoardAll());
+  }
+
+  startAccountDrag(e, i) {
+    if (e.button !== undefined && e.button !== 0) return;
+    if (!(this.state.accounts || [])[i]) return;
+    e.preventDefault();
+    e.stopPropagation();
+    this._accountDrag = { from: i, over: i, pointerId: e.pointerId, x: e.clientX, y: e.clientY, active: false };
+    this.setState({ dragFromIdx: i, dragOverIdx: i, removeArmedIdx: null });
+  }
+  updateAccountDrag(e) {
+    const drag = this._accountDrag;
+    if (!drag || e.pointerId !== drag.pointerId) return;
+    if (!drag.active) {
+      if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 6) return;
+      drag.active = true;
+      try { document.body.style.cursor = 'grabbing'; } catch (_) {}
+    }
+    if (e.cancelable) e.preventDefault();
+    const hit = document.elementFromPoint(e.clientX, e.clientY);
+    const card = hit && hit.closest ? hit.closest('.account-card') : null;
+    const over = card ? Number(card.dataset.boardIndex) : NaN;
+    if (Number.isInteger(over) && over >= 0 && over < (this.state.accounts || []).length && over !== drag.over) {
+      drag.over = over;
+      this.setState({ dragOverIdx: over });
+    }
+  }
+  finishAccountDrag(e) {
+    const drag = this._accountDrag;
+    if (!drag || (e && e.pointerId != null && e.pointerId !== drag.pointerId)) return;
+    this._accountDrag = null;
+    try { document.body.style.cursor = ''; } catch (_) {}
+    if (!drag.active || (e && e.type === 'pointercancel') || drag.over == null || drag.over === drag.from) {
+      this.setState({ dragFromIdx: null, dragOverIdx: null });
+      return;
+    }
+    this.moveAccount(drag.from, drag.over);
+  }
+  moveAccount(from, to) {
+    const accts = (this.state.accounts || []).slice();
+    const live = (this.state.boardLive || []).slice();
+    if (!Number.isInteger(from) || !Number.isInteger(to) || from === to ||
+        from < 0 || to < 0 || from >= accts.length || to >= accts.length) {
+      this.setState({ dragFromIdx: null, dragOverIdx: null });
+      return;
+    }
+    this.invalidateCodeWork();
+    const account = accts.splice(from, 1)[0];
+    accts.splice(to, 0, account);
+    const movedLive = live.length > from ? live.splice(from, 1)[0] : null;
+    live.splice(to, 0, movedLive || { code: '', codeFmt: '', sec: account.period, frac: 1 });
+    this.saveBoard(accts);
+    this._boardCounters = [];
+    this.setState({
+      accounts: accts,
+      boardLive: live,
+      dragFromIdx: null,
+      dragOverIdx: null,
+      removeArmedIdx: null,
+      copiedIdx: null,
+      boardMsg: this.t().orderSaved,
+    }, () => {
+      this.syncBoardHash(accts);
+      this.refreshBoardAll();
+    });
   }
 
   addAccounts(list) {
@@ -1924,9 +2050,9 @@ class Component extends DCLogic {
   utf8(bytes) { try { return new TextDecoder().decode(bytes); } catch (e) { return ''; } }
 
   // —— 看板链接（#board=）整组编码 ——
-  encodeBoardParam() {
+  encodeBoardParam(accounts) {
     try {
-      const data = (this.state.accounts || []).map((a) => {
+      const data = (accounts || this.state.accounts || []).map((a) => {
         const row = { s: a.secret, l: a.label, i: a.issuer, d: a.digits, p: a.period, a: a.algorithm };
         if (a.icon) row.x = a.icon;
         return row;
@@ -1947,6 +2073,16 @@ class Component extends DCLogic {
     } catch (e) { return []; }
   }
   boardUrl() { const p = this.encodeBoardParam(); return p ? (location.origin + location.pathname + '#board=' + p) : ''; }
+  syncBoardHash(accounts) {
+    try {
+      const params = new URLSearchParams((location.hash || '').replace(/^#/, ''));
+      if (!params.has('board')) return;
+      const encoded = this.encodeBoardParam(accounts);
+      if (!encoded) return;
+      params.set('board', encoded);
+      history.replaceState(null, document.title, location.pathname + location.search + '#' + params.toString());
+    } catch (e) {}
+  }
 
   buildAccountUrl(a) {
     const sp = new URLSearchParams();
@@ -2123,7 +2259,12 @@ class Component extends DCLogic {
       const labelTxt = a.label || a.issuer || t.accountFallback(i + 1);
       const frac = (lv.frac != null) ? lv.frac : 1;
       const removeArmed = s.removeArmedIdx === i;
+      const dragClass = s.dragFromIdx === i
+        ? ' is-account-dragging'
+        : (s.dragFromIdx != null && s.dragOverIdx === i ? ' is-account-drag-over' : '');
       return {
+        index: i,
+        dragClass,
         color: a.color || '#0071e3',
         initial: ((labelTxt.trim()[0]) || '#').toUpperCase(),
         icon: a.icon || '',
@@ -2143,6 +2284,18 @@ class Component extends DCLogic {
         onCopyLink: (e) => { e.stopPropagation(); this.copyAccountLink(i); },
         onRemove: (e) => { e.stopPropagation(); this.armOrRemove(i); },
         onPickIcon: (e) => { e.stopPropagation(); this.pickAccountIcon(i); },
+        onDragStart: (e) => this.startAccountDrag(e, i),
+        onDragClick: (e) => e.stopPropagation(),
+        onDragKey: (e) => {
+          const delta = (e.key === 'ArrowUp' || e.key === 'ArrowLeft') ? -1
+            : (e.key === 'ArrowDown' || e.key === 'ArrowRight') ? 1 : 0;
+          if (!delta) return;
+          e.preventDefault();
+          e.stopPropagation();
+          this.moveAccount(i, i + delta);
+        },
+        dragTitle: t.cardDragTitle,
+        dragAria: t.cardDragAria(labelTxt),
         // The browser prefetches literal src values before template binding, so assign
         // the Base64 image only after React has created the real <img> node.
         iconRef: (img) => {
