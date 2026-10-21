@@ -604,38 +604,202 @@
       font-size:13px;
       text-align:center;
     }
-    .account-card .account-group-picker{
-      width:100%;
-      min-width:0;
+    .account-card .account-group-button.is-assigned{
+      background:color-mix(in srgb,var(--c) 11%,#fff)!important;
+      color:var(--c)!important;
+    }
+    .account-card button.account-group-button{
+      display:inline-flex!important;
+      align-items:center!important;
+      justify-content:center!important;
+      padding:0!important;
+    }
+    .account-card .account-group-button svg{
+      width:14px;
+      height:14px;
+      display:block;
+      fill:none;
+      stroke:currentColor;
+      stroke-width:1.8;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+    .group-picker-backdrop{
+      position:fixed;
+      top:0;
+      right:0;
+      bottom:0;
+      left:0;
+      z-index:58;
       display:flex;
       align-items:center;
-      gap:8px;
-      color:var(--secondary);
-      font-family:var(--font-sans);
-      font-size:11px;
-      font-weight:600;
+      justify-content:center;
+      padding:20px;
+      background:rgba(28,43,56,.18);
+      -webkit-backdrop-filter:blur(10px);
+      backdrop-filter:blur(10px);
+      animation:groupPickerFade .18s ease both;
     }
-    .account-card .account-group-picker > span{
-      flex:none;
+    .group-picker-card{
+      width:min(360px,100%);
+      max-height:min(72vh,560px);
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      overflow:auto;
+      padding:20px;
+      border:1px solid rgba(255,255,255,.94);
+      border-radius:22px;
+      background:linear-gradient(145deg,rgba(255,255,255,.97),rgba(241,248,253,.94));
+      box-shadow:0 28px 80px rgba(42,91,134,.22),inset 0 1px 0 #fff;
+      animation:groupPickerIn .24s cubic-bezier(.2,.8,.2,1) both;
     }
-    .account-card .account-group-select{
-      flex:1;
-      min-width:0;
-      height:28px;
-      padding:0 26px 0 9px;
-      border:1px solid var(--line);
-      border-radius:8px;
-      background:rgba(255,255,255,.72);
+    .group-picker-heading{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+    }
+    .group-picker-title{
       color:var(--ink);
       font-family:var(--font-sans);
+      font-size:16px;
+      font-weight:700;
+      line-height:1.35;
+      letter-spacing:-.015em;
+      overflow-wrap:anywhere;
+    }
+    .group-picker-subtitle{
+      margin-top:4px;
+      color:var(--secondary);
+      font-family:var(--font-sans);
       font-size:12px;
-      font-weight:500;
-      outline:none;
+      line-height:1.45;
+      overflow-wrap:anywhere;
+    }
+    .group-picker-close{
+      flex:none;
+      width:30px;
+      height:30px;
+      padding:0;
+      border:1px solid rgba(60,60,67,.12);
+      border-radius:50%;
+      background:rgba(255,255,255,.7);
+      color:var(--secondary);
+      font-family:var(--font-sans);
+      font-size:17px;
+      line-height:1;
       cursor:pointer;
     }
-    .account-card .account-group-select:focus{
+    .group-picker-close:hover{
+      background:#fff;
+      color:var(--ink);
+    }
+    .group-picker-list{
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+    }
+    .group-picker-option{
+      width:100%;
+      min-height:44px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border:1px solid rgba(60,60,67,.1);
+      border-radius:12px;
+      background:rgba(255,255,255,.56);
+      color:var(--ink);
+      font-family:var(--font-sans);
+      font-size:13px;
+      font-weight:600;
+      text-align:left;
+      cursor:pointer;
+    }
+    .group-picker-option:hover{
+      background:#fff;
+      border-color:color-mix(in srgb,var(--accent) 28%,rgba(60,60,67,.1));
+    }
+    .group-picker-option.is-selected{
+      border-color:color-mix(in srgb,var(--accent) 38%,transparent);
+      background:color-mix(in srgb,var(--accent) 8%,#fff);
+      color:var(--accent);
+    }
+    .group-picker-option-name{
+      flex:1;
+      min-width:0;
+      overflow-wrap:anywhere;
+    }
+    .group-picker-option-check{
+      flex:none;
+      width:18px;
+      color:var(--accent);
+      font-size:14px;
+      text-align:center;
+    }
+    .group-picker-empty{
+      padding:12px;
+      border-radius:12px;
+      background:rgba(60,60,67,.045);
+      color:var(--secondary);
+      font-family:var(--font-sans);
+      font-size:12px;
+      line-height:1.55;
+    }
+    .group-picker-new{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .group-picker-new-input{
+      flex:1;
+      min-width:0;
+      height:38px;
+      padding:6px 10px;
+      border:1px solid rgba(60,60,67,.14);
+      border-radius:10px;
+      background:rgba(255,255,255,.78);
+      color:var(--ink);
+      font-family:var(--font-sans);
+      font-size:13px;
+      outline:none;
+    }
+    .group-picker-new-input:focus{
       border-color:var(--accent);
-      box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent);
+      box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent);
+    }
+    .group-picker-new-button{
+      flex:none;
+      height:38px;
+      padding:0 13px;
+      border:1px solid color-mix(in srgb,var(--accent) 34%,transparent);
+      border-radius:10px;
+      background:color-mix(in srgb,var(--accent) 9%,#fff);
+      color:var(--accent);
+      font-family:var(--font-sans);
+      font-size:12px;
+      font-weight:650;
+      cursor:pointer;
+    }
+    .group-picker-manage{
+      align-self:flex-start;
+      padding:2px 0;
+      border:0;
+      background:none;
+      color:var(--accent);
+      font-family:var(--font-sans);
+      font-size:12px;
+      font-weight:600;
+      cursor:pointer;
+    }
+    @keyframes groupPickerFade{
+      from{opacity:0}
+      to{opacity:1}
+    }
+    @keyframes groupPickerIn{
+      from{opacity:0;transform:translateY(8px) scale(.98)}
+      to{opacity:1;transform:none}
     }
     .group-manager-list{
       display:flex;
@@ -944,7 +1108,7 @@
 
   <!-- ============ BOARD MODE ============ -->
   <sc-if value="{{ isBoard }}" hint-placeholder-val="{{ false }}">
-    <div class="board-view" style="position:relative;z-index:1;width:100%;max-width:1180px;display:flex;flex-direction:column;gap:18px;animation:cardIn .6s cubic-bezier(.2,.8,.2,1) both;">
+    <div class="board-view" style="position:relative;z-index:1;width:100%;max-width:1180px;display:flex;flex-direction:column;gap:18px;">
 
       <div class="board-toolbar" style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;">
         <div style="display:flex;flex-direction:column;gap:5px;">
@@ -962,6 +1126,36 @@
 
       <sc-if value="{{ boardMsg }}" hint-placeholder-val="">
         <div style="font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;color:rgba(234,242,245,.65);">{{ boardMsg }}</div>
+      </sc-if>
+
+      <sc-if value="{{ groupPickerOpen }}" hint-placeholder-val="{{ false }}">
+        <div class="group-picker-backdrop" onClick="{{ onCloseGroupPicker }}">
+          <div class="group-picker-card" role="dialog" aria-modal="true" aria-labelledby="group-picker-title" onClick="{{ onGroupPickerCardClick }}">
+            <div class="group-picker-heading">
+              <div>
+                <div class="group-picker-title" id="group-picker-title">{{ groupPickerTitle }}</div>
+                <div class="group-picker-subtitle">{{ t.groupPickerHint }}</div>
+              </div>
+              <button type="button" class="group-picker-close" onClick="{{ onCloseGroupPicker }}" aria-label="{{ t.groupPickerClose }}">×</button>
+            </div>
+            <div class="group-picker-list">
+              <sc-for list="{{ groupPickerOptions }}" as="option">
+                <button type="button" class="group-picker-option{{ option.selectedClass }}" onClick="{{ option.onSelect }}">
+                  <span class="group-picker-option-name">{{ option.label }}</span>
+                  <span class="group-picker-option-check">{{ option.check }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ groupPickerNoGroups }}" hint-placeholder-val="{{ false }}">
+              <div class="group-picker-empty">{{ t.groupPickerNoGroups }}</div>
+            </sc-if>
+            <div class="group-picker-new">
+              <input class="group-picker-new-input" value="{{ groupPickerDraft }}" onInput="{{ onGroupPickerDraft }}" onKeyDown="{{ onGroupPickerDraftKey }}" maxlength="40" autocomplete="off" spellcheck="false" placeholder="{{ t.groupPickerCreatePlaceholder }}" aria-label="{{ t.groupPickerCreatePlaceholder }}">
+              <button type="button" class="group-picker-new-button" onClick="{{ onCreateAndAssignGroup }}">{{ t.groupPickerCreate }}</button>
+            </div>
+            <button type="button" class="group-picker-manage" onClick="{{ onOpenGroupManager }}">{{ t.groupPickerManage }}</button>
+          </div>
+        </div>
       </sc-if>
 
       <sc-if value="{{ groupPanelOpen }}" hint-placeholder-val="{{ false }}">
@@ -1057,6 +1251,9 @@
                   </button>
                 </div>
                 <div style="display:flex;gap:2px;flex:none;">
+                  <button type="button" class="account-group-button{{ card.groupAssignedClass }}" onClick="{{ card.onOpenGroupPicker }}" title="{{ card.groupButtonTitle }}" aria-label="{{ card.groupAria }}" style-hover="background:rgba(255,255,255,.09);color:var(--accent,#22d3ee);">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h6l2 2h8v9.5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"></path><path d="M4 7.5V5a1 1 0 0 1 1-1h4l2 2h7a1 1 0 0 1 1 1v2.5"></path></svg>
+                  </button>
                   <button onClick="{{ card.onOpen }}" title="{{ t.cardOpenTitle }}" aria-label="{{ t.cardOpenTitle }}" style="width:24px;height:24px;border:none;border-radius:6px;background:transparent;color:rgba(234,242,245,.45);font-family:var(--font-mono);font-size:13px;line-height:1;padding:0;cursor:pointer;" style-hover="background:rgba(255,255,255,.09);color:var(--accent,#22d3ee);">↗</button>
                   <button onClick="{{ card.onCopyLink }}" title="{{ t.cardLinkTitle }}" aria-label="{{ t.cardLinkTitle }}" style="width:24px;height:24px;border:none;border-radius:6px;background:transparent;color:rgba(234,242,245,.45);font-size:11px;line-height:1;padding:0;cursor:pointer;" style-hover="background:rgba(255,255,255,.09);color:var(--accent,#22d3ee);">🔗</button>
                   <button onClick="{{ card.onRemove }}" title="{{ card.removeTitle }}" aria-label="{{ card.removeTitle }}" style="width:24px;height:24px;border:none;border-radius:6px;background:{{ card.removeBg }};color:{{ card.removeColor }};font-family:var(--font-mono);font-size:13px;line-height:1;padding:0;cursor:pointer;" style-hover="background:rgba(251,113,133,.16);color:#fb7185;">✕</button>
@@ -1075,14 +1272,6 @@
                 </sc-if>
                 <div class="account-app">{{ card.sub }}</div>
               </div>
-              <label class="account-group-picker" onClick="{{ card.onGroupClick }}">
-                <span>{{ t.groupAccountLabel }}</span>
-                <select class="account-group-select" value="{{ card.group }}" onChange="{{ card.onGroupChange }}" aria-label="{{ card.groupAria }}">
-                  <sc-for list="{{ card.groupOptions }}" as="g">
-                    <option value="{{ g.value }}">{{ g.label }}</option>
-                  </sc-for>
-                </select>
-              </label>
               <div style="font-family:var(--font-mono);font-size:29px;font-weight:600;letter-spacing:.06em;color:#fff;text-shadow:0 0 18px color-mix(in srgb,var(--c) 55%,transparent);">{{ card.codeFmt }}</div>
               <div style="display:flex;align-items:center;gap:9px;">
                 <div style="flex:1;height:4px;border-radius:9999px;background:rgba(255,255,255,.08);overflow:hidden;">
@@ -1212,6 +1401,11 @@ Object.assign(STR.zh, {
   groupEmptyList: '还没有分组，先新建一个吧', groupEmpty: '这个分组还没有账号',
   groupUnassigned: '未分配', groupAccountLabel: '分组',
   groupsCount: (n) => n + ' 个分组',
+  groupButtonTitle: '分配分组', groupAssignedTo: (group) => '分组：' + group + '（点击修改）', groupPickerTitle: (label) => '分配「' + label + '」',
+  groupPickerHint: '选择后立即保存并移动到对应分组', groupPickerClose: '关闭',
+  groupPickerNoGroups: '还没有分组。可以在「分组管理」中新建，或先把账号留为未分配。',
+  groupPickerManage: '管理分组', groupPickerCurrent: '当前',
+  groupPickerCreatePlaceholder: '新建并分配分组', groupPickerCreate: '新建',
   groupManagerCount: (n) => n + ' 个账号',
   groupSelectAria: (label) => '设置 ' + label + ' 的分组',
   groupCreated: (name) => '已新建分组「' + name + '」',
@@ -1231,6 +1425,11 @@ Object.assign(STR.en, {
   groupEmptyList: 'No groups yet. Create one first.', groupEmpty: 'No accounts in this group',
   groupUnassigned: 'Unassigned', groupAccountLabel: 'Group',
   groupsCount: (n) => n + (n === 1 ? ' group' : ' groups'),
+  groupButtonTitle: 'Assign group', groupAssignedTo: (group) => 'Group: ' + group + ' (click to change)', groupPickerTitle: (label) => 'Assign “' + label + '”',
+  groupPickerHint: 'Selecting saves immediately and moves the account', groupPickerClose: 'Close',
+  groupPickerNoGroups: 'No groups yet. Create one in Manage groups, or leave this account unassigned.',
+  groupPickerManage: 'Manage groups', groupPickerCurrent: 'Current',
+  groupPickerCreatePlaceholder: 'Create and assign a group', groupPickerCreate: 'Create',
   groupManagerCount: (n) => n + (n === 1 ? ' account' : ' accounts'),
   groupSelectAria: (label) => 'Set group for ' + label,
   groupCreated: (name) => 'Created group “' + name + '”',
@@ -1273,6 +1472,7 @@ class Component extends DCLogic {
     dragFromIdx: null, dragOverIdx: null,
     editingAccountIdx: null, editingAccountName: '',
     groupPanelOpen: false, groupNameDraft: '',
+    groupPickerIdx: null, groupPickerDraft: '',
     editingGroupName: '', editingGroupValue: '', deleteArmedGroup: '',
     // —— 演示模式 ——
     present: false, nolabel: false,
@@ -1314,7 +1514,11 @@ class Component extends DCLogic {
     window.addEventListener('pointerup', this._onAccountPointerUp);
     window.addEventListener('pointercancel', this._onAccountPointerUp);
     // a11y: 投屏时 Esc 一键退出演示模式（原来只有一个低对比度的小链接）
-    this._onKey = (e) => { if (e.key === 'Escape' && this.state.mode === 'view' && this.state.present) this.exitPresent(); };
+    this._onKey = (e) => {
+      if (e.key !== 'Escape') return;
+      if (this.state.groupPickerIdx != null) { this.closeGroupPicker(); return; }
+      if (this.state.mode === 'view' && this.state.present) this.exitPresent();
+    };
     window.addEventListener('keydown', this._onKey);
     this.loadFromHash();
     this.registerSW();
@@ -1846,7 +2050,7 @@ class Component extends DCLogic {
       groups = cached.groups;
     }
     this._boardCounters = [];
-    this.setState({ mode: 'board', accounts: accts, groups, boardLive: accts.map((a) => ({ code: '', codeFmt: '', sec: a.period, frac: 1 })), importOpen: accts.length === 0, exportOpen: false, boardMsg: '', editingAccountIdx: null, editingAccountName: '', groupPanelOpen: false }, () => this.refreshBoardAll());
+    this.setState({ mode: 'board', accounts: accts, groups, boardLive: accts.map((a) => ({ code: '', codeFmt: '', sec: a.period, frac: 1 })), importOpen: accts.length === 0, exportOpen: false, boardMsg: '', editingAccountIdx: null, editingAccountName: '', groupPanelOpen: false, groupPickerIdx: null, groupPickerDraft: '' }, () => this.refreshBoardAll());
     document.title = this.t().titleBoard;
     try { history.replaceState(null, document.title, location.pathname + location.search); } catch (e) {}
   }
@@ -2045,7 +2249,7 @@ class Component extends DCLogic {
     this.invalidateCodeWork();
     try { localStorage.removeItem('easy2fa.board'); } catch (e) {}
     this._boardCounters = [];
-    this.setState({ accounts: [], groups: [], boardLive: [], importOpen: false, exportOpen: false, boardMsg: this.t().cleared, removeArmedIdx: null, editingAccountIdx: null, editingAccountName: '', groupPanelOpen: false, groupNameDraft: '', editingGroupName: '', editingGroupValue: '', deleteArmedGroup: '' });
+    this.setState({ accounts: [], groups: [], boardLive: [], importOpen: false, exportOpen: false, boardMsg: this.t().cleared, removeArmedIdx: null, editingAccountIdx: null, editingAccountName: '', groupPanelOpen: false, groupPickerIdx: null, groupPickerDraft: '', groupNameDraft: '', editingGroupName: '', editingGroupValue: '', deleteArmedGroup: '' });
   }
 
   addGroup(name) {
@@ -2072,6 +2276,30 @@ class Component extends DCLogic {
     return true;
   }
 
+  openGroupPicker(i) {
+    const account = (this.state.accounts || [])[i];
+    if (!account) return;
+    this.setState({
+      groupPickerIdx: i,
+      removeArmedIdx: null,
+      copiedIdx: null,
+      editingAccountIdx: null,
+      editingAccountName: '',
+      groupPickerDraft: '',
+      boardMsg: '',
+    });
+  }
+  closeGroupPicker() {
+    this.setState({ groupPickerIdx: null, groupPickerDraft: '' });
+  }
+  createAndAssignGroup() {
+    const group = this.normalizeGroupName(this.state.groupPickerDraft);
+    if (!group) {
+      this.setState({ boardMsg: this.t().groupRequired });
+      return false;
+    }
+    return this.assignAccountGroup(this.state.groupPickerIdx, group);
+  }
   assignAccountGroup(i, groupName) {
     const accts = (this.state.accounts || []).slice();
     const account = accts[i];
@@ -2090,6 +2318,8 @@ class Component extends DCLogic {
     this.setState({
       accounts: accts,
       groups,
+      groupPickerIdx: null,
+      groupPickerDraft: '',
       boardMsg: this.t().groupAssigned(label, group),
       removeArmedIdx: null,
       copiedIdx: null,
@@ -2326,6 +2556,7 @@ class Component extends DCLogic {
     this.setState({
       accounts: accts,
       boardLive: live,
+      groupPickerIdx: null,
       dragFromIdx: null,
       dragOverIdx: null,
       removeArmedIdx: null,
@@ -2888,7 +3119,6 @@ class Component extends DCLogic {
     const accts = s.accounts || [];
     const liveArr = s.boardLive || [];
     const groups = this.normalizeGroups((s.groups || []).concat(accts.map((a) => a.group)));
-    const groupOptions = [{ value: '', label: t.groupUnassigned }].concat(groups.map((g) => ({ value: g, label: g })));
     const boardCards = accts.map((a, i) => {
       const lv = liveArr[i] || {};
       const labelTxt = a.label || a.issuer || t.accountFallback(i + 1);
@@ -2911,12 +3141,9 @@ class Component extends DCLogic {
         hasIcon: !!a.icon,
         hasNoIcon: !a.icon,
         group,
-        groupOptions,
-        onGroupClick: (e) => e.stopPropagation(),
-        onGroupChange: (e) => {
-          e.stopPropagation();
-          this.assignAccountGroup(i, e.target.value);
-        },
+        groupAssignedClass: group ? ' is-assigned' : '',
+        groupButtonTitle: group ? t.groupAssignedTo(group) : t.groupButtonTitle,
+        onOpenGroupPicker: (e) => { e.stopPropagation(); this.openGroupPicker(i); },
         groupAria: t.groupSelectAria(labelTxt),
         label: labelTxt,
         sub: (a.issuer && a.label) ? a.issuer : (a.algorithm + ' · ' + a.period + 's'),
@@ -3009,6 +3236,27 @@ class Component extends DCLogic {
         onDelete: (e) => { e.stopPropagation(); this.armOrDeleteGroup(name); },
       };
     });
+    const pickerAccount = s.groupPickerIdx == null ? null : accts[s.groupPickerIdx];
+    const pickerLabel = pickerAccount
+      ? (pickerAccount.label || pickerAccount.issuer || t.accountFallback(s.groupPickerIdx + 1))
+      : '';
+    const pickerGroup = pickerAccount
+      ? (groups.find((g) => g.toLocaleLowerCase() === this.normalizeGroupName(pickerAccount.group).toLocaleLowerCase()) || '')
+      : '';
+    const groupPickerOptions = groups.map((g) => ({ value: g, label: g }))
+      .concat([{ value: '', label: t.groupUnassigned }])
+      .map((option) => {
+        const selected = option.value === pickerGroup;
+        return {
+          ...option,
+          selectedClass: selected ? ' is-selected' : '',
+          check: selected ? '✓' : '',
+          onSelect: (e) => {
+            e.stopPropagation();
+            this.assignAccountGroup(s.groupPickerIdx, option.value);
+          },
+        };
+      });
 
     // —— 演示模式（present）：放大字号、隐藏会引出密钥的 UI ——
     const isPresent = isView && s.present;
@@ -3100,6 +3348,25 @@ class Component extends DCLogic {
       groupRows,
       hasGroups: groups.length > 0,
       noGroups: groups.length === 0,
+      groupPickerOpen: s.groupPickerIdx != null && !!pickerAccount,
+      groupPickerTitle: t.groupPickerTitle(pickerLabel),
+      groupPickerOptions,
+      groupPickerNoGroups: groups.length === 0,
+      groupPickerDraft: s.groupPickerDraft,
+      onGroupPickerDraft: (e) => this.setState({ groupPickerDraft: e.target.value }),
+      onGroupPickerDraftKey: (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this.createAndAssignGroup();
+        }
+      },
+      onCreateAndAssignGroup: (e) => { e.stopPropagation(); this.createAndAssignGroup(); },
+      onCloseGroupPicker: () => this.closeGroupPicker(),
+      onGroupPickerCardClick: (e) => e.stopPropagation(),
+      onOpenGroupManager: (e) => {
+        e.stopPropagation();
+        this.setState({ groupPickerIdx: null, groupPanelOpen: true, importOpen: false, exportOpen: false });
+      },
       importOpen: s.importOpen,
       exportOpen: s.exportOpen,
       boardMsg: s.boardMsg,
@@ -3108,9 +3375,9 @@ class Component extends DCLogic {
       exportText: s.exportOpen ? this.exportLinks() : '', // 只在导出面板打开时才拼全部链接，省去每秒重建
       onGoBoard: () => this.goBoard(),
       onGoSetup: () => this.goSetup(),
-      onToggleImport: () => this.setState({ importOpen: !this.state.importOpen, exportOpen: false, groupPanelOpen: false, boardMsg: '' }),
-      onToggleGroups: () => this.setState({ groupPanelOpen: !this.state.groupPanelOpen, importOpen: false, exportOpen: false, boardMsg: '', editingGroupName: '', editingGroupValue: '', deleteArmedGroup: '' }),
-      onExport: () => this.setState({ exportOpen: !this.state.exportOpen, importOpen: false, groupPanelOpen: false }),
+      onToggleImport: () => this.setState({ importOpen: !this.state.importOpen, exportOpen: false, groupPanelOpen: false, groupPickerIdx: null, boardMsg: '' }),
+      onToggleGroups: () => this.setState({ groupPanelOpen: !this.state.groupPanelOpen, importOpen: false, exportOpen: false, groupPickerIdx: null, boardMsg: '', editingGroupName: '', editingGroupValue: '', deleteArmedGroup: '' }),
+      onExport: () => this.setState({ exportOpen: !this.state.exportOpen, importOpen: false, groupPanelOpen: false, groupPickerIdx: null }),
       onGroupDraft: (e) => this.setState({ groupNameDraft: e.target.value }),
       onGroupDraftKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.addGroup(); } },
       onCreateGroup: () => this.addGroup(),
