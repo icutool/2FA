@@ -411,6 +411,73 @@
       overflow-wrap:anywhere;
       word-break:break-word;
     }
+    .account-card .account-name-button{
+      display:block!important;
+      width:100%!important;
+      height:auto!important;
+      min-height:0!important;
+      padding:0!important;
+      border:0!important;
+      border-radius:0!important;
+      background:transparent!important;
+      color:var(--ink)!important;
+      font-family:var(--font-sans)!important;
+      font-size:14px!important;
+      font-weight:650!important;
+      line-height:1.4!important;
+      letter-spacing:0!important;
+      text-align:left!important;
+      text-transform:none!important;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+      cursor:text!important;
+    }
+    .account-card .account-name-button:hover{
+      background:transparent!important;
+      color:var(--accent)!important;
+      text-decoration:underline dotted;
+      text-underline-offset:3px;
+    }
+    .account-name-editor{
+      width:100%;
+      min-width:0;
+      display:flex;
+      align-items:center;
+      gap:5px;
+    }
+    .account-card .account-name-input{
+      flex:1;
+      min-width:0;
+      width:100%!important;
+      height:30px!important;
+      padding:4px 8px!important;
+      border:1px solid var(--line)!important;
+      border-radius:8px!important;
+      background:rgba(255,255,255,.88)!important;
+      color:var(--ink)!important;
+      font-family:var(--font-sans)!important;
+      font-size:14px!important;
+      font-weight:600!important;
+      box-shadow:none!important;
+    }
+    .account-card .account-name-action{
+      width:26px!important;
+      height:26px!important;
+      padding:0!important;
+      border:1px solid var(--line)!important;
+      border-radius:7px!important;
+      background:rgba(255,255,255,.82)!important;
+      color:var(--secondary)!important;
+      font-family:var(--font-sans)!important;
+      font-size:14px!important;
+      line-height:1!important;
+      cursor:pointer!important;
+    }
+    .account-card .account-name-save{
+      border-color:transparent!important;
+      background:var(--accent)!important;
+      color:#fff!important;
+    }
     .account-card .account-app{
       color:var(--secondary);
       font-family:var(--font-sans);
@@ -489,25 +556,6 @@
       display:block;
       object-fit:cover;
       border-radius:inherit;
-    }
-    .account-card .account-icon-edit{
-      position:absolute;
-      right:1px;
-      bottom:1px;
-      z-index:2;
-      width:12px;
-      height:12px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border-radius:50%;
-      background:rgba(255,255,255,.94);
-      color:#4b5563;
-      font-family:var(--font-sans);
-      font-size:8px;
-      line-height:1;
-      box-shadow:0 1px 4px rgba(0,0,0,.18);
-      pointer-events:none;
     }
     .notice-light{
       border:1px solid rgba(255,159,10,.22)!important;
@@ -817,7 +865,6 @@
                     <sc-if value="{{ card.hasNoIcon }}" hint-placeholder-val="{{ true }}">
                       <span>{{ card.initial }}</span>
                     </sc-if>
-                    <span class="account-icon-edit" aria-hidden="true">✎</span>
                   </button>
                 </div>
                 <div style="display:flex;gap:2px;flex:none;">
@@ -827,7 +874,16 @@
                 </div>
               </div>
               <div class="account-meta">
-                <div class="account-name">{{ card.label }}</div>
+                <sc-if value="{{ card.editingName }}" hint-placeholder-val="{{ false }}">
+                  <div class="account-name-editor" onClick="{{ card.onEditClick }}">
+                    <input class="account-name-input" value="{{ card.editName }}" onInput="{{ card.onEditInput }}" onKeyDown="{{ card.onEditKey }}" ref="{{ card.nameRef }}" maxlength="120" autocomplete="off" spellcheck="false" aria-label="{{ t.cardRenameInputAria }}">
+                    <button type="button" class="account-name-action account-name-save" onClick="{{ card.onSaveName }}" title="{{ t.cardRenameSave }}" aria-label="{{ t.cardRenameSave }}">✓</button>
+                    <button type="button" class="account-name-action" onClick="{{ card.onCancelName }}" title="{{ t.cardRenameCancel }}" aria-label="{{ t.cardRenameCancel }}">×</button>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ card.notEditingName }}" hint-placeholder-val="{{ true }}">
+                  <button type="button" class="account-name account-name-button" onClick="{{ card.onRename }}" title="{{ card.renameTitle }}" aria-label="{{ card.renameAria }}">{{ card.label }}</button>
+                </sc-if>
                 <div class="account-app">{{ card.sub }}</div>
               </div>
               <div style="font-family:var(--font-mono);font-size:29px;font-weight:600;letter-spacing:.06em;color:#fff;text-shadow:0 0 18px color-mix(in srgb,var(--c) 55%,transparent);">{{ card.codeFmt }}</div>
@@ -875,11 +931,13 @@ const STR = {
     boardNone: '还没有账号', accountFallback: (i) => '账号 ' + i,
     accountsCount: (n) => n + ' 个账号', copyCodeOf: (l) => '复制 ' + l + ' 的验证码',
     cardOpenTitle: '打开单号页', cardLinkTitle: '复制该号链接', cardRemoveTitle: '移除', cardDragTitle: '拖动调整顺序', cardDragAria: (l) => '拖动 ' + l + ' 调整顺序',
+    cardRenameTitle: '点击修改账号名称', cardRenameAria: (l) => '修改账号名称 ' + l, cardRenameInputAria: '账号名称', cardRenameSave: '保存', cardRenameCancel: '取消',
     cardRemoveConfirm: '再点一次确认移除', cardRemoveArmed: (l) => '再点一次移除「' + l + '」',
     cardIconTitle: '设置自定义图标', cardIconAria: (l) => '设置 ' + l + ' 的图标',
     iconUpdated: (l) => (l ? l + ' 的图标已更新' : '图标已更新'), iconType: '请选择 PNG、JPEG、WebP、GIF、AVIF 或 ICO 图片',
     iconTooLarge: '图片不能超过 5MB', iconFail: '图标处理失败，请换一张图片',
     removedMsg: (l) => '已移除「' + l + '」（重新导入即可恢复）', orderSaved: '顺序已保存',
+    renamedMsg: (l) => '账号名称已更新为「' + l + '」', cardRenameRequired: '账号名称不能为空',
     cardLinkCopied: '已复制该账号链接 ✓——链接含密钥，请走可信渠道',
     imported: (n) => '已导入 ' + n + ' 个账号 ✓', importCap: (n) => '已达上限 ' + n + ' 个账号，多余的已忽略',
     alreadyInBoard: '这些账号已在看板中', noLinksFound: '未识别到账号链接', noLinksInFile: '文件中未识别到账号链接', noLinksDrop: '未在拖入内容中识别到账号链接',
@@ -920,11 +978,13 @@ const STR = {
     boardNone: 'No accounts yet', accountFallback: (i) => 'Account ' + i,
     accountsCount: (n) => n + (n === 1 ? ' account' : ' accounts'), copyCodeOf: (l) => 'Copy code for ' + l,
     cardOpenTitle: 'Open single view', cardLinkTitle: 'Copy account link', cardRemoveTitle: 'Remove', cardDragTitle: 'Drag to reorder', cardDragAria: (l) => 'Drag ' + l + ' to reorder',
+    cardRenameTitle: 'Click to rename account', cardRenameAria: (l) => 'Rename account ' + l, cardRenameInputAria: 'Account name', cardRenameSave: 'Save', cardRenameCancel: 'Cancel',
     cardRemoveConfirm: 'Click again to confirm removal', cardRemoveArmed: (l) => 'Click again to remove “' + l + '”',
     cardIconTitle: 'Set a custom icon', cardIconAria: (l) => 'Set icon for ' + l,
     iconUpdated: (l) => (l ? l + ' icon updated' : 'Icon updated'), iconType: 'Choose a PNG, JPEG, WebP, GIF, AVIF, or ICO image',
     iconTooLarge: 'The image must be 5MB or smaller', iconFail: 'Could not process that image',
     removedMsg: (l) => 'Removed “' + l + '” (re-import to restore)', orderSaved: 'Order saved',
+    renamedMsg: (l) => 'Account renamed to “' + l + '”', cardRenameRequired: 'Account name cannot be empty',
     cardLinkCopied: 'Account link copied ✓ — it contains the secret, share with care',
     imported: (n) => 'Imported ' + n + (n === 1 ? ' account ✓' : ' accounts ✓'), importCap: (n) => 'Reached the ' + n + '-account limit, extras ignored',
     alreadyInBoard: 'These accounts are already on the board', noLinksFound: 'No account links found', noLinksInFile: 'No account links found in the file', noLinksDrop: 'No account links found in what you dropped',
@@ -969,6 +1029,7 @@ class Component extends DCLogic {
     importOpen: false, exportOpen: false, boardMsg: '', dragging: false,
     pasteValue: '', linksCopied: false, boardUrlCopied: false, clearArmed: false, removeArmedIdx: null,
     dragFromIdx: null, dragOverIdx: null,
+    editingAccountIdx: null, editingAccountName: '',
     // —— 演示模式 ——
     present: false, nolabel: false,
     presentPanel: false, presentNolabel: false, presentUrlCopied: false,
@@ -1523,7 +1584,7 @@ class Component extends DCLogic {
     this._lastPrevCounter = null;
     this._animCode = null;
     try { history.replaceState(null, '2FA', location.pathname + location.search); } catch (e) {}
-    this.setState({ mode: 'setup', importOpen: false, exportOpen: false });
+    this.setState({ mode: 'setup', importOpen: false, exportOpen: false, editingAccountIdx: null, editingAccountName: '' });
     document.title = this.t().titleApp;
   }
 
@@ -1532,7 +1593,7 @@ class Component extends DCLogic {
     let accts = this.state.accounts;
     if (!accts || !accts.length) accts = this.loadBoard();
     this._boardCounters = [];
-    this.setState({ mode: 'board', accounts: accts, boardLive: accts.map((a) => ({ code: '', codeFmt: '', sec: a.period, frac: 1 })), importOpen: accts.length === 0, exportOpen: false, boardMsg: '' }, () => this.refreshBoardAll());
+    this.setState({ mode: 'board', accounts: accts, boardLive: accts.map((a) => ({ code: '', codeFmt: '', sec: a.period, frac: 1 })), importOpen: accts.length === 0, exportOpen: false, boardMsg: '', editingAccountIdx: null, editingAccountName: '' }, () => this.refreshBoardAll());
     document.title = this.t().titleBoard;
     try { history.replaceState(null, document.title, location.pathname + location.search); } catch (e) {}
   }
@@ -1685,7 +1746,7 @@ class Component extends DCLogic {
     this.invalidateCodeWork();
     try { localStorage.removeItem('easy2fa.board'); } catch (e) {}
     this._boardCounters = [];
-    this.setState({ accounts: [], boardLive: [], importOpen: false, exportOpen: false, boardMsg: this.t().cleared, removeArmedIdx: null });
+    this.setState({ accounts: [], boardLive: [], importOpen: false, exportOpen: false, boardMsg: this.t().cleared, removeArmedIdx: null, editingAccountIdx: null, editingAccountName: '' });
   }
 
   // —— 单卡操作：打开单号 / 复制链接 / 移除 ——
@@ -1717,7 +1778,63 @@ class Component extends DCLogic {
     this._boardCounters = []; // 索引整体前移，计数器缓存作废
     const live = (this.state.boardLive || []).slice(); live.splice(i, 1);
     const labelTxt = rm.label || rm.issuer || this.t().accountFallback(i + 1);
-    this.setState({ accounts: accts, boardLive: live, removeArmedIdx: null, copiedIdx: null, boardMsg: this.t().removedMsg(labelTxt) }, () => this.refreshBoardAll());
+    this.setState({ accounts: accts, boardLive: live, removeArmedIdx: null, copiedIdx: null, editingAccountIdx: null, editingAccountName: '', boardMsg: this.t().removedMsg(labelTxt) }, () => this.refreshBoardAll());
+  }
+
+  beginAccountRename(i) {
+    const account = (this.state.accounts || [])[i];
+    if (!account) return;
+    this.setState({ editingAccountIdx: i, editingAccountName: account.label || '', removeArmedIdx: null, copiedIdx: null, boardMsg: '' });
+  }
+  updateAccountRename(e) {
+    this.setState({ editingAccountName: e.target.value });
+  }
+  cancelAccountRename() {
+    this.setState({ editingAccountIdx: null, editingAccountName: '' });
+  }
+  handleAccountRenameKey(e, i) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      this.saveAccountRename(i);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      this.cancelAccountRename();
+    }
+  }
+  saveAccountRename(i) {
+    const label = String(this.state.editingAccountName || '').trim();
+    if (!label) {
+      this.setState({ boardMsg: this.t().cardRenameRequired });
+      return;
+    }
+    this.renameAccount(i, label);
+  }
+  renameAccount(i, label) {
+    const accts = (this.state.accounts || []).slice();
+    const account = accts[i];
+    if (!account) return false;
+    const nextLabel = String(label || '').trim();
+    if (!nextLabel) return false;
+    if (nextLabel === account.label) {
+      this.setState({ editingAccountIdx: null, editingAccountName: '' });
+      return true;
+    }
+    const updated = { ...account, label: nextLabel };
+    updated.color = this.pickColor(updated);
+    accts[i] = updated;
+    this.saveBoard(accts);
+    this.syncBoardHash(accts);
+    this.setState({
+      accounts: accts,
+      editingAccountIdx: null,
+      editingAccountName: '',
+      removeArmedIdx: null,
+      copiedIdx: null,
+      boardMsg: this.t().renamedMsg(nextLabel),
+    });
+    return true;
   }
 
   startAccountDrag(e, i) {
@@ -2262,9 +2379,13 @@ class Component extends DCLogic {
       const dragClass = s.dragFromIdx === i
         ? ' is-account-dragging'
         : (s.dragFromIdx != null && s.dragOverIdx === i ? ' is-account-drag-over' : '');
+      const editingName = s.editingAccountIdx === i;
       return {
         index: i,
         dragClass,
+        editingName,
+        notEditingName: !editingName,
+        editName: editingName ? s.editingAccountName : '',
         color: a.color || '#0071e3',
         initial: ((labelTxt.trim()[0]) || '#').toUpperCase(),
         icon: a.icon || '',
@@ -2296,6 +2417,19 @@ class Component extends DCLogic {
         },
         dragTitle: t.cardDragTitle,
         dragAria: t.cardDragAria(labelTxt),
+        onRename: (e) => { e.stopPropagation(); this.beginAccountRename(i); },
+        onEditClick: (e) => e.stopPropagation(),
+        onEditInput: (e) => this.updateAccountRename(e),
+        onEditKey: (e) => this.handleAccountRenameKey(e, i),
+        onSaveName: (e) => { e.stopPropagation(); this.saveAccountRename(i); },
+        onCancelName: (e) => { e.stopPropagation(); this.cancelAccountRename(); },
+        nameRef: (input) => {
+          if (!input || input.dataset.renameReady === '1') return;
+          input.dataset.renameReady = '1';
+          requestAnimationFrame(() => { input.focus(); input.select(); });
+        },
+        renameTitle: t.cardRenameTitle,
+        renameAria: t.cardRenameAria(labelTxt),
         // The browser prefetches literal src values before template binding, so assign
         // the Base64 image only after React has created the real <img> node.
         iconRef: (img) => {

@@ -41,7 +41,7 @@ const METHODS = [
   'parseInput', 'parseAccountUrl', 'parseAccountsFromText',
   'parseStructured', 'accountFromRecord', 'csvSplit',
   'hashStr', 'pickColor', 'normalizeIcon', 'iconFromFile', 'normalizeAccount', 'otpIdentity', 'accountIdentity',
-  'refresh', 'refreshPreview', 'computeBoardCodes', 'invalidateCodeWork', 'addAccounts', 'armOrRemove', 'removeAccount', 'moveAccount', 'animateTo', 'goBoard', 'goSetup', 'boardTick', 'tick',
+  'refresh', 'refreshPreview', 'computeBoardCodes', 'invalidateCodeWork', 'addAccounts', 'armOrRemove', 'removeAccount', 'moveAccount', 'renameAccount', 'animateTo', 'goBoard', 'goSetup', 'boardTick', 'tick',
   'encodeBoardParam', 'decodeBoardParam', 'buildAccountUrl', 'fmtCode',
 ];
 
@@ -501,6 +501,27 @@ async function run(){
     check('drag reorder keeps each live code attached to its account', mx.state.boardLive.map((x) => x.code).join(',') === '222222,333333,111111');
     check('drag reorder is persisted in the saved board order', mx.saved.map((a) => a.label).join('') === 'BCA' && mx.synced.map((a) => a.label).join('') === 'BCA');
     check('drag reorder clears transient card state and refreshes codes', mx.state.dragFromIdx === null && mx.state.dragOverIdx === null && mx.state.removeArmedIdx === null && mx.state.copiedIdx === null && mx.refreshed === true);
+    const nx = {
+      state: {
+        accounts: [{ secret: 'JBSWY3DPEHPK3PXP', label: 'Old name', issuer: 'App', digits: 6, period: 30, algorithm: 'SHA-1', color: '#old' }],
+        editingAccountIdx: 0,
+        editingAccountName: ' New name ',
+        removeArmedIdx: 0,
+        copiedIdx: 1,
+      },
+      t: () => ({ renamedMsg: (label) => 'renamed:' + label }),
+      pickColor(account) { nx.colorSource = account; return '#new'; },
+      saveBoard(accounts) { nx.saved = accounts.slice(); },
+      syncBoardHash(accounts) { nx.synced = accounts.slice(); },
+      setState(update) { nx.state = { ...nx.state, ...update }; },
+    };
+    nx.renameAccount = app.renameAccount;
+    const renamed = app.renameAccount.call(nx, 0, '  New name  ');
+    check('rename trims and updates the account label', renamed === true && nx.state.accounts[0].label === 'New name');
+    check('rename persists the new name in storage and the board link', nx.saved[0].label === 'New name' && nx.synced[0].label === 'New name');
+    check('rename updates the derived color and closes the editor', nx.state.accounts[0].color === '#new' && nx.colorSource.label === 'New name' && nx.state.editingAccountIdx === null && nx.state.editingAccountName === '' && nx.state.removeArmedIdx === null && nx.state.copiedIdx === null);
+    const emptyRename = app.renameAccount.call(nx, 0, '   ');
+    check('rename rejects an empty account name', emptyRename === false && nx.state.accounts[0].label === 'New name');
     check('实际加入看板保留四种配置并跳过规范化重复',x.state.accounts.length===4);
   } finally { Date.now=originalNow; }
 
