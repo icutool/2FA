@@ -346,6 +346,51 @@
       color:var(--tertiary)!important;
     }
     .account-card button:hover{background:var(--fill)!important;color:var(--accent)!important;}
+    .account-card .account-icon{
+      position:relative;
+      width:30px!important;
+      height:30px!important;
+      padding:0!important;
+      border:0!important;
+      border-radius:10px!important;
+      background:color-mix(in srgb,var(--c) 12%,#fff)!important;
+      color:var(--c)!important;
+      box-shadow:none!important;
+      font-family:var(--font-sans)!important;
+      overflow:hidden!important;
+      cursor:pointer;
+    }
+    .account-card .account-icon:hover{
+      background:color-mix(in srgb,var(--c) 18%,#fff)!important;
+      color:var(--c)!important;
+      box-shadow:0 0 0 2px color-mix(in srgb,var(--c) 22%,transparent)!important;
+    }
+    .account-card .account-icon > img{
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:cover;
+      border-radius:inherit;
+    }
+    .account-card .account-icon-edit{
+      position:absolute;
+      right:1px;
+      bottom:1px;
+      z-index:2;
+      width:12px;
+      height:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:50%;
+      background:rgba(255,255,255,.94);
+      color:#4b5563;
+      font-family:var(--font-sans);
+      font-size:8px;
+      line-height:1;
+      box-shadow:0 1px 4px rgba(0,0,0,.18);
+      pointer-events:none;
+    }
     .notice-light{
       border:1px solid rgba(255,159,10,.22)!important;
       background:rgba(255,248,235,.96)!important;
@@ -630,7 +675,15 @@
           <sc-for list="{{ boardCards }}" as="card" hint-placeholder-count="6">
             <div class="account-card" onClick="{{ card.onCopy }}" onKeyDown="{{ card.onKey }}" role="button" tabindex="0" aria-label="{{ card.copyAria }}" title="{{ card.copyAria }}" style="--c:{{ card.color }};position:relative;cursor:pointer;padding:16px 17px 14px;background:linear-gradient(180deg,rgba(18,28,34,.6),rgba(8,13,17,.6));overflow:hidden;display:flex;flex-direction:column;gap:11px;">
               <div style="display:flex;align-items:center;gap:10px;min-width:0;">
-                <div style="flex:none;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:14px;font-weight:700;color:#04060a;background:var(--c);box-shadow:0 0 14px -4px var(--c);">{{ card.initial }}</div>
+                <button class="account-icon" onClick="{{ card.onPickIcon }}" title="{{ t.cardIconTitle }}" aria-label="{{ card.iconAria }}" style="flex:none;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:14px;font-weight:700;color:#04060a;background:var(--c);padding:0;cursor:pointer;overflow:hidden;">
+                  <sc-if value="{{ card.hasIcon }}" hint-placeholder-val="{{ false }}">
+                    <img src="{{ card.icon }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">
+                  </sc-if>
+                  <sc-if value="{{ card.hasNoIcon }}" hint-placeholder-val="{{ true }}">
+                    <span>{{ card.initial }}</span>
+                  </sc-if>
+                  <span class="account-icon-edit" aria-hidden="true">✎</span>
+                </button>
                 <div style="min-width:0;display:flex;flex-direction:column;gap:1px;flex:1;">
                   <div style="font-family:var(--font-sans);font-size:13px;font-weight:600;color:#eaf2f5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ card.label }}</div>
                   <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;color:rgba(234,242,245,.6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ card.sub }}</div>
@@ -681,12 +734,15 @@ const STR = {
     pastePlaceholder: '或在此粘贴多个链接（otpauth://、otpauth-migration:// 或本工具的书签链接）', parseImport: '解析并导入',
     importHint: 'Google Authenticator 导出的 otpauth-migration:// 链接可直接粘贴；也可把文件拖到页面任意位置。本地仅作缓存，清空无妨——重新导入即恢复。',
     exportTitle: '导出账号', copyAllLinks: '复制全部链接', downloadTxt: '下载 .txt', copyBoardLink: '复制看板链接',
-    exportHint: '「复制全部链接」可粘回你的 txt；「看板链接」把整组编码进一个书签，换设备打开即恢复——注意它包含全部密钥，请妥善保存。',
+    exportHint: '「复制全部链接」可粘回你的 txt；「看板链接」把整组编码进一个书签，换设备打开即恢复，自定义图标也会一起迁移——注意它包含全部密钥，请妥善保存。',
     emptyDrop: '把账号链接文件拖到这里', emptyHint1: '支持 .txt / .md / .yaml（每行一个链接）', emptyHint2: '或点此粘贴链接 / 扫 Google Authenticator 迁移码',
     boardNone: '还没有账号', accountFallback: (i) => '账号 ' + i,
     accountsCount: (n) => n + ' 个账号', copyCodeOf: (l) => '复制 ' + l + ' 的验证码',
     cardOpenTitle: '打开单号页', cardLinkTitle: '复制该号链接', cardRemoveTitle: '移除',
     cardRemoveConfirm: '再点一次确认移除',
+    cardIconTitle: '设置自定义图标', cardIconAria: (l) => '设置 ' + l + ' 的图标',
+    iconUpdated: (l) => (l ? l + ' 的图标已更新' : '图标已更新'), iconType: '请选择 PNG、JPEG、WebP、GIF 或 AVIF 图片',
+    iconTooLarge: '图片不能超过 5MB', iconFail: '图标处理失败，请换一张图片',
     removedMsg: (l) => '已移除「' + l + '」（重新导入即可恢复）',
     cardLinkCopied: '已复制该账号链接 ✓——链接含密钥，请走可信渠道',
     imported: (n) => '已导入 ' + n + ' 个账号 ✓', importCap: (n) => '已达上限 ' + n + ' 个账号，多余的已忽略',
@@ -723,12 +779,15 @@ const STR = {
     pastePlaceholder: 'Or paste links here (otpauth://, otpauth-migration://, or this tool’s bookmark links)', parseImport: 'Parse & import',
     importHint: 'Paste a Google Authenticator otpauth-migration:// link directly, or drop a file anywhere on the page. Local cache only — clearing is fine, just re-import to restore.',
     exportTitle: 'Export accounts', copyAllLinks: 'Copy all links', downloadTxt: 'Download .txt', copyBoardLink: 'Copy board link',
-    exportHint: '“Copy all links” pastes back into your txt; “board link” encodes the whole set into one bookmark that restores on any device — note it contains every secret, keep it safe.',
+    exportHint: '“Copy all links” pastes back into your txt; “board link” encodes the whole set into one bookmark that restores on any device, including custom icons — note it contains every secret, keep it safe.',
     emptyDrop: 'Drop your account-links file here', emptyHint1: 'Supports .txt / .md / .yaml (one link per line)', emptyHint2: 'or click to paste links / scan a Google Authenticator export',
     boardNone: 'No accounts yet', accountFallback: (i) => 'Account ' + i,
     accountsCount: (n) => n + (n === 1 ? ' account' : ' accounts'), copyCodeOf: (l) => 'Copy code for ' + l,
     cardOpenTitle: 'Open single view', cardLinkTitle: 'Copy account link', cardRemoveTitle: 'Remove',
     cardRemoveConfirm: 'Click again to confirm removal',
+    cardIconTitle: 'Set a custom icon', cardIconAria: (l) => 'Set icon for ' + l,
+    iconUpdated: (l) => (l ? l + ' icon updated' : 'Icon updated'), iconType: 'Choose a PNG, JPEG, WebP, GIF, or AVIF image',
+    iconTooLarge: 'The image must be 5MB or smaller', iconFail: 'Could not process that image',
     removedMsg: (l) => 'Removed “' + l + '” (re-import to restore)',
     cardLinkCopied: 'Account link copied ✓ — it contains the secret, share with care',
     imported: (n) => 'Imported ' + n + (n === 1 ? ' account ✓' : ' accounts ✓'), importCap: (n) => 'Reached the ' + n + '-account limit, extras ignored',
@@ -764,7 +823,7 @@ class Component extends DCLogic {
   state = {
     lang: initialLang(),
     mode: 'setup',
-    secret: '', label: '', issuer: '', digits: 6, period: 30, algorithm: 'SHA-1',
+    secret: '', label: '', issuer: '', icon: '', digits: 6, period: 30, algorithm: 'SHA-1',
     code: '', secondsLeft: 30, copied: false,
     inputValue: '', inputLabel: '', parsed: null, previewCode: '', error: '', urlCopied: false,
     shownDigits: null, animating: false,
@@ -889,10 +948,11 @@ class Component extends DCLogic {
         return;
       }
       const { digits, period, algorithm } = otp;
+      const icon = this.normalizeIcon(params.get('icon') || params.get('iconData') || '');
       const present = params.get('present') === '1' || params.get('view') === 'code';
       const nolabel = params.get('nolabel') === '1';
       this._lastCounter = null;
-      this.setState({ mode: 'view', secret, label, issuer, digits, period, algorithm, present, nolabel, code: '', copied: false, shownDigits: null, animating: false, showQr: false }, () => this.refresh());
+      this.setState({ mode: 'view', secret, label, issuer, icon, digits, period, algorithm, present, nolabel, code: '', copied: false, shownDigits: null, animating: false, showQr: false }, () => this.refresh());
       document.title = ((nolabel ? '' : (label || issuer)) || this.t().code) + this.t().titleSuffix;
     } else if (boardParam) {
       const accts = this.decodeBoardParam(boardParam).map((a) => this.normalizeAccount(a)).filter(Boolean);
@@ -1078,7 +1138,7 @@ class Component extends DCLogic {
   parseInput(raw) {
     raw = (raw || '').trim();
     if (!raw) return null;
-    let secret = '', label = '', issuer = '', digits = 6, period = 30, algorithm = 'SHA-1';
+    let secret = '', label = '', issuer = '', icon = '', digits = 6, period = 30, algorithm = 'SHA-1';
     if (/^otpauth:\/\//i.test(raw)) {
       try {
         const u = new URL(raw);
@@ -1087,20 +1147,21 @@ class Component extends DCLogic {
         const sp = u.searchParams;
         secret = (sp.get('secret') || '').trim();
         issuer = sp.get('issuer') || '';
+        icon = this.normalizeIcon(sp.get('icon') || sp.get('iconData') || '');
         let path = decodeURIComponent(u.pathname.replace(/^\/+/, ''));
         if (path.includes(':')) {
           if (!issuer) issuer = path.split(':')[0].trim();
           label = path.split(':').slice(1).join(':').trim();
         } else { label = path; }
         const otp = this.otpParams(sp.get('digits') ?? undefined, sp.get('period') ?? undefined, sp.get('algorithm') ?? undefined);
-        if (!otp.valid) return { secret, label, issuer, ...otp };
+        if (!otp.valid) return { secret, label, issuer, icon, ...otp };
         digits = otp.digits; period = otp.period; algorithm = otp.algorithm;
       } catch (e) { return { secret: '', valid: false }; }
     } else {
       secret = raw.replace(/\s/g, '');
     }
     const valid = !!this.base32Decode(secret);
-    return { secret, label, issuer, digits, period, algorithm, valid };
+    return { secret, label, issuer, icon, digits, period, algorithm, valid };
   }
 
   onInput(v) {
@@ -1245,6 +1306,7 @@ class Component extends DCLogic {
     const label = (this.state.inputLabel || p.label || '').trim();
     if (label) sp.set('label', label);
     if (p.issuer) sp.set('issuer', p.issuer);
+    if (p.icon) sp.set('icon', p.icon);
     if (p.digits !== 6) sp.set('digits', String(p.digits));
     if (p.period !== 30) sp.set('period', String(p.period));
     if (p.algorithm !== 'SHA-1') sp.set('algorithm', p.algorithm.replace('SHA-', ''));
@@ -1291,7 +1353,7 @@ class Component extends DCLogic {
     this.invalidateCodeWork();
     this._animCode = null;
     try { history.replaceState(null, '2FA', location.pathname + location.search); } catch (e) {}
-    this.setState({ mode: 'setup', secret: '', inputValue: '', inputLabel: '', parsed: null, previewCode: '', error: '', shownDigits: null, animating: false, showQr: false, importMsg: '' });
+    this.setState({ mode: 'setup', secret: '', icon: '', inputValue: '', inputLabel: '', parsed: null, previewCode: '', error: '', shownDigits: null, animating: false, showQr: false, importMsg: '' });
     document.title = this.t().titleApp;
   }
 
@@ -1325,6 +1387,76 @@ class Component extends DCLogic {
   }
   accountIdentity(a) { return JSON.stringify([this.otpIdentity(a), a.label || '', a.issuer || '']); }
 
+  normalizeIcon(value) {
+    if (typeof value !== 'string') return '';
+    const raw = value.trim();
+    if (!raw || raw.length > 131072) return '';
+    const dataUrl = /^data:image\/(?:png|jpe?g|webp|gif|avif);base64,/i.test(raw)
+      ? raw
+      : (/^[A-Za-z0-9+/]+={0,2}$/.test(raw) ? 'data:image/png;base64,' + raw : '');
+    if (!dataUrl) return '';
+    const comma = dataUrl.indexOf(',');
+    const payload = dataUrl.slice(comma + 1).replace(/\s/g, '');
+    if (!payload || payload.length % 4 === 1 || !/^[A-Za-z0-9+/]*={0,2}$/.test(payload)) return '';
+    return dataUrl.slice(0, comma + 1) + payload;
+  }
+
+  async iconFromFile(file) {
+    if (!file || !/^image\/(?:png|jpe?g|webp|gif|avif)$/i.test(file.type || '')) throw new Error('icon-type');
+    if (file.size > 5 * 1024 * 1024) throw new Error('icon-size');
+    const bitmap = await createImageBitmap(file);
+    try {
+      const size = 128;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('icon-fail');
+      const scale = Math.max(size / bitmap.width, size / bitmap.height);
+      const width = Math.max(1, Math.round(bitmap.width * scale));
+      const height = Math.max(1, Math.round(bitmap.height * scale));
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(bitmap, Math.round((size - width) / 2), Math.round((size - height) / 2), width, height);
+      let dataUrl = canvas.toDataURL('image/webp', .86);
+      if (!/^data:image\/webp;base64,/i.test(dataUrl)) dataUrl = canvas.toDataURL('image/png');
+      const icon = this.normalizeIcon(dataUrl);
+      if (!icon) throw new Error('icon-fail');
+      return icon;
+    } finally {
+      try { bitmap.close(); } catch (e) {}
+    }
+  }
+
+  pickAccountIcon(i) {
+    const account = (this.state.accounts || [])[i];
+    if (!account) return;
+    const targetIdentity = this.accountIdentity(account);
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/png,image/jpeg,image/webp,image/gif,image/avif';
+    input.onchange = async () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      try {
+        const icon = await this.iconFromFile(file);
+        const accts = (this.state.accounts || []).slice();
+        const index = accts.findIndex((a) => this.accountIdentity(a) === targetIdentity);
+        if (index < 0) return;
+        accts[index] = { ...accts[index], icon };
+        this.saveBoard(accts);
+        const label = accts[index].label || accts[index].issuer || this.t().accountFallback(index + 1);
+        this.setState({ accounts: accts, boardMsg: this.t().iconUpdated(label) });
+      } catch (e) {
+        const message = e && e.message === 'icon-type' ? this.t().iconType
+          : e && e.message === 'icon-size' ? this.t().iconTooLarge
+            : this.t().iconFail;
+        this.setState({ boardMsg: message });
+      }
+    };
+    input.click();
+  }
+
   normalizeAccount(a) {
     if (!a || typeof a.secret !== 'string') return null;
     const params = this.otpParams(a.digits, a.period, a.algorithm);
@@ -1335,13 +1467,18 @@ class Component extends DCLogic {
     return {
       secret, label: a.label || '', issuer: a.issuer || '',
       digits: params.digits, period: params.period, algorithm: params.algorithm,
+      icon: this.normalizeIcon(a.icon),
       color: this.pickColor(a),
     };
   }
 
   saveBoard(accts) {
     try {
-      const data = (accts || []).map((a) => ({ s: a.secret, l: a.label, i: a.issuer, d: a.digits, p: a.period, a: a.algorithm }));
+      const data = (accts || []).map((a) => {
+        const row = { s: a.secret, l: a.label, i: a.issuer, d: a.digits, p: a.period, a: a.algorithm };
+        if (a.icon) row.x = a.icon;
+        return row;
+      });
       localStorage.setItem('easy2fa.board', JSON.stringify(data));
     } catch (e) {}
   }
@@ -1351,7 +1488,7 @@ class Component extends DCLogic {
       if (!raw) return [];
       const data = JSON.parse(raw);
       if (!Array.isArray(data)) return [];
-      return data.map((d) => d && this.normalizeAccount({ secret: d.s, label: d.l, issuer: d.i, digits: d.d, period: d.p, algorithm: d.a }))
+      return data.map((d) => d && this.normalizeAccount({ secret: d.s, label: d.l, issuer: d.i, icon: d.x || d.icon, digits: d.d, period: d.p, algorithm: d.a }))
                  .filter(Boolean);
     } catch (e) { return []; }
   }
@@ -1405,22 +1542,33 @@ class Component extends DCLogic {
     this.invalidateCodeWork();
     const MAX = 200; // 上限：避免一份超大文件生成成百上千张卡 + 每秒那么多次 HMAC 拖垮页面
     const existing = (this.state.accounts || []).slice();
-    const seen = new Set(existing.map((a) => this.accountIdentity(a)));
-    let added = 0, truncated = false;
+    const seen = new Map(existing.map((a, i) => [this.accountIdentity(a), i]));
+    let added = 0, truncated = false, iconUpdates = 0, updatedLabel = '';
     for (const raw of list) {
       if (existing.length >= MAX) { truncated = true; break; }
       const a = this.normalizeAccount(raw);
       if (!a) continue;
       const k = this.accountIdentity(a);
-      if (seen.has(k)) continue;
-      seen.add(k); existing.push(a); added++;
+      if (seen.has(k)) {
+        const at = seen.get(k);
+        if (a.icon && existing[at].icon !== a.icon) {
+          existing[at] = { ...existing[at], icon: a.icon };
+          iconUpdates++;
+          updatedLabel = a.label || a.issuer || this.t().accountFallback(at + 1);
+        }
+        continue;
+      }
+      seen.set(k, existing.length);
+      existing.push(a);
+      added++;
     }
     this.saveBoard(existing);
     const live = existing.map((a, i) => (this.state.boardLive && this.state.boardLive[i]) || { code: '', codeFmt: '', sec: a.period, frac: 1 });
     this.setState({
       mode: 'board', accounts: existing, boardLive: live,
       importOpen: false, exportOpen: false, pasteValue: '',
-      boardMsg: truncated ? this.t().importCap(MAX) : (added ? this.t().imported(added) : this.t().alreadyInBoard),
+      boardMsg: truncated ? this.t().importCap(MAX)
+        : (added ? this.t().imported(added) : (iconUpdates ? this.t().iconUpdated(updatedLabel) : this.t().alreadyInBoard)),
     }, () => this.refreshBoardAll());
     document.title = this.t().titleBoard;
     // 清掉残留 hash：从 view「加入看板」后不清，刷新会被 loadFromHash 拉回单号；
@@ -1451,10 +1599,16 @@ class Component extends DCLogic {
         if (a && a.valid) out.push(a);
       }
     }
-    const seen = new Set(); const dedup = [];
+    const seen = new Map(); const dedup = [];
     for (const a of out) {
       const k = this.accountIdentity(a);
-      if (seen.has(k)) continue; seen.add(k); dedup.push(a);
+      if (seen.has(k)) {
+        const at = seen.get(k);
+        if (a.icon) dedup[at] = { ...dedup[at], icon: a.icon };
+        continue;
+      }
+      seen.set(k, dedup.length);
+      dedup.push(a);
     }
     return dedup;
   }
@@ -1470,6 +1624,7 @@ class Component extends DCLogic {
         if (!otp.valid) return null;
         return {
           secret, label: params.get('label') || '', issuer: params.get('issuer') || '',
+          icon: this.normalizeIcon(params.get('icon') || params.get('iconData') || params.get('x') || ''),
           digits: otp.digits, period: otp.period, algorithm: otp.algorithm, valid: true,
         };
       }
@@ -1532,6 +1687,7 @@ class Component extends DCLogic {
       secret,
       label: pick(['label', 'name', 'account', 'accountname', 'username', 'user']),
       issuer: pick(['issuer', 'service', 'provider', 'site']),
+      icon: this.normalizeIcon(pick(['icon', 'iconurl', 'iconbase64', 'iconimage', 'x'])),
       digits: params.digits, period: params.period, algorithm: params.algorithm,
       valid: true,
     };
@@ -1648,7 +1804,11 @@ class Component extends DCLogic {
   // —— 看板链接（#board=）整组编码 ——
   encodeBoardParam() {
     try {
-      const data = (this.state.accounts || []).map((a) => ({ s: a.secret, l: a.label, i: a.issuer, d: a.digits, p: a.period, a: a.algorithm }));
+      const data = (this.state.accounts || []).map((a) => {
+        const row = { s: a.secret, l: a.label, i: a.issuer, d: a.digits, p: a.period, a: a.algorithm };
+        if (a.icon) row.x = a.icon;
+        return row;
+      });
       const bytes = new TextEncoder().encode(JSON.stringify(data));
       let bin = ''; for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
       return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -1660,7 +1820,7 @@ class Component extends DCLogic {
       if (!bytes) return [];
       const data = JSON.parse(this.utf8(bytes));
       if (!Array.isArray(data)) return [];
-      return data.map((d) => d && this.normalizeAccount({ secret: d.s, label: d.l, issuer: d.i, digits: d.d, period: d.p, algorithm: d.a }))
+      return data.map((d) => d && this.normalizeAccount({ secret: d.s, label: d.l, issuer: d.i, icon: d.x || d.icon, digits: d.d, period: d.p, algorithm: d.a }))
                  .filter(Boolean).map((a) => ({ ...a, valid: true }));
     } catch (e) { return []; }
   }
@@ -1671,6 +1831,7 @@ class Component extends DCLogic {
     sp.set('secret', a.secret);
     if (a.label) sp.set('label', a.label);
     if (a.issuer) sp.set('issuer', a.issuer);
+    if (a.icon) sp.set('icon', a.icon);
     if (a.digits !== 6) sp.set('digits', String(a.digits));
     if (a.period !== 30) sp.set('period', String(a.period));
     if (a.algorithm !== 'SHA-1') sp.set('algorithm', a.algorithm.replace('SHA-', ''));
@@ -1843,6 +2004,9 @@ class Component extends DCLogic {
       return {
         color: a.color || '#0071e3',
         initial: ((labelTxt.trim()[0]) || '#').toUpperCase(),
+        icon: a.icon || '',
+        hasIcon: !!a.icon,
+        hasNoIcon: !a.icon,
         label: labelTxt,
         sub: (a.issuer && a.label) ? a.issuer : (a.algorithm + ' · ' + a.period + 's'),
         codeFmt: lv.codeFmt ? lv.codeFmt : (lv.code ? this.fmtCode(lv.code) : '· · ·  · · ·'),
@@ -1856,6 +2020,8 @@ class Component extends DCLogic {
         onOpen: (e) => { e.stopPropagation(); this.openAccount(i); },
         onCopyLink: (e) => { e.stopPropagation(); this.copyAccountLink(i); },
         onRemove: (e) => { e.stopPropagation(); this.armOrRemove(i); },
+        onPickIcon: (e) => { e.stopPropagation(); this.pickAccountIcon(i); },
+        iconAria: t.cardIconAria(labelTxt),
         removeTitle: removeArmed ? t.cardRemoveConfirm : t.cardRemoveTitle,
         removeColor: removeArmed ? '#fb7185' : 'rgba(234,242,245,.45)',
         removeBg: removeArmed ? 'rgba(251,113,133,.16)' : 'transparent',
@@ -1958,7 +2124,7 @@ class Component extends DCLogic {
       },
       linksCopyLabel: s.linksCopied ? t.copied : t.copyAllLinks,
       boardUrlCopyLabel: s.boardUrlCopied ? t.copied : t.copyBoardLink,
-      onAddToBoard: () => { const st = this.state; this.addAccounts([{ secret: st.secret, label: st.label, issuer: st.issuer, digits: st.digits, period: st.period, algorithm: st.algorithm, valid: true }]); },
+      onAddToBoard: () => { const st = this.state; this.addAccounts([{ secret: st.secret, label: st.label, issuer: st.issuer, icon: (st.parsed && st.parsed.icon) || st.icon || '', digits: st.digits, period: st.period, algorithm: st.algorithm, valid: true }]); },
     };
   }
 }

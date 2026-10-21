@@ -40,7 +40,7 @@ const METHODS = [
   'loadFromHash', 'commitParse', 'loadBoard', 'saveBoard',
   'parseInput', 'parseAccountUrl', 'parseAccountsFromText',
   'parseStructured', 'accountFromRecord', 'csvSplit',
-  'hashStr', 'pickColor', 'normalizeAccount', 'otpIdentity', 'accountIdentity',
+  'hashStr', 'pickColor', 'normalizeIcon', 'iconFromFile', 'normalizeAccount', 'otpIdentity', 'accountIdentity',
   'refresh', 'refreshPreview', 'computeBoardCodes', 'invalidateCodeWork', 'addAccounts', 'animateTo', 'goBoard', 'goSetup', 'boardTick', 'tick',
   'encodeBoardParam', 'decodeBoardParam', 'buildAccountUrl', 'fmtCode',
 ];
@@ -89,6 +89,7 @@ function b64url(arr){ let s = ''; for(const x of arr) s += String.fromCharCode(x
 
 async function run(){
   const app = await loadApp();
+  const ICON = 'data:image/png;base64,QUJDRA==';
   group('提取器');
   check('从 index.html 提取 ' + METHODS.length + ' 个真实方法', true);
 
@@ -133,6 +134,15 @@ async function run(){
   check('normAlgo("sha-512")=SHA-512', app.normAlgo('sha-512') === 'SHA-512');
   check('normAlgo("SHA1")=SHA-1', app.normAlgo('SHA1') === 'SHA-1');
   check('normAlgo(null)=null', app.normAlgo(null) === null);
+
+  group('normalizeIcon');
+  check('data URL icon is normalized', app.normalizeIcon(' data:image/png;base64,QUJD RA== ') === ICON);
+  check('raw base64 defaults to PNG', app.normalizeIcon('QUJDRA==') === ICON);
+  check('non-image URL is rejected', app.normalizeIcon('https://example.test/icon.png') === '');
+  check('SVG data URL is rejected', app.normalizeIcon('data:image/svg+xml;base64,PHN2Zz4=') === '');
+  const tinyPng = Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFUlEQVR4nGP4z8DwHwQYQDTDf4b/AFu2CfdamG53AAAAAElFTkSuQmCC'), (c) => c.charCodeAt(0));
+  const generatedIcon = await app.iconFromFile(new File([tinyPng], 'icon.png', { type: 'image/png' }));
+  check('iconFromFile converts an uploaded image to a base64 data URL', /^data:image\/(?:webp|png);base64,/.test(generatedIcon) && generatedIcon.length < 131072);
   check('normAlgo("MD5")→null（拒绝未知算法）', app.normAlgo('MD5') === null);
 
   // ---- parseInput（setup 输入解析）----
@@ -144,6 +154,8 @@ async function run(){
   check('otpauth digits=8', pi && pi.digits === 8);
   check('otpauth period=60', pi && pi.period === 60);
   check('otpauth algorithm=SHA-256', pi && pi.algorithm === 'SHA-256');
+  const piIcon = app.parseInput('otpauth://totp/Acme:bob?secret=JBSWY3DPEHPK3PXP&icon=' + encodeURIComponent(ICON));
+  check('otpauth icon data URL is preserved', piIcon && piIcon.icon === ICON);
   const ph = app.parseInput('otpauth://hotp/x?secret=JBSWY3DPEHPK3PXP');
   check('HOTP 链接被拒（valid=false, reason=hotp）', ph && !ph.valid && ph.reason === 'hotp');
   check('裸密钥带空格小写 → valid', (app.parseInput('jbsw y3dp ehpk 3pxp') || {}).valid === true);
@@ -154,6 +166,8 @@ async function run(){
   // ---- parseAccountUrl（书签链接）----
   group('parseAccountUrl');
   const pa = app.parseAccountUrl('https://x.example/2fa/#secret=JBSWY3DPEHPK3PXP&label=GitHub&digits=8&period=60&algorithm=256');
+  const paIcon = app.parseAccountUrl('https://x.example/2fa/#secret=JBSWY3DPEHPK3PXP&label=GitHub&icon=' + encodeURIComponent(ICON));
+  check('bookmark icon data URL is preserved', paIcon && paIcon.icon === ICON);
   check('书签链接解析 valid', pa && pa.valid);
   check('书签 label=GitHub', pa && pa.label === 'GitHub');
   check('书签 digits=8 period=60 algo=SHA-256', pa && pa.digits === 8 && pa.period === 60 && pa.algorithm === 'SHA-256');
@@ -186,6 +200,8 @@ async function run(){
   check('JSON secret 归一大写', jArr[0] && jArr[0].secret === 'JBSWY3DPEHPK3PXP');
   // JSON：单对象 + 字段别名（name→label, service→issuer, timer→period, algo）
   const jObj = app.parseAccountsFromText('{"secret":"gezdgnbvgy3tqojq","name":"bob","service":"GitHub","digits":8,"timer":60,"algo":"SHA256"}');
+  const jIcon = app.parseAccountsFromText(JSON.stringify({ secret: 'JBSWY3DPEHPK3PXP', label: 'icon', icon: ICON }));
+  check('JSON icon data URL is preserved', jIcon.length === 1 && jIcon[0].icon === ICON);
   check('JSON 单对象 + 别名解出 1 个', jObj.length === 1, 'got ' + jObj.length);
   check('JSON 别名映射（label/issuer/digits/period/algo）',
     jObj[0] && jObj[0].label === 'bob' && jObj[0].issuer === 'GitHub' && jObj[0].digits === 8 && jObj[0].period === 60 && jObj[0].algorithm === 'SHA-256');
@@ -279,17 +295,28 @@ async function run(){
   check('algorithm 归一 SHA-256', na.algorithm === 'SHA-256');
   const n1 = app.normalizeAccount({ secret: 'jbswy3dpehpk3pxp' });
   const n2 = app.normalizeAccount({ secret: 'JBSWY3DPEHPK3PXP' });
+  check('accountIdentity ignores icon changes', app.accountIdentity({ ...n1, icon: ICON }) === app.accountIdentity({ ...n1, icon: '' }));
+  const oldIconBoard = localStorage.getItem('easy2fa.board');
+  try {
+    app.saveBoard([{ ...n1, icon: ICON }]);
+    const cachedIcon = app.loadBoard();
+    check('saveBoard/loadBoard preserve icon data URL', cachedIcon.length === 1 && cachedIcon[0].icon === ICON);
+  } finally {
+    if (oldIconBoard === null) localStorage.removeItem('easy2fa.board');
+    else localStorage.setItem('easy2fa.board', oldIconBoard);
+  }
   check('同密钥不同大小写归一后一致（去重键）', n1.secret === n2.secret);
 
   // ---- 看板链接编码往返 ----
   group('#board= 编码');
   app.state = { accounts: [
-    app.normalizeAccount({ secret: 'JBSWY3DPEHPK3PXP', label: 'A', issuer: 'Acme', digits: 8, period: 60, algorithm: 'SHA-256' }),
+    app.normalizeAccount({ secret: 'JBSWY3DPEHPK3PXP', label: 'A', issuer: 'Acme', icon: ICON, digits: 8, period: 60, algorithm: 'SHA-256' }),
     app.normalizeAccount({ secret: 'GEZDGNBVGY3TQOJQ', label: 'B' }),
   ] };
   const bp = app.encodeBoardParam();
   check('encodeBoardParam 非空且 URL-safe', !!bp && !/[+/=]/.test(bp));
   const back = app.decodeBoardParam(bp);
+  check('board round-trip preserves icon data URL', back[0] && back[0].icon === ICON);
   check('board 往返数量 = 2', back.length === 2, 'got ' + back.length);
   check('board 往返字段完整（A/8位/60s/SHA-256）',
     back[0] && back[0].secret === 'JBSWY3DPEHPK3PXP' && back[0].label === 'A' && back[0].issuer === 'Acme'
@@ -302,6 +329,8 @@ async function run(){
   const u1 = new URLSearchParams(app.buildAccountUrl({ secret: 'JBSWY3DPEHPK3PXP', label: 'GitHub', issuer: 'Acme', digits: 8, period: 60, algorithm: 'SHA-256' }).split('#')[1]);
   check('非默认参数写入 hash', u1.get('secret') === 'JBSWY3DPEHPK3PXP' && u1.get('digits') === '8' && u1.get('period') === '60' && u1.get('algorithm') === '256');
   const u2 = new URLSearchParams(app.buildAccountUrl({ secret: 'JBSWY3DPEHPK3PXP', label: '', issuer: '', digits: 6, period: 30, algorithm: 'SHA-1' }).split('#')[1]);
+  const uIcon = new URLSearchParams(app.buildAccountUrl({ secret: 'JBSWY3DPEHPK3PXP', label: 'GitHub', issuer: 'Acme', icon: ICON, digits: 6, period: 30, algorithm: 'SHA-1' }).split('#')[1]);
+  check('buildAccountUrl includes icon data URL', uIcon.get('icon') === ICON);
   check('默认参数省略（hash 只有 secret）', u2.get('secret') === 'JBSWY3DPEHPK3PXP' && !u2.has('digits') && !u2.has('period') && !u2.has('algorithm') && !u2.has('label'));
 
   // ---- 验证码分组显示 ----
@@ -319,7 +348,7 @@ async function run(){
     x.applyAccent = () => {};
     x.saveBoard = () => {};
     x.refreshBoardAll = () => {};
-    x.t = () => ({ imported: n => String(n), alreadyInBoard: 'duplicate', titleBoard: 'test', importCap: n => String(n) });
+    x.t = () => ({ imported: n => String(n), alreadyInBoard: 'duplicate', titleBoard: 'test', importCap: n => String(n), iconUpdated: l => String(l) });
     const queue = [];
     x.totp = () => new Promise((resolve, reject) => queue.push({resolve, reject}));
     x.queue = queue;
@@ -421,6 +450,11 @@ async function run(){
     check('标签/发行者中的分隔符不碰撞',app.accountIdentity({...acct,label:'a|b',issuer:'c'})!==app.accountIdentity({...acct,label:'a',issuer:'b|c'}));
     check('标签不同仍保留原语义',app.parseAccountsFromText(JSON.stringify([acct,{...acct,label:'other'}])).length===2);
     x=fixture(); x.state={accounts:[],boardLive:[]}; x.addAccounts(variants); x.addAccounts(aliases);
+    const ICON2 = 'data:image/png;base64,QUJDREU=';
+    const xi=fixture(); xi.state={accounts:[],boardLive:[]};
+    xi.addAccounts([{ secret: 'JBSWY3DPEHPK3PXP', label: 'icon', icon: ICON }]);
+    xi.addAccounts([{ secret: 'JBSWY3DPEHPK3PXP', label: 'icon', icon: ICON2 }]);
+    check('addAccounts merges a new icon without duplicating the account', xi.state.accounts.length === 1 && xi.state.accounts[0].icon === ICON2);
     check('实际加入看板保留四种配置并跳过规范化重复',x.state.accounts.length===4);
   } finally { Date.now=originalNow; }
 
@@ -511,6 +545,10 @@ async function run(){
       history.replaceState(null, '', location.pathname + location.search + '#secret=' + secret);
       ui.state = { mode: 'setup' };
       ui.loadFromHash();
+      history.replaceState(null, '', location.pathname + location.search + '#secret=' + secret + '&icon=' + encodeURIComponent(ICON));
+      ui.state = { mode: 'setup' };
+      ui.loadFromHash();
+      check('Hash view preserves icon data URL', ui.state.icon === ICON);
       check('Hash omitted parameters enters view using defaults', ui.state.mode === 'view' && ui.state.digits === 6 && ui.state.period === 30 && ui.state.algorithm === 'SHA-1');
       ui.state = { mode: 'board', accounts: [], boardLive: [] };
       ui.addAccounts([{ secret, algorithm: 'MD5' }, { secret, digits: '6abc' }, { secret, period: 30.5 }, null, { secret, label: 'valid' }]);
