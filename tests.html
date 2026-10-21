@@ -41,7 +41,7 @@ const METHODS = [
   'parseInput', 'parseAccountUrl', 'parseAccountsFromText',
   'parseStructured', 'accountFromRecord', 'csvSplit',
   'hashStr', 'pickColor', 'normalizeIcon', 'iconFromFile', 'normalizeAccount', 'otpIdentity', 'accountIdentity',
-  'refresh', 'refreshPreview', 'computeBoardCodes', 'invalidateCodeWork', 'addAccounts', 'animateTo', 'goBoard', 'goSetup', 'boardTick', 'tick',
+  'refresh', 'refreshPreview', 'computeBoardCodes', 'invalidateCodeWork', 'addAccounts', 'armOrRemove', 'removeAccount', 'animateTo', 'goBoard', 'goSetup', 'boardTick', 'tick',
   'encodeBoardParam', 'decodeBoardParam', 'buildAccountUrl', 'fmtCode',
 ];
 
@@ -140,9 +140,15 @@ async function run(){
   check('raw base64 defaults to PNG', app.normalizeIcon('QUJDRA==') === ICON);
   check('non-image URL is rejected', app.normalizeIcon('https://example.test/icon.png') === '');
   check('SVG data URL is rejected', app.normalizeIcon('data:image/svg+xml;base64,PHN2Zz4=') === '');
+  check('ICO data URL is accepted', app.normalizeIcon('data:image/x-icon;base64,QUJDRA==') === 'data:image/x-icon;base64,QUJDRA==');
   const tinyPng = Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFUlEQVR4nGP4z8DwHwQYQDTDf4b/AFu2CfdamG53AAAAAElFTkSuQmCC'), (c) => c.charCodeAt(0));
   const generatedIcon = await app.iconFromFile(new File([tinyPng], 'icon.png', { type: 'image/png' }));
   check('iconFromFile converts an uploaded image to a base64 data URL', /^data:image\/(?:webp|png);base64,/.test(generatedIcon) && generatedIcon.length < 131072);
+  const tinyIco = Uint8Array.from(atob('AAABAAEAAQEAAAEAIABOAAAAFgAAAIlQTkcNChoKAAAADUlIRFIAAAACAAAAAggGAAAAcrYNJAAAABVJREFUeJxj+M/A8B8EGEA0w3+G/wBbtgn3WphudwAAAABJRU5ErkJggg=='), (c) => c.charCodeAt(0));
+  const generatedIco = await app.iconFromFile(new File([tinyIco], 'favicon.ico', { type: 'image/x-icon' }));
+  check('iconFromFile converts an ICO image to a base64 data URL', /^data:image\/(?:webp|png);base64,/.test(generatedIco) && generatedIco.length < 131072);
+  const generatedIcoNoMime = await app.iconFromFile(new File([tinyIco], 'favicon.ico', { type: '' }));
+  check('iconFromFile accepts ICO when the browser omits its MIME type', /^data:image\/(?:webp|png);base64,/.test(generatedIcoNoMime));
   check('normAlgo("MD5")→null（拒绝未知算法）', app.normAlgo('MD5') === null);
 
   // ---- parseInput（setup 输入解析）----
@@ -455,6 +461,24 @@ async function run(){
     xi.addAccounts([{ secret: 'JBSWY3DPEHPK3PXP', label: 'icon', icon: ICON }]);
     xi.addAccounts([{ secret: 'JBSWY3DPEHPK3PXP', label: 'icon', icon: ICON2 }]);
     check('addAccounts merges a new icon without duplicating the account', xi.state.accounts.length === 1 && xi.state.accounts[0].icon === ICON2);
+    const rx = {
+      state: { accounts: [{ label: 'user@example.com', issuer: 'Example' }], boardLive: [{}], removeArmedIdx: null },
+      t: () => ({
+        cardRemoveArmed: (label) => 'armed:' + label,
+        removedMsg: (label) => 'removed:' + label,
+        accountFallback: (i) => 'account:' + i,
+      }),
+      invalidateCodeWork() {},
+      saveBoard(accounts) { rx.saved = accounts; },
+      refreshBoardAll() {},
+      setState(update) { rx.state = { ...rx.state, ...update }; },
+    };
+    rx.armOrRemove = app.armOrRemove;
+    rx.removeAccount = app.removeAccount;
+    app.armOrRemove.call(rx, 0);
+    check('remove needs a first confirmation click', rx.state.removeArmedIdx === 0 && rx.state.accounts.length === 1);
+    app.armOrRemove.call(rx, 0);
+    check('remove only deletes on the second click', rx.state.accounts.length === 0 && rx.state.removeArmedIdx === null && rx.saved.length === 0);
     check('实际加入看板保留四种配置并跳过规范化重复',x.state.accounts.length===4);
   } finally { Date.now=originalNow; }
 
