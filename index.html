@@ -403,13 +403,18 @@
       gap:3px;
     }
     .account-card .account-name{
+      display:block;
+      max-width:100%;
+      overflow:hidden;
       color:var(--ink);
       font-family:var(--font-sans);
       font-size:14px;
       font-weight:650;
       line-height:1.4;
-      overflow-wrap:anywhere;
-      word-break:break-word;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      overflow-wrap:normal;
+      word-break:normal;
     }
     .account-card .account-name-button{
       display:block!important;
@@ -428,8 +433,11 @@
       letter-spacing:0!important;
       text-align:left!important;
       text-transform:none!important;
-      overflow-wrap:anywhere;
-      word-break:break-word;
+      overflow:hidden!important;
+      text-overflow:ellipsis!important;
+      white-space:nowrap!important;
+      overflow-wrap:normal!important;
+      word-break:normal!important;
       cursor:text!important;
     }
     .account-card .account-name-button:hover{
@@ -3182,7 +3190,7 @@ class Component extends DCLogic {
           input.dataset.renameReady = '1';
           requestAnimationFrame(() => { input.focus(); input.select(); });
         },
-        renameTitle: t.cardRenameTitle,
+        renameTitle: labelTxt + '\n' + t.cardRenameTitle,
         renameAria: t.cardRenameAria(labelTxt),
         // The browser prefetches literal src values before template binding, so assign
         // the Base64 image only after React has created the real <img> node.
