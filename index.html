@@ -411,6 +411,73 @@
       overflow-wrap:anywhere;
       word-break:break-word;
     }
+    .account-card .account-name-button{
+      display:block!important;
+      width:100%!important;
+      height:auto!important;
+      min-height:0!important;
+      padding:0!important;
+      border:0!important;
+      border-radius:0!important;
+      background:transparent!important;
+      color:var(--ink)!important;
+      font-family:var(--font-sans)!important;
+      font-size:14px!important;
+      font-weight:650!important;
+      line-height:1.4!important;
+      letter-spacing:0!important;
+      text-align:left!important;
+      text-transform:none!important;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+      cursor:text!important;
+    }
+    .account-card .account-name-button:hover{
+      background:transparent!important;
+      color:var(--accent)!important;
+      text-decoration:underline dotted;
+      text-underline-offset:3px;
+    }
+    .account-name-editor{
+      width:100%;
+      min-width:0;
+      display:flex;
+      align-items:center;
+      gap:5px;
+    }
+    .account-card .account-name-input{
+      flex:1;
+      min-width:0;
+      width:100%!important;
+      height:30px!important;
+      padding:4px 8px!important;
+      border:1px solid var(--line)!important;
+      border-radius:8px!important;
+      background:rgba(255,255,255,.88)!important;
+      color:var(--ink)!important;
+      font-family:var(--font-sans)!important;
+      font-size:14px!important;
+      font-weight:600!important;
+      box-shadow:none!important;
+    }
+    .account-card .account-name-action{
+      width:26px!important;
+      height:26px!important;
+      padding:0!important;
+      border:1px solid var(--line)!important;
+      border-radius:7px!important;
+      background:rgba(255,255,255,.82)!important;
+      color:var(--secondary)!important;
+      font-family:var(--font-sans)!important;
+      font-size:14px!important;
+      line-height:1!important;
+      cursor:pointer!important;
+    }
+    .account-card .account-name-save{
+      border-color:transparent!important;
+      background:var(--accent)!important;
+      color:#fff!important;
+    }
     .account-card .account-app{
       color:var(--secondary);
       font-family:var(--font-sans);
@@ -490,24 +557,152 @@
       object-fit:cover;
       border-radius:inherit;
     }
-    .account-card .account-icon-edit{
-      position:absolute;
-      right:1px;
-      bottom:1px;
-      z-index:2;
-      width:12px;
-      height:12px;
+    .board-groups{
+      display:flex;
+      flex-direction:column;
+      gap:24px;
+    }
+    .board-group{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      min-width:0;
+    }
+    .board-group-heading{
       display:flex;
       align-items:center;
-      justify-content:center;
-      border-radius:50%;
-      background:rgba(255,255,255,.94);
-      color:#4b5563;
+      justify-content:space-between;
+      gap:12px;
+      min-width:0;
+      padding:0 2px 2px;
+      border-bottom:1px solid rgba(60,60,67,.12);
+    }
+    .board-group-title{
+      min-width:0;
+      color:var(--ink);
       font-family:var(--font-sans);
-      font-size:8px;
-      line-height:1;
-      box-shadow:0 1px 4px rgba(0,0,0,.18);
-      pointer-events:none;
+      font-size:15px;
+      font-weight:700;
+      line-height:1.35;
+      letter-spacing:-.01em;
+      overflow-wrap:anywhere;
+    }
+    .board-group-count{
+      flex:none;
+      color:var(--secondary);
+      font-family:var(--font-sans);
+      font-size:12px;
+      font-weight:500;
+    }
+    .board-group-empty{
+      padding:18px 20px;
+      border:1px dashed rgba(60,60,67,.16);
+      border-radius:16px;
+      background:rgba(255,255,255,.32);
+      color:var(--secondary);
+      font-family:var(--font-sans);
+      font-size:13px;
+      text-align:center;
+    }
+    .account-card .account-group-picker{
+      width:100%;
+      min-width:0;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:var(--secondary);
+      font-family:var(--font-sans);
+      font-size:11px;
+      font-weight:600;
+    }
+    .account-card .account-group-picker > span{
+      flex:none;
+    }
+    .account-card .account-group-select{
+      flex:1;
+      min-width:0;
+      height:28px;
+      padding:0 26px 0 9px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:rgba(255,255,255,.72);
+      color:var(--ink);
+      font-family:var(--font-sans);
+      font-size:12px;
+      font-weight:500;
+      outline:none;
+      cursor:pointer;
+    }
+    .account-card .account-group-select:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent);
+    }
+    .group-manager-list{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .group-manager-row{
+      display:flex;
+      align-items:center;
+      gap:9px;
+      min-width:0;
+      padding:10px 12px;
+      border:1px solid rgba(60,60,67,.1);
+      border-radius:12px;
+      background:rgba(255,255,255,.42);
+    }
+    .group-manager-name{
+      flex:1;
+      min-width:0;
+      color:var(--ink);
+      font-family:var(--font-sans);
+      font-size:13px;
+      font-weight:600;
+      overflow-wrap:anywhere;
+    }
+    .group-manager-count{
+      flex:none;
+      color:var(--secondary);
+      font-family:var(--font-sans);
+      font-size:11px;
+    }
+    .group-manager-input{
+      flex:1;
+      min-width:0;
+      height:34px;
+      padding:5px 9px;
+      border:1px solid var(--line);
+      border-radius:9px;
+      background:#fff;
+      color:var(--ink);
+      font-family:var(--font-sans);
+      font-size:13px;
+      outline:none;
+    }
+    .group-manager-input:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent);
+    }
+    .group-manager-action{
+      flex:none;
+      height:30px;
+      padding:0 10px;
+      border:1px solid rgba(60,60,67,.14);
+      border-radius:8px;
+      background:rgba(255,255,255,.72);
+      color:var(--secondary);
+      font-family:var(--font-sans);
+      font-size:12px;
+      font-weight:600;
+      cursor:pointer;
+    }
+    .group-manager-action:hover{
+      background:#fff;
+      color:var(--accent);
+    }
+    .group-manager-action.is-danger{
+      color:#d70015;
     }
     .notice-light{
       border:1px solid rgba(255,159,10,.22)!important;
@@ -758,6 +953,7 @@
         </div>
         <div style="display:flex;gap:9px;flex-wrap:wrap;">
           <button onClick="{{ onToggleImport }}" style="height:38px;padding:0 16px;border:1px solid color-mix(in srgb,var(--accent,#22d3ee) 50%,transparent);border-radius:9999px;background:color-mix(in srgb,var(--accent,#22d3ee) 14%,transparent);color:#fff;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;" style-hover="background:color-mix(in srgb,var(--accent,#22d3ee) 24%,transparent);">{{ t.boardImport }}</button>
+          <button onClick="{{ onToggleGroups }}" style="height:38px;padding:0 16px;border:1px solid rgba(255,255,255,.16);border-radius:9999px;background:rgba(255,255,255,.05);color:#eaf2f5;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(255,255,255,.1);">{{ t.boardGroups }}</button>
           <button onClick="{{ onExport }}" style="height:38px;padding:0 16px;border:1px solid rgba(255,255,255,.16);border-radius:9999px;background:rgba(255,255,255,.05);color:#eaf2f5;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(255,255,255,.1);">{{ t.boardExport }}</button>
           <button onClick="{{ onClearBoard }}" style="height:38px;padding:0 16px;border:1px solid rgba(255,255,255,.16);border-radius:9999px;background:rgba(255,255,255,.05);color:rgba(234,242,245,.7);font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(251,113,133,.14);border-color:rgba(251,113,133,.4);color:#fb7185;">{{ clearLabel }}</button>
           <button onClick="{{ onGoSetup }}" style="height:38px;padding:0 16px;border:1px solid rgba(255,255,255,.16);border-radius:9999px;background:rgba(255,255,255,.05);color:#eaf2f5;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(255,255,255,.1);">{{ t.boardSingle }}</button>
@@ -766,6 +962,38 @@
 
       <sc-if value="{{ boardMsg }}" hint-placeholder-val="">
         <div style="font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;color:rgba(234,242,245,.65);">{{ boardMsg }}</div>
+      </sc-if>
+
+      <sc-if value="{{ groupPanelOpen }}" hint-placeholder-val="{{ false }}">
+        <div class="panel-card group-manager" style="padding:20px;background:linear-gradient(180deg,rgba(18,28,34,.62),rgba(8,13,17,.62));display:flex;flex-direction:column;gap:14px;">
+          <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent,#22d3ee);">{{ t.groupPanelTitle }}</div>
+          <div style="display:flex;gap:9px;align-items:center;">
+            <input class="group-manager-input" value="{{ groupNameDraft }}" onInput="{{ onGroupDraft }}" onKeyDown="{{ onGroupDraftKey }}" maxlength="40" autocomplete="off" spellcheck="false" placeholder="{{ t.groupCreatePlaceholder }}" aria-label="{{ t.groupCreatePlaceholder }}">
+            <button onClick="{{ onCreateGroup }}" style="flex:none;height:36px;padding:0 16px;border:1px solid color-mix(in srgb,var(--accent,#22d3ee) 50%,transparent);border-radius:9px;background:color-mix(in srgb,var(--accent,#22d3ee) 14%,transparent);color:#fff;font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer;">{{ t.groupCreate }}</button>
+          </div>
+          <sc-if value="{{ hasGroups }}" hint-placeholder-val="{{ false }}">
+            <div class="group-manager-list">
+              <sc-for list="{{ groupRows }}" as="group">
+                <div class="group-manager-row">
+                  <sc-if value="{{ group.editing }}" hint-placeholder-val="{{ false }}">
+                    <input class="group-manager-input" value="{{ group.editValue }}" onInput="{{ group.onEditInput }}" onKeyDown="{{ group.onEditKey }}" maxlength="40" autocomplete="off" spellcheck="false" aria-label="{{ t.groupRenameTitle }}">
+                    <button class="group-manager-action" onClick="{{ group.onSave }}">{{ t.groupSave }}</button>
+                    <button class="group-manager-action" onClick="{{ group.onCancel }}">{{ t.groupCancel }}</button>
+                  </sc-if>
+                  <sc-if value="{{ group.notEditing }}" hint-placeholder-val="{{ true }}">
+                    <div class="group-manager-name">{{ group.name }}</div>
+                    <div class="group-manager-count">{{ group.countLabel }}</div>
+                    <button class="group-manager-action" onClick="{{ group.onRename }}" title="{{ t.groupRenameTitle }}">{{ t.groupRename }}</button>
+                    <button class="group-manager-action{{ group.deleteClass }}" onClick="{{ group.onDelete }}" title="{{ group.deleteTitle }}">{{ group.deleteLabel }}</button>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noGroups }}" hint-placeholder-val="{{ false }}">
+            <div style="font-family:var(--font-sans);font-size:12px;color:rgba(234,242,245,.6);">{{ t.groupEmptyList }}</div>
+          </sc-if>
+        </div>
       </sc-if>
 
       <sc-if value="{{ importOpen }}" hint-placeholder-val="{{ false }}">
@@ -789,6 +1017,7 @@
           <div style="display:flex;gap:9px;flex-wrap:wrap;">
             <button onClick="{{ onCopyLinks }}" style="height:40px;padding:0 18px;border:1px solid color-mix(in srgb,var(--accent,#22d3ee) 50%,transparent);border-radius:9999px;background:color-mix(in srgb,var(--accent,#22d3ee) 14%,transparent);color:#fff;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;" style-hover="background:color-mix(in srgb,var(--accent,#22d3ee) 24%,transparent);">{{ linksCopyLabel }}</button>
             <button onClick="{{ onDownloadLinks }}" style="height:40px;padding:0 18px;border:1px solid rgba(255,255,255,.16);border-radius:9999px;background:rgba(255,255,255,.05);color:#eaf2f5;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(255,255,255,.1);">{{ t.downloadTxt }}</button>
+            <button onClick="{{ onDownloadBackup }}" style="height:40px;padding:0 18px;border:1px solid rgba(255,255,255,.16);border-radius:9999px;background:rgba(255,255,255,.05);color:#eaf2f5;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(255,255,255,.1);">{{ t.downloadBackup }}</button>
             <button onClick="{{ onCopyBoardUrl }}" style="height:40px;padding:0 18px;border:1px solid rgba(255,255,255,.16);border-radius:9999px;background:rgba(255,255,255,.05);color:#eaf2f5;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(255,255,255,.1);">{{ boardUrlCopyLabel }}</button>
           </div>
           <div style="font-family:var(--font-mono);font-size:10px;color:rgba(234,242,245,.6);line-height:1.7;">{{ t.exportHint }}</div>
@@ -804,8 +1033,16 @@
       </sc-if>
 
       <sc-if value="{{ hasAccounts }}" hint-placeholder-val="{{ true }}">
-        <div class="board-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(208px,1fr));gap:14px;">
-          <sc-for list="{{ boardCards }}" as="card" hint-placeholder-count="6">
+        <div class="board-groups">
+          <sc-for list="{{ boardGroups }}" as="group">
+            <section class="board-group" data-group-name="{{ group.name }}">
+              <div class="board-group-heading">
+                <div class="board-group-title">{{ group.name }}</div>
+                <div class="board-group-count">{{ group.countLabel }}</div>
+              </div>
+              <sc-if value="{{ group.hasCards }}" hint-placeholder-val="{{ false }}">
+                <div class="board-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(208px,1fr));gap:14px;">
+                  <sc-for list="{{ group.cards }}" as="card" hint-placeholder-count="6">
             <div class="account-card{{ card.dragClass }}" data-board-index="{{ card.index }}" onClick="{{ card.onCopy }}" onKeyDown="{{ card.onKey }}" role="button" tabindex="0" aria-label="{{ card.copyAria }}" title="{{ card.copyAria }}" style="--c:{{ card.color }};position:relative;cursor:pointer;padding:16px 17px 14px;background:linear-gradient(180deg,rgba(18,28,34,.6),rgba(8,13,17,.6));overflow:hidden;display:flex;flex-direction:column;gap:11px;">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-width:0;">
                 <div style="display:flex;align-items:center;gap:7px;min-width:0;">
@@ -817,7 +1054,6 @@
                     <sc-if value="{{ card.hasNoIcon }}" hint-placeholder-val="{{ true }}">
                       <span>{{ card.initial }}</span>
                     </sc-if>
-                    <span class="account-icon-edit" aria-hidden="true">✎</span>
                   </button>
                 </div>
                 <div style="display:flex;gap:2px;flex:none;">
@@ -827,9 +1063,26 @@
                 </div>
               </div>
               <div class="account-meta">
-                <div class="account-name">{{ card.label }}</div>
+                <sc-if value="{{ card.editingName }}" hint-placeholder-val="{{ false }}">
+                  <div class="account-name-editor" onClick="{{ card.onEditClick }}">
+                    <input class="account-name-input" value="{{ card.editName }}" onInput="{{ card.onEditInput }}" onKeyDown="{{ card.onEditKey }}" ref="{{ card.nameRef }}" maxlength="120" autocomplete="off" spellcheck="false" aria-label="{{ t.cardRenameInputAria }}">
+                    <button type="button" class="account-name-action account-name-save" onClick="{{ card.onSaveName }}" title="{{ t.cardRenameSave }}" aria-label="{{ t.cardRenameSave }}">✓</button>
+                    <button type="button" class="account-name-action" onClick="{{ card.onCancelName }}" title="{{ t.cardRenameCancel }}" aria-label="{{ t.cardRenameCancel }}">×</button>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ card.notEditingName }}" hint-placeholder-val="{{ true }}">
+                  <button type="button" class="account-name account-name-button" onClick="{{ card.onRename }}" title="{{ card.renameTitle }}" aria-label="{{ card.renameAria }}">{{ card.label }}</button>
+                </sc-if>
                 <div class="account-app">{{ card.sub }}</div>
               </div>
+              <label class="account-group-picker" onClick="{{ card.onGroupClick }}">
+                <span>{{ t.groupAccountLabel }}</span>
+                <select class="account-group-select" value="{{ card.group }}" onChange="{{ card.onGroupChange }}" aria-label="{{ card.groupAria }}">
+                  <sc-for list="{{ card.groupOptions }}" as="g">
+                    <option value="{{ g.value }}">{{ g.label }}</option>
+                  </sc-for>
+                </select>
+              </label>
               <div style="font-family:var(--font-mono);font-size:29px;font-weight:600;letter-spacing:.06em;color:#fff;text-shadow:0 0 18px color-mix(in srgb,var(--c) 55%,transparent);">{{ card.codeFmt }}</div>
               <div style="display:flex;align-items:center;gap:9px;">
                 <div style="flex:1;height:4px;border-radius:9999px;background:rgba(255,255,255,.08);overflow:hidden;">
@@ -838,6 +1091,13 @@
                 <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;color:color-mix(in srgb,var(--c) 75%,#9fb3bf);min-width:56px;text-align:right;">{{ card.foot }}</div>
               </div>
             </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ group.isEmpty }}" hint-placeholder-val="{{ false }}">
+                <div class="board-group-empty">{{ t.groupEmpty }}</div>
+              </sc-if>
+            </section>
           </sc-for>
         </div>
       </sc-if>
@@ -875,11 +1135,13 @@ const STR = {
     boardNone: '还没有账号', accountFallback: (i) => '账号 ' + i,
     accountsCount: (n) => n + ' 个账号', copyCodeOf: (l) => '复制 ' + l + ' 的验证码',
     cardOpenTitle: '打开单号页', cardLinkTitle: '复制该号链接', cardRemoveTitle: '移除', cardDragTitle: '拖动调整顺序', cardDragAria: (l) => '拖动 ' + l + ' 调整顺序',
+    cardRenameTitle: '点击修改账号名称', cardRenameAria: (l) => '修改账号名称 ' + l, cardRenameInputAria: '账号名称', cardRenameSave: '保存', cardRenameCancel: '取消',
     cardRemoveConfirm: '再点一次确认移除', cardRemoveArmed: (l) => '再点一次移除「' + l + '」',
     cardIconTitle: '设置自定义图标', cardIconAria: (l) => '设置 ' + l + ' 的图标',
     iconUpdated: (l) => (l ? l + ' 的图标已更新' : '图标已更新'), iconType: '请选择 PNG、JPEG、WebP、GIF、AVIF 或 ICO 图片',
     iconTooLarge: '图片不能超过 5MB', iconFail: '图标处理失败，请换一张图片',
     removedMsg: (l) => '已移除「' + l + '」（重新导入即可恢复）', orderSaved: '顺序已保存',
+    renamedMsg: (l) => '账号名称已更新为「' + l + '」', cardRenameRequired: '账号名称不能为空',
     cardLinkCopied: '已复制该账号链接 ✓——链接含密钥，请走可信渠道',
     imported: (n) => '已导入 ' + n + ' 个账号 ✓', importCap: (n) => '已达上限 ' + n + ' 个账号，多余的已忽略',
     alreadyInBoard: '这些账号已在看板中', noLinksFound: '未识别到账号链接', noLinksInFile: '文件中未识别到账号链接', noLinksDrop: '未在拖入内容中识别到账号链接',
@@ -920,11 +1182,13 @@ const STR = {
     boardNone: 'No accounts yet', accountFallback: (i) => 'Account ' + i,
     accountsCount: (n) => n + (n === 1 ? ' account' : ' accounts'), copyCodeOf: (l) => 'Copy code for ' + l,
     cardOpenTitle: 'Open single view', cardLinkTitle: 'Copy account link', cardRemoveTitle: 'Remove', cardDragTitle: 'Drag to reorder', cardDragAria: (l) => 'Drag ' + l + ' to reorder',
+    cardRenameTitle: 'Click to rename account', cardRenameAria: (l) => 'Rename account ' + l, cardRenameInputAria: 'Account name', cardRenameSave: 'Save', cardRenameCancel: 'Cancel',
     cardRemoveConfirm: 'Click again to confirm removal', cardRemoveArmed: (l) => 'Click again to remove “' + l + '”',
     cardIconTitle: 'Set a custom icon', cardIconAria: (l) => 'Set icon for ' + l,
     iconUpdated: (l) => (l ? l + ' icon updated' : 'Icon updated'), iconType: 'Choose a PNG, JPEG, WebP, GIF, AVIF, or ICO image',
     iconTooLarge: 'The image must be 5MB or smaller', iconFail: 'Could not process that image',
     removedMsg: (l) => 'Removed “' + l + '” (re-import to restore)', orderSaved: 'Order saved',
+    renamedMsg: (l) => 'Account renamed to “' + l + '”', cardRenameRequired: 'Account name cannot be empty',
     cardLinkCopied: 'Account link copied ✓ — it contains the secret, share with care',
     imported: (n) => 'Imported ' + n + (n === 1 ? ' account ✓' : ' accounts ✓'), importCap: (n) => 'Reached the ' + n + '-account limit, extras ignored',
     alreadyInBoard: 'These accounts are already on the board', noLinksFound: 'No account links found', noLinksInFile: 'No account links found in the file', noLinksDrop: 'No account links found in what you dropped',
@@ -942,6 +1206,44 @@ const STR = {
   },
 };
 // 初始语言：?lang= 覆盖 → localStorage → 浏览器语言（中文系→zh，否则 en）
+Object.assign(STR.zh, {
+  boardGroups: '＋ 分组', groupPanelTitle: '分组管理',
+  groupCreatePlaceholder: '输入新分组名称，例如 公司', groupCreate: '新建分组',
+  groupEmptyList: '还没有分组，先新建一个吧', groupEmpty: '这个分组还没有账号',
+  groupUnassigned: '未分配', groupAccountLabel: '分组',
+  groupsCount: (n) => n + ' 个分组',
+  groupManagerCount: (n) => n + ' 个账号',
+  groupSelectAria: (label) => '设置 ' + label + ' 的分组',
+  groupCreated: (name) => '已新建分组「' + name + '」',
+  groupDuplicate: '分组名称已存在', groupRequired: '分组名称不能为空',
+  groupRenamed: (name) => '分组已改名为「' + name + '」',
+  groupRenameTitle: '重命名分组', groupRename: '改名', groupDeleteTitle: '删除分组（账号会移到未分配）', groupDelete: '删除',
+  groupSave: '保存', groupCancel: '取消',
+  groupDeleteConfirm: '再点一次确认删除分组',
+  groupDeleted: (name) => '已删除分组「' + name + '」，账号已移到未分配',
+  groupAssigned: (label, group) => '已将「' + label + '」移到「' + (group || '未分配') + '」',
+  downloadBackup: '下载分组备份 .json',
+  exportHint: '「复制全部链接」和「下载 .txt」都会保留账号分组；「下载分组备份 .json」还会保留空分组，重新导入后按原顺序展示。导出内容包含全部密钥，请妥善保存。',
+});
+Object.assign(STR.en, {
+  boardGroups: '＋ Groups', groupPanelTitle: 'Manage groups',
+  groupCreatePlaceholder: 'New group name, e.g. Work', groupCreate: 'Create group',
+  groupEmptyList: 'No groups yet. Create one first.', groupEmpty: 'No accounts in this group',
+  groupUnassigned: 'Unassigned', groupAccountLabel: 'Group',
+  groupsCount: (n) => n + (n === 1 ? ' group' : ' groups'),
+  groupManagerCount: (n) => n + (n === 1 ? ' account' : ' accounts'),
+  groupSelectAria: (label) => 'Set group for ' + label,
+  groupCreated: (name) => 'Created group “' + name + '”',
+  groupDuplicate: 'That group name already exists', groupRequired: 'Group name cannot be empty',
+  groupRenamed: (name) => 'Group renamed to “' + name + '”',
+  groupRenameTitle: 'Rename group', groupRename: 'Rename', groupDeleteTitle: 'Delete group (accounts move to Unassigned)', groupDelete: 'Delete',
+  groupSave: 'Save', groupCancel: 'Cancel',
+  groupDeleteConfirm: 'Click again to confirm group deletion',
+  groupDeleted: (name) => 'Deleted group “' + name + '”; accounts moved to Unassigned',
+  groupAssigned: (label, group) => 'Moved “' + label + '” to “' + (group || 'Unassigned') + '”',
+  downloadBackup: 'Download grouped backup .json',
+  exportHint: 'Copy all links and Download .txt both preserve account groups. Download grouped backup .json also preserves empty groups and restores them in the same order. Exports contain every secret; keep them safe.',
+});
 function initialLang() {
   try {
     const u = new URLSearchParams(location.search).get('lang');
@@ -965,10 +1267,13 @@ class Component extends DCLogic {
     shownDigits: null, animating: false,
     showQr: false, qrDataUrl: '', importMsg: '',
     // —— 多号看板 ——
-    accounts: [], boardLive: [], copiedIdx: null,
+    accounts: [], groups: [], boardLive: [], copiedIdx: null,
     importOpen: false, exportOpen: false, boardMsg: '', dragging: false,
     pasteValue: '', linksCopied: false, boardUrlCopied: false, clearArmed: false, removeArmedIdx: null,
     dragFromIdx: null, dragOverIdx: null,
+    editingAccountIdx: null, editingAccountName: '',
+    groupPanelOpen: false, groupNameDraft: '',
+    editingGroupName: '', editingGroupValue: '', deleteArmedGroup: '',
     // —— 演示模式 ——
     present: false, nolabel: false,
     presentPanel: false, presentNolabel: false, presentUrlCopied: false,
@@ -1035,6 +1340,7 @@ class Component extends DCLogic {
     clearTimeout(this._parseT);
     clearTimeout(this._copiedT);
     clearTimeout(this._clearT);
+    clearTimeout(this._groupDeleteT);
     clearTimeout(this._msgT);
     clearTimeout(this._removeT);
     window.removeEventListener('hashchange', this._onHash);
@@ -1100,11 +1406,13 @@ class Component extends DCLogic {
       this.setState({ mode: 'view', secret, label, issuer, icon, digits, period, algorithm, present, nolabel, code: '', copied: false, shownDigits: null, animating: false, showQr: false }, () => this.refresh());
       document.title = ((nolabel ? '' : (label || issuer)) || this.t().code) + this.t().titleSuffix;
     } else if (boardParam) {
-      const accts = this.decodeBoardParam(boardParam).map((a) => this.normalizeAccount(a)).filter(Boolean);
-      if (accts.length) {
+      const decoded = this.decodeBoardParam(boardParam);
+      const accts = decoded.map((a) => this.normalizeAccount(a)).filter(Boolean);
+      const groups = this.normalizeGroups((decoded.groups || []).concat(accts.map((a) => a.group)));
+      if (accts.length || groups.length) {
         this._boardCounters = [];
-        this.saveBoard(accts);
-        this.setState({ mode: 'board', accounts: accts, boardLive: accts.map((a) => ({ code: '', codeFmt: '', sec: a.period, frac: 1 })), importOpen: false, exportOpen: false, boardMsg: '' }, () => this.refreshBoardAll());
+        this.saveBoard(accts, groups);
+        this.setState({ mode: 'board', accounts: accts, groups, boardLive: accts.map((a) => ({ code: '', codeFmt: '', sec: a.period, frac: 1 })), importOpen: false, exportOpen: false, boardMsg: '' }, () => this.refreshBoardAll());
         document.title = this.t().titleBoard;
       } else {
         this.enterBoardOrSetup();
@@ -1123,10 +1431,10 @@ class Component extends DCLogic {
 
   enterBoardOrSetup() {
     this.invalidateCodeWork();
-    const cached = this.loadBoard();
-    if (cached.length) {
+    const cached = this.loadBoardData();
+    if (cached.accounts.length || cached.groups.length) {
       this._boardCounters = [];
-      this.setState({ mode: 'board', accounts: cached, boardLive: cached.map((a) => ({ code: '', codeFmt: '', sec: a.period, frac: 1 })), importOpen: false, exportOpen: false }, () => this.refreshBoardAll());
+      this.setState({ mode: 'board', accounts: cached.accounts, groups: cached.groups, boardLive: cached.accounts.map((a) => ({ code: '', codeFmt: '', sec: a.period, frac: 1 })), importOpen: false, exportOpen: false }, () => this.refreshBoardAll());
       document.title = this.t().titleBoard;
     } else {
       this.setState({ mode: 'setup' });
@@ -1283,7 +1591,7 @@ class Component extends DCLogic {
   parseInput(raw) {
     raw = (raw || '').trim();
     if (!raw) return null;
-    let secret = '', label = '', issuer = '', icon = '', digits = 6, period = 30, algorithm = 'SHA-1';
+    let secret = '', label = '', issuer = '', icon = '', group = '', digits = 6, period = 30, algorithm = 'SHA-1';
     if (/^otpauth:\/\//i.test(raw)) {
       try {
         const u = new URL(raw);
@@ -1292,6 +1600,7 @@ class Component extends DCLogic {
         const sp = u.searchParams;
         secret = (sp.get('secret') || '').trim();
         issuer = sp.get('issuer') || '';
+        group = this.normalizeGroupName(sp.get('group') || sp.get('category') || '');
         icon = this.normalizeIcon(sp.get('icon') || sp.get('iconData') || '');
         let path = decodeURIComponent(u.pathname.replace(/^\/+/, ''));
         if (path.includes(':')) {
@@ -1306,7 +1615,7 @@ class Component extends DCLogic {
       secret = raw.replace(/\s/g, '');
     }
     const valid = !!this.base32Decode(secret);
-    return { secret, label, issuer, icon, digits, period, algorithm, valid };
+    return { secret, label, issuer, group, icon, digits, period, algorithm, valid };
   }
 
   onInput(v) {
@@ -1523,16 +1832,21 @@ class Component extends DCLogic {
     this._lastPrevCounter = null;
     this._animCode = null;
     try { history.replaceState(null, '2FA', location.pathname + location.search); } catch (e) {}
-    this.setState({ mode: 'setup', importOpen: false, exportOpen: false });
+    this.setState({ mode: 'setup', importOpen: false, exportOpen: false, editingAccountIdx: null, editingAccountName: '' });
     document.title = this.t().titleApp;
   }
 
   goBoard() {
     this.invalidateCodeWork();
     let accts = this.state.accounts;
-    if (!accts || !accts.length) accts = this.loadBoard();
+    let groups = this.state.groups || [];
+    if (!accts || !accts.length) {
+      const cached = this.loadBoardData();
+      accts = cached.accounts;
+      groups = cached.groups;
+    }
     this._boardCounters = [];
-    this.setState({ mode: 'board', accounts: accts, boardLive: accts.map((a) => ({ code: '', codeFmt: '', sec: a.period, frac: 1 })), importOpen: accts.length === 0, exportOpen: false, boardMsg: '' }, () => this.refreshBoardAll());
+    this.setState({ mode: 'board', accounts: accts, groups, boardLive: accts.map((a) => ({ code: '', codeFmt: '', sec: a.period, frac: 1 })), importOpen: accts.length === 0, exportOpen: false, boardMsg: '', editingAccountIdx: null, editingAccountName: '', groupPanelOpen: false }, () => this.refreshBoardAll());
     document.title = this.t().titleBoard;
     try { history.replaceState(null, document.title, location.pathname + location.search); } catch (e) {}
   }
@@ -1638,6 +1952,20 @@ class Component extends DCLogic {
     input.click();
   }
 
+  normalizeGroupName(name) {
+    return String(name == null ? '' : name).trim().replace(/\s+/g, ' ').slice(0, 40);
+  }
+  normalizeGroups(groups) {
+    const out = [], seen = new Set();
+    for (const raw of Array.isArray(groups) ? groups : []) {
+      const name = this.normalizeGroupName(raw);
+      const key = name.toLocaleLowerCase();
+      if (!name || seen.has(key)) continue;
+      seen.add(key);
+      out.push(name);
+    }
+    return out;
+  }
   normalizeAccount(a) {
     if (!a || typeof a.secret !== 'string') return null;
     const params = this.otpParams(a.digits, a.period, a.algorithm);
@@ -1647,31 +1975,63 @@ class Component extends DCLogic {
     if (!this.base32Decode(secret)) return null;
     return {
       secret, label: a.label || '', issuer: a.issuer || '',
+      group: this.normalizeGroupName(a.group || a.g || a.category || ''),
       digits: params.digits, period: params.period, algorithm: params.algorithm,
       icon: this.normalizeIcon(a.icon),
       color: this.pickColor(a),
     };
   }
 
-  saveBoard(accts) {
+  saveBoard(accts, groups) {
     try {
-      const data = (accts || []).map((a) => {
+      const list = accts || [];
+      let groupList = Array.isArray(groups)
+        ? groups
+        : (((this.state && this.state.groups) || []));
+      groupList = this.normalizeGroups(groupList.concat(list.map((a) => a && a.group)));
+      const known = new Set(groupList.map((g) => g.toLocaleLowerCase()));
+      const data = list.map((a) => {
         const row = { s: a.secret, l: a.label, i: a.issuer, d: a.digits, p: a.period, a: a.algorithm };
+        const group = this.normalizeGroupName(a.group);
+        if (group && known.has(group.toLocaleLowerCase())) row.g = group;
         if (a.icon) row.x = a.icon;
         return row;
       });
-      localStorage.setItem('easy2fa.board', JSON.stringify(data));
+      localStorage.setItem('easy2fa.board', JSON.stringify({ v: 2, groups: groupList, accounts: data }));
     } catch (e) {}
   }
-  loadBoard() {
+  loadBoardData() {
     try {
       const raw = localStorage.getItem('easy2fa.board');
-      if (!raw) return [];
+      if (!raw) return { accounts: [], groups: [] };
       const data = JSON.parse(raw);
-      if (!Array.isArray(data)) return [];
-      return data.map((d) => d && this.normalizeAccount({ secret: d.s, label: d.l, issuer: d.i, icon: d.x || d.icon, digits: d.d, period: d.p, algorithm: d.a }))
-                 .filter(Boolean);
-    } catch (e) { return []; }
+      const rows = Array.isArray(data) ? data
+        : (data && Array.isArray(data.accounts)) ? data.accounts
+        : (data && Array.isArray(data.a)) ? data.a
+        : null;
+      if (!rows) return { accounts: [], groups: [] };
+      const groupSource = Array.isArray(data)
+        ? []
+        : (Array.isArray(data.groups) ? data.groups : (Array.isArray(data.g) ? data.g : []));
+      const accounts = rows.map((d) => {
+        if (!d) return null;
+        return this.normalizeAccount({
+          secret: d.secret !== undefined ? d.secret : d.s,
+          label: d.label !== undefined ? d.label : d.l,
+          issuer: d.issuer !== undefined ? d.issuer : d.i,
+          group: d.group !== undefined ? d.group : d.g,
+          icon: d.x || d.icon,
+          digits: d.digits !== undefined ? d.digits : d.d,
+          period: d.period !== undefined ? d.period : d.p,
+          algorithm: d.algorithm !== undefined ? d.algorithm : d.a,
+        });
+      }).filter(Boolean);
+      const groups = this.normalizeGroups(groupSource.concat(accounts.map((a) => a.group)));
+      return { accounts, groups };
+    } catch (e) { return { accounts: [], groups: [] }; }
+  }
+  loadBoard() {
+    return this.loadBoardData().accounts;
   }
   // 清空是破坏性操作——两步确认：第一次点武装、2s 内再点才真清（仍是一键级，只是防误触）
   armOrClear() {
@@ -1685,7 +2045,138 @@ class Component extends DCLogic {
     this.invalidateCodeWork();
     try { localStorage.removeItem('easy2fa.board'); } catch (e) {}
     this._boardCounters = [];
-    this.setState({ accounts: [], boardLive: [], importOpen: false, exportOpen: false, boardMsg: this.t().cleared, removeArmedIdx: null });
+    this.setState({ accounts: [], groups: [], boardLive: [], importOpen: false, exportOpen: false, boardMsg: this.t().cleared, removeArmedIdx: null, editingAccountIdx: null, editingAccountName: '', groupPanelOpen: false, groupNameDraft: '', editingGroupName: '', editingGroupValue: '', deleteArmedGroup: '' });
+  }
+
+  addGroup(name) {
+    const group = this.normalizeGroupName(name == null ? this.state.groupNameDraft : name);
+    if (!group) {
+      this.setState({ boardMsg: this.t().groupRequired });
+      return false;
+    }
+    const groups = this.normalizeGroups(this.state.groups || []);
+    if (groups.some((g) => g.toLocaleLowerCase() === group.toLocaleLowerCase())) {
+      this.setState({ boardMsg: this.t().groupDuplicate });
+      return false;
+    }
+    const next = groups.concat(group);
+    const accounts = (this.state.accounts || []).slice();
+    this.saveBoard(accounts, next);
+    if (this.syncBoardHash) this.syncBoardHash(accounts, next);
+    this.setState({
+      groups: next,
+      groupNameDraft: '',
+      deleteArmedGroup: '',
+      boardMsg: this.t().groupCreated(group),
+    });
+    return true;
+  }
+
+  assignAccountGroup(i, groupName) {
+    const accts = (this.state.accounts || []).slice();
+    const account = accts[i];
+    if (!account) return false;
+    let groups = this.normalizeGroups(this.state.groups || []);
+    let group = this.normalizeGroupName(groupName);
+    if (group && !groups.some((g) => g.toLocaleLowerCase() === group.toLocaleLowerCase())) {
+      groups = groups.concat(group);
+    } else if (group) {
+      group = groups.find((g) => g.toLocaleLowerCase() === group.toLocaleLowerCase()) || group;
+    }
+    accts[i] = { ...account, group };
+    this.saveBoard(accts, groups);
+    if (this.syncBoardHash) this.syncBoardHash(accts, groups);
+    const label = accts[i].label || accts[i].issuer || this.t().accountFallback(i + 1);
+    this.setState({
+      accounts: accts,
+      groups,
+      boardMsg: this.t().groupAssigned(label, group),
+      removeArmedIdx: null,
+      copiedIdx: null,
+    });
+    return true;
+  }
+
+  beginGroupRename(name) {
+    this.setState({ editingGroupName: name, editingGroupValue: name, deleteArmedGroup: '', boardMsg: '' });
+  }
+  updateGroupRename(e) {
+    this.setState({ editingGroupValue: e.target.value });
+  }
+  cancelGroupRename() {
+    this.setState({ editingGroupName: '', editingGroupValue: '' });
+  }
+  handleGroupRenameKey(e, original) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      this.renameGroup(original, this.state.editingGroupValue);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      this.cancelGroupRename();
+    }
+  }
+  renameGroup(original, name) {
+    const oldName = this.normalizeGroupName(original);
+    const nextName = this.normalizeGroupName(name);
+    if (!nextName) {
+      this.setState({ boardMsg: this.t().groupRequired });
+      return false;
+    }
+    const groups = this.normalizeGroups(this.state.groups || []);
+    const at = groups.findIndex((g) => g.toLocaleLowerCase() === oldName.toLocaleLowerCase());
+    if (at < 0) return false;
+    if (groups.some((g, i) => i !== at && g.toLocaleLowerCase() === nextName.toLocaleLowerCase())) {
+      this.setState({ boardMsg: this.t().groupDuplicate });
+      return false;
+    }
+    groups[at] = nextName;
+    const accts = (this.state.accounts || []).map((a) => (
+      this.normalizeGroupName(a.group).toLocaleLowerCase() === oldName.toLocaleLowerCase()
+        ? { ...a, group: nextName }
+        : a
+    ));
+    this.saveBoard(accts, groups);
+    if (this.syncBoardHash) this.syncBoardHash(accts, groups);
+    this.setState({
+      accounts: accts,
+      groups,
+      editingGroupName: '',
+      editingGroupValue: '',
+      deleteArmedGroup: '',
+      boardMsg: this.t().groupRenamed(nextName),
+    });
+    return true;
+  }
+  armOrDeleteGroup(name) {
+    if (this.state.deleteArmedGroup === name) {
+      clearTimeout(this._groupDeleteT);
+      this.deleteGroup(name);
+      return;
+    }
+    this.setState({ deleteArmedGroup: name, boardMsg: this.t().groupDeleteConfirm });
+    clearTimeout(this._groupDeleteT);
+    this._groupDeleteT = setTimeout(() => this.setState({ deleteArmedGroup: '', boardMsg: '' }), 2200);
+  }
+  deleteGroup(name) {
+    const target = this.normalizeGroupName(name);
+    const groups = (this.state.groups || []).filter((g) => g.toLocaleLowerCase() !== target.toLocaleLowerCase());
+    if (groups.length === (this.state.groups || []).length) return false;
+    const accts = (this.state.accounts || []).map((a) => (
+      this.normalizeGroupName(a.group).toLocaleLowerCase() === target.toLocaleLowerCase()
+        ? { ...a, group: '' }
+        : a
+    ));
+    this.saveBoard(accts, groups);
+    if (this.syncBoardHash) this.syncBoardHash(accts, groups);
+    this.setState({
+      accounts: accts,
+      groups,
+      editingGroupName: '',
+      editingGroupValue: '',
+      deleteArmedGroup: '',
+      boardMsg: this.t().groupDeleted(target),
+    });
+    return true;
   }
 
   // —— 单卡操作：打开单号 / 复制链接 / 移除 ——
@@ -1717,7 +2208,63 @@ class Component extends DCLogic {
     this._boardCounters = []; // 索引整体前移，计数器缓存作废
     const live = (this.state.boardLive || []).slice(); live.splice(i, 1);
     const labelTxt = rm.label || rm.issuer || this.t().accountFallback(i + 1);
-    this.setState({ accounts: accts, boardLive: live, removeArmedIdx: null, copiedIdx: null, boardMsg: this.t().removedMsg(labelTxt) }, () => this.refreshBoardAll());
+    this.setState({ accounts: accts, boardLive: live, removeArmedIdx: null, copiedIdx: null, editingAccountIdx: null, editingAccountName: '', boardMsg: this.t().removedMsg(labelTxt) }, () => this.refreshBoardAll());
+  }
+
+  beginAccountRename(i) {
+    const account = (this.state.accounts || [])[i];
+    if (!account) return;
+    this.setState({ editingAccountIdx: i, editingAccountName: account.label || '', removeArmedIdx: null, copiedIdx: null, boardMsg: '' });
+  }
+  updateAccountRename(e) {
+    this.setState({ editingAccountName: e.target.value });
+  }
+  cancelAccountRename() {
+    this.setState({ editingAccountIdx: null, editingAccountName: '' });
+  }
+  handleAccountRenameKey(e, i) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      this.saveAccountRename(i);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      this.cancelAccountRename();
+    }
+  }
+  saveAccountRename(i) {
+    const label = String(this.state.editingAccountName || '').trim();
+    if (!label) {
+      this.setState({ boardMsg: this.t().cardRenameRequired });
+      return;
+    }
+    this.renameAccount(i, label);
+  }
+  renameAccount(i, label) {
+    const accts = (this.state.accounts || []).slice();
+    const account = accts[i];
+    if (!account) return false;
+    const nextLabel = String(label || '').trim();
+    if (!nextLabel) return false;
+    if (nextLabel === account.label) {
+      this.setState({ editingAccountIdx: null, editingAccountName: '' });
+      return true;
+    }
+    const updated = { ...account, label: nextLabel };
+    updated.color = this.pickColor(updated);
+    accts[i] = updated;
+    this.saveBoard(accts);
+    this.syncBoardHash(accts);
+    this.setState({
+      accounts: accts,
+      editingAccountIdx: null,
+      editingAccountName: '',
+      removeArmedIdx: null,
+      copiedIdx: null,
+      boardMsg: this.t().renamedMsg(nextLabel),
+    });
+    return true;
   }
 
   startAccountDrag(e, i) {
@@ -1765,7 +2312,12 @@ class Component extends DCLogic {
       return;
     }
     this.invalidateCodeWork();
-    const account = accts.splice(from, 1)[0];
+    const target = accts[to];
+    const targetGroup = target ? this.normalizeGroupName(target.group) : '';
+    let account = accts.splice(from, 1)[0];
+    if (account && target && this.normalizeGroupName(account.group) !== targetGroup) {
+      account = { ...account, group: targetGroup };
+    }
     accts.splice(to, 0, account);
     const movedLive = live.length > from ? live.splice(from, 1)[0] : null;
     live.splice(to, 0, movedLive || { code: '', codeFmt: '', sec: account.period, frac: 1 });
@@ -1789,34 +2341,51 @@ class Component extends DCLogic {
     if (!list || !list.length) return;
     this.invalidateCodeWork();
     const MAX = 200; // 上限：避免一份超大文件生成成百上千张卡 + 每秒那么多次 HMAC 拖垮页面
-    const existing = (this.state.accounts || []).slice();
+    let existing = (this.state.accounts || []).slice();
+    let groups = this.normalizeGroups((this.state.groups || []).concat(list.groups || []));
     const seen = new Map(existing.map((a, i) => [this.accountIdentity(a), i]));
-    let added = 0, truncated = false, iconUpdates = 0, updatedLabel = '';
+    let added = 0, truncated = false, iconUpdates = 0, groupUpdates = 0, updatedLabel = '';
     for (const raw of list) {
       if (existing.length >= MAX) { truncated = true; break; }
       const a = this.normalizeAccount(raw);
       if (!a) continue;
+      if (a.group && !groups.some((g) => g.toLocaleLowerCase() === a.group.toLocaleLowerCase())) groups.push(a.group);
       const k = this.accountIdentity(a);
       if (seen.has(k)) {
         const at = seen.get(k);
+        let changed = false;
+        let updated = existing[at];
         if (a.icon && existing[at].icon !== a.icon) {
-          existing[at] = { ...existing[at], icon: a.icon };
+          updated = { ...updated, icon: a.icon };
+          changed = true;
           iconUpdates++;
           updatedLabel = a.label || a.issuer || this.t().accountFallback(at + 1);
         }
+        if (a.group && this.normalizeGroupName(updated.group) !== a.group) {
+          updated = { ...updated, group: a.group };
+          changed = true;
+          groupUpdates++;
+        }
+        if (changed) existing[at] = updated;
         continue;
       }
       seen.set(k, existing.length);
       existing.push(a);
       added++;
     }
-    this.saveBoard(existing);
+    groups = this.normalizeGroups(groups.concat(existing.map((a) => a.group)));
+    const canonical = new Map(groups.map((g) => [g.toLocaleLowerCase(), g]));
+    existing = existing.map((a) => {
+      const group = canonical.get(this.normalizeGroupName(a.group).toLocaleLowerCase()) || '';
+      return this.normalizeGroupName(a.group) === group ? a : { ...a, group };
+    });
+    this.saveBoard(existing, groups);
     const live = existing.map((a, i) => (this.state.boardLive && this.state.boardLive[i]) || { code: '', codeFmt: '', sec: a.period, frac: 1 });
     this.setState({
-      mode: 'board', accounts: existing, boardLive: live,
+      mode: 'board', accounts: existing, groups, boardLive: live,
       importOpen: false, exportOpen: false, pasteValue: '',
       boardMsg: truncated ? this.t().importCap(MAX)
-        : (added ? this.t().imported(added) : (iconUpdates ? this.t().iconUpdated(updatedLabel) : this.t().alreadyInBoard)),
+        : (added ? this.t().imported(added) : (iconUpdates ? this.t().iconUpdated(updatedLabel) : (groupUpdates ? this.t().orderSaved : this.t().alreadyInBoard))),
     }, () => this.refreshBoardAll());
     document.title = this.t().titleBoard;
     // 清掉残留 hash：从 view「加入看板」后不清，刷新会被 loadFromHash 拉回单号；
@@ -1828,10 +2397,20 @@ class Component extends DCLogic {
   parseAccountsFromText(text) {
     if (!text) return [];
     let out = [];
+    let exportedGroups = [];
+    const groupMeta = /^#\s*easy2fa-groups:\s*(\[[^\r\n]*\])/mi.exec(text);
+    if (groupMeta) {
+      try {
+        const parsed = JSON.parse(groupMeta[1]);
+        if (Array.isArray(parsed)) exportedGroups = this.normalizeGroups(parsed);
+      } catch (e) {}
+    }
     const migs = text.match(/otpauth-migration:\/\/[^\s'"<>]+/gi) || [];
     for (const url of migs) out = out.concat(this.parseMigration(url));
     // JSON 记录 / CSV 表（picker 里 .json/.csv 的真实解析）——与下面的 URL 抠取互补、可叠加
-    out = out.concat(this.parseStructured(text));
+    const structured = this.parseStructured(text);
+    if (structured.groups) exportedGroups = exportedGroups.concat(structured.groups);
+    out = out.concat(structured);
     const re = /(otpauth:\/\/totp\/[^\s'"<>]+|https?:\/\/[^\s'"<>]*#[^\s'"<>]+)/gi;
     let m;
     while ((m = re.exec(text))) {
@@ -1858,6 +2437,8 @@ class Component extends DCLogic {
       seen.set(k, dedup.length);
       dedup.push(a);
     }
+    const groups = this.normalizeGroups(exportedGroups.concat(dedup.map((a) => a.group)));
+    if (groups.length) dedup.groups = groups;
     return dedup;
   }
   parseAccountUrl(s) {
@@ -1872,6 +2453,7 @@ class Component extends DCLogic {
         if (!otp.valid) return null;
         return {
           secret, label: params.get('label') || '', issuer: params.get('issuer') || '',
+          group: this.normalizeGroupName(params.get('group') || params.get('category') || ''),
           icon: this.normalizeIcon(params.get('icon') || params.get('iconData') || params.get('x') || ''),
           digits: otp.digits, period: otp.period, algorithm: otp.algorithm, valid: true,
         };
@@ -1892,10 +2474,16 @@ class Component extends DCLogic {
     if (c0 === 91 || c0 === 123) {
       try {
         const data = JSON.parse(t);
-        const rows = Array.isArray(data) ? data
-          : (data && typeof data === 'object') ? (Object.values(data).find((v) => Array.isArray(v)) || [data])
+        const groupSource = data && !Array.isArray(data) && typeof data === 'object'
+          ? (Array.isArray(data.groups) ? data.groups : (Array.isArray(data.g) ? data.g : []))
           : [];
+        const rows = Array.isArray(data) ? data
+          : (data && typeof data === 'object')
+            ? (Array.isArray(data.accounts) ? data.accounts
+              : (Array.isArray(data.a) ? data.a : (Object.values(data).find((v) => Array.isArray(v)) || [data])))
+            : [];
         for (const r of rows) { const a = this.accountFromRecord(r); if (a) out.push(a); }
+        out.groups = this.normalizeGroups(groupSource.concat(out.map((a) => a.group)));
         return out; // 是合法 JSON 就不再当 CSV 猜
       } catch (e) { /* 不是 JSON，落到 CSV / 纯文本 */ }
     }
@@ -1935,6 +2523,7 @@ class Component extends DCLogic {
       secret,
       label: pick(['label', 'name', 'account', 'accountname', 'username', 'user']),
       issuer: pick(['issuer', 'service', 'provider', 'site']),
+      group: this.normalizeGroupName(pick(['group', 'category', 'folder'])),
       icon: this.normalizeIcon(pick(['icon', 'iconurl', 'iconbase64', 'iconimage', 'x'])),
       digits: params.digits, period: params.period, algorithm: params.algorithm,
       valid: true,
@@ -2050,13 +2639,23 @@ class Component extends DCLogic {
   utf8(bytes) { try { return new TextDecoder().decode(bytes); } catch (e) { return ''; } }
 
   // —— 看板链接（#board=）整组编码 ——
-  encodeBoardParam(accounts) {
+  encodeBoardParam(accounts, groups) {
     try {
-      const data = (accounts || this.state.accounts || []).map((a) => {
+      const list = accounts || this.state.accounts || [];
+      const groupList = this.normalizeGroups(
+        (Array.isArray(groups) ? groups : (this.state.groups || []))
+          .concat(list.map((a) => a && a.group))
+      );
+      const data = {
+        v: 2,
+        g: groupList,
+        a: list.map((a) => {
         const row = { s: a.secret, l: a.label, i: a.issuer, d: a.digits, p: a.period, a: a.algorithm };
+        if (a.group) row.g = a.group;
         if (a.icon) row.x = a.icon;
         return row;
-      });
+        }),
+      };
       const bytes = new TextEncoder().encode(JSON.stringify(data));
       let bin = ''; for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
       return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -2067,17 +2666,34 @@ class Component extends DCLogic {
       const bytes = this.b64ToBytes(str);
       if (!bytes) return [];
       const data = JSON.parse(this.utf8(bytes));
-      if (!Array.isArray(data)) return [];
-      return data.map((d) => d && this.normalizeAccount({ secret: d.s, label: d.l, issuer: d.i, icon: d.x || d.icon, digits: d.d, period: d.p, algorithm: d.a }))
-                 .filter(Boolean).map((a) => ({ ...a, valid: true }));
+      const rows = Array.isArray(data) ? data
+        : (data && Array.isArray(data.a)) ? data.a
+        : (data && Array.isArray(data.accounts)) ? data.accounts
+        : null;
+      if (!rows) return [];
+      const groupSource = Array.isArray(data)
+        ? []
+        : (Array.isArray(data.g) ? data.g : (Array.isArray(data.groups) ? data.groups : []));
+      const accounts = rows.map((d) => d && this.normalizeAccount({
+        secret: d.s !== undefined ? d.s : d.secret,
+        label: d.l !== undefined ? d.l : d.label,
+        issuer: d.i !== undefined ? d.i : d.issuer,
+        group: d.g !== undefined ? d.g : d.group,
+        icon: d.x || d.icon,
+        digits: d.d !== undefined ? d.d : d.digits,
+        period: d.p !== undefined ? d.p : d.period,
+        algorithm: d.a !== undefined ? d.a : d.algorithm,
+      })).filter(Boolean).map((a) => ({ ...a, valid: true }));
+      accounts.groups = this.normalizeGroups(groupSource.concat(accounts.map((a) => a.group)));
+      return accounts;
     } catch (e) { return []; }
   }
   boardUrl() { const p = this.encodeBoardParam(); return p ? (location.origin + location.pathname + '#board=' + p) : ''; }
-  syncBoardHash(accounts) {
+  syncBoardHash(accounts, groups) {
     try {
       const params = new URLSearchParams((location.hash || '').replace(/^#/, ''));
       if (!params.has('board')) return;
-      const encoded = this.encodeBoardParam(accounts);
+      const encoded = this.encodeBoardParam(accounts, groups);
       if (!encoded) return;
       params.set('board', encoded);
       history.replaceState(null, document.title, location.pathname + location.search + '#' + params.toString());
@@ -2089,13 +2705,30 @@ class Component extends DCLogic {
     sp.set('secret', a.secret);
     if (a.label) sp.set('label', a.label);
     if (a.issuer) sp.set('issuer', a.issuer);
+    if (a.group) sp.set('group', a.group);
     if (a.icon) sp.set('icon', a.icon);
     if (a.digits !== 6) sp.set('digits', String(a.digits));
     if (a.period !== 30) sp.set('period', String(a.period));
     if (a.algorithm !== 'SHA-1') sp.set('algorithm', a.algorithm.replace('SHA-', ''));
     return location.origin + location.pathname + '#' + sp.toString();
   }
-  exportLinks() { return (this.state.accounts || []).map((a) => this.buildAccountUrl(a)).join('\n'); }
+  exportLinks() {
+    const groups = this.normalizeGroups(this.state.groups || []);
+    const header = groups.length ? '# easy2fa-groups: ' + JSON.stringify(groups) + '\n' : '';
+    return header + (this.state.accounts || []).map((a) => this.buildAccountUrl(a)).join('\n');
+  }
+  exportBackup() {
+    const accounts = (this.state.accounts || []).map((a) => ({
+      secret: a.secret, label: a.label, issuer: a.issuer, group: a.group || '',
+      icon: a.icon || '', digits: a.digits, period: a.period, algorithm: a.algorithm,
+    }));
+    return JSON.stringify({
+      format: 'easy2fa-board',
+      version: 2,
+      groups: this.normalizeGroups((this.state.groups || []).concat(accounts.map((a) => a.group))),
+      accounts,
+    }, null, 2);
+  }
 
   // —— 实时码：一个定时器驱动全部 ——
   refreshBoardAll() { this._boardCounters = []; this.boardTick(); }
@@ -2254,22 +2887,37 @@ class Component extends DCLogic {
     // —— 看板卡片（全部预计算成纯值，模板只做绑定）——
     const accts = s.accounts || [];
     const liveArr = s.boardLive || [];
+    const groups = this.normalizeGroups((s.groups || []).concat(accts.map((a) => a.group)));
+    const groupOptions = [{ value: '', label: t.groupUnassigned }].concat(groups.map((g) => ({ value: g, label: g })));
     const boardCards = accts.map((a, i) => {
       const lv = liveArr[i] || {};
       const labelTxt = a.label || a.issuer || t.accountFallback(i + 1);
+      const group = groups.find((g) => g.toLocaleLowerCase() === this.normalizeGroupName(a.group).toLocaleLowerCase()) || '';
       const frac = (lv.frac != null) ? lv.frac : 1;
       const removeArmed = s.removeArmedIdx === i;
       const dragClass = s.dragFromIdx === i
         ? ' is-account-dragging'
         : (s.dragFromIdx != null && s.dragOverIdx === i ? ' is-account-drag-over' : '');
+      const editingName = s.editingAccountIdx === i;
       return {
         index: i,
         dragClass,
+        editingName,
+        notEditingName: !editingName,
+        editName: editingName ? s.editingAccountName : '',
         color: a.color || '#0071e3',
         initial: ((labelTxt.trim()[0]) || '#').toUpperCase(),
         icon: a.icon || '',
         hasIcon: !!a.icon,
         hasNoIcon: !a.icon,
+        group,
+        groupOptions,
+        onGroupClick: (e) => e.stopPropagation(),
+        onGroupChange: (e) => {
+          e.stopPropagation();
+          this.assignAccountGroup(i, e.target.value);
+        },
+        groupAria: t.groupSelectAria(labelTxt),
         label: labelTxt,
         sub: (a.issuer && a.label) ? a.issuer : (a.algorithm + ' · ' + a.period + 's'),
         codeFmt: lv.codeFmt ? lv.codeFmt : (lv.code ? this.fmtCode(lv.code) : '· · ·  · · ·'),
@@ -2296,6 +2944,19 @@ class Component extends DCLogic {
         },
         dragTitle: t.cardDragTitle,
         dragAria: t.cardDragAria(labelTxt),
+        onRename: (e) => { e.stopPropagation(); this.beginAccountRename(i); },
+        onEditClick: (e) => e.stopPropagation(),
+        onEditInput: (e) => this.updateAccountRename(e),
+        onEditKey: (e) => this.handleAccountRenameKey(e, i),
+        onSaveName: (e) => { e.stopPropagation(); this.saveAccountRename(i); },
+        onCancelName: (e) => { e.stopPropagation(); this.cancelAccountRename(); },
+        nameRef: (input) => {
+          if (!input || input.dataset.renameReady === '1') return;
+          input.dataset.renameReady = '1';
+          requestAnimationFrame(() => { input.focus(); input.select(); });
+        },
+        renameTitle: t.cardRenameTitle,
+        renameAria: t.cardRenameAria(labelTxt),
         // The browser prefetches literal src values before template binding, so assign
         // the Base64 image only after React has created the real <img> node.
         iconRef: (img) => {
@@ -2305,6 +2966,47 @@ class Component extends DCLogic {
         removeTitle: removeArmed ? t.cardRemoveConfirm : t.cardRemoveTitle,
         removeColor: removeArmed ? '#fb7185' : 'rgba(234,242,245,.45)',
         removeBg: removeArmed ? 'rgba(251,113,133,.16)' : 'transparent',
+      };
+    });
+    const boardGroups = groups.map((name) => {
+      const cards = boardCards.filter((card) => card.group === name);
+      return {
+        name,
+        cards,
+        hasCards: cards.length > 0,
+        isEmpty: cards.length === 0,
+        countLabel: t.groupManagerCount(cards.length),
+      };
+    });
+    const unassignedCards = boardCards.filter((card) => !card.group);
+    if (unassignedCards.length) {
+      boardGroups.push({
+        name: t.groupUnassigned,
+        cards: unassignedCards,
+        hasCards: true,
+        isEmpty: false,
+        countLabel: t.groupManagerCount(unassignedCards.length),
+      });
+    }
+    const groupRows = groups.map((name) => {
+      const count = boardCards.filter((card) => card.group === name).length;
+      const editing = s.editingGroupName === name;
+      const deleteArmed = s.deleteArmedGroup === name;
+      return {
+        name,
+        countLabel: t.groupManagerCount(count),
+        editing,
+        notEditing: !editing,
+        editValue: editing ? s.editingGroupValue : '',
+        deleteClass: deleteArmed ? ' is-danger' : '',
+        deleteLabel: deleteArmed ? t.groupDeleteConfirm : t.groupDelete,
+        deleteTitle: t.groupDeleteTitle,
+        onRename: (e) => { e.stopPropagation(); this.beginGroupRename(name); },
+        onEditInput: (e) => this.updateGroupRename(e),
+        onEditKey: (e) => this.handleGroupRenameKey(e, name),
+        onSave: (e) => { e.stopPropagation(); this.renameGroup(name, this.state.editingGroupValue); },
+        onCancel: (e) => { e.stopPropagation(); this.cancelGroupRename(); },
+        onDelete: (e) => { e.stopPropagation(); this.armOrDeleteGroup(name); },
       };
     });
 
@@ -2386,10 +3088,18 @@ class Component extends DCLogic {
 
       // —— 多号看板 ——
       isBoard: s.mode === 'board',
-      boardCount: accts.length ? t.accountsCount(accts.length) : t.boardNone,
+      boardCount: accts.length
+        ? t.accountsCount(accts.length) + (groups.length ? ' · ' + t.groupsCount(groups.length) : '')
+        : t.boardNone,
       boardEmpty: s.mode === 'board' && accts.length === 0 && !s.importOpen,
       hasAccounts: accts.length > 0,
       boardCards,
+      boardGroups,
+      groupPanelOpen: s.groupPanelOpen,
+      groupNameDraft: s.groupNameDraft,
+      groupRows,
+      hasGroups: groups.length > 0,
+      noGroups: groups.length === 0,
       importOpen: s.importOpen,
       exportOpen: s.exportOpen,
       boardMsg: s.boardMsg,
@@ -2398,8 +3108,12 @@ class Component extends DCLogic {
       exportText: s.exportOpen ? this.exportLinks() : '', // 只在导出面板打开时才拼全部链接，省去每秒重建
       onGoBoard: () => this.goBoard(),
       onGoSetup: () => this.goSetup(),
-      onToggleImport: () => this.setState({ importOpen: !this.state.importOpen, exportOpen: false, boardMsg: '' }),
-      onExport: () => this.setState({ exportOpen: !this.state.exportOpen, importOpen: false }),
+      onToggleImport: () => this.setState({ importOpen: !this.state.importOpen, exportOpen: false, groupPanelOpen: false, boardMsg: '' }),
+      onToggleGroups: () => this.setState({ groupPanelOpen: !this.state.groupPanelOpen, importOpen: false, exportOpen: false, boardMsg: '', editingGroupName: '', editingGroupValue: '', deleteArmedGroup: '' }),
+      onExport: () => this.setState({ exportOpen: !this.state.exportOpen, importOpen: false, groupPanelOpen: false }),
+      onGroupDraft: (e) => this.setState({ groupNameDraft: e.target.value }),
+      onGroupDraftKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.addGroup(); } },
+      onCreateGroup: () => this.addGroup(),
       onClearBoard: () => this.armOrClear(),
       clearLabel: s.clearArmed ? t.boardClearConfirm : t.boardClear,
       onPickFile: () => this.pickFile(),
@@ -2409,6 +3123,7 @@ class Component extends DCLogic {
       onReadClipboard: () => this.readClipboardImport(),
       onCopyLinks: () => { const txt = this.exportLinks(); if (txt) this.copyText(txt, 'linksCopied'); },
       onDownloadLinks: () => { const txt = this.exportLinks(); if (txt) this.downloadText('easy2fa-accounts.txt', txt); },
+      onDownloadBackup: () => this.downloadText('easy2fa-board-backup.json', this.exportBackup()),
       onCopyBoardUrl: () => {
         const u = this.boardUrl(); if (!u) return;
         this.copyText(u, 'boardUrlCopied');

@@ -37,12 +37,12 @@ const METHODS = [
   'base32Decode', 'base32Encode', 'totp', 'utf8', 'b64ToBytes',
   'pbReaders', 'decodeMigration', 'decodeOtpParam', 'parseMigration',
   'clampDigits', 'clampPeriod', 'normAlgo', 'otpParams', 'otpParamError',
-  'loadFromHash', 'commitParse', 'loadBoard', 'saveBoard',
+  'loadFromHash', 'commitParse', 'loadBoard', 'loadBoardData', 'saveBoard',
   'parseInput', 'parseAccountUrl', 'parseAccountsFromText',
   'parseStructured', 'accountFromRecord', 'csvSplit',
-  'hashStr', 'pickColor', 'normalizeIcon', 'iconFromFile', 'normalizeAccount', 'otpIdentity', 'accountIdentity',
-  'refresh', 'refreshPreview', 'computeBoardCodes', 'invalidateCodeWork', 'addAccounts', 'armOrRemove', 'removeAccount', 'moveAccount', 'animateTo', 'goBoard', 'goSetup', 'boardTick', 'tick',
-  'encodeBoardParam', 'decodeBoardParam', 'buildAccountUrl', 'fmtCode',
+  'hashStr', 'pickColor', 'normalizeIcon', 'iconFromFile', 'normalizeAccount', 'normalizeGroupName', 'normalizeGroups', 'otpIdentity', 'accountIdentity',
+  'refresh', 'refreshPreview', 'computeBoardCodes', 'invalidateCodeWork', 'addAccounts', 'addGroup', 'assignAccountGroup', 'armOrRemove', 'removeAccount', 'moveAccount', 'renameAccount', 'renameGroup', 'beginGroupRename', 'deleteGroup', 'animateTo', 'goBoard', 'goSetup', 'boardTick', 'tick',
+  'encodeBoardParam', 'decodeBoardParam', 'buildAccountUrl', 'exportLinks', 'exportBackup', 'fmtCode',
 ];
 
 function extractMethod(html, name) {
@@ -302,11 +302,17 @@ async function run(){
   const n1 = app.normalizeAccount({ secret: 'jbswy3dpehpk3pxp' });
   const n2 = app.normalizeAccount({ secret: 'JBSWY3DPEHPK3PXP' });
   check('accountIdentity ignores icon changes', app.accountIdentity({ ...n1, icon: ICON }) === app.accountIdentity({ ...n1, icon: '' }));
+  const grouped = app.normalizeAccount({ secret: 'JBSWY3DPEHPK3PXP', label: 'work', group: '  Work   Team  ' });
+  check('normalizeAccount trims and preserves a group name', grouped.group === 'Work Team');
+  check('accountIdentity ignores group changes', app.accountIdentity(grouped) === app.accountIdentity({ ...grouped, group: 'Personal' }));
+  check('normalizeGroups trims, deduplicates, and preserves order', app.normalizeGroups([' Work ', 'Personal', 'work', '', null]).join('|') === 'Work|Personal');
   const oldIconBoard = localStorage.getItem('easy2fa.board');
   try {
-    app.saveBoard([{ ...n1, icon: ICON }]);
+    app.saveBoard([{ ...n1, icon: ICON, group: 'Work' }], ['Work', 'Empty']);
     const cachedIcon = app.loadBoard();
+    const cachedData = app.loadBoardData();
     check('saveBoard/loadBoard preserve icon data URL', cachedIcon.length === 1 && cachedIcon[0].icon === ICON);
+    check('saveBoard/loadBoardData preserve groups and account assignments', cachedData.groups.join('|') === 'Work|Empty' && cachedData.accounts[0].group === 'Work');
   } finally {
     if (oldIconBoard === null) localStorage.removeItem('easy2fa.board');
     else localStorage.setItem('easy2fa.board', oldIconBoard);
@@ -316,14 +322,15 @@ async function run(){
   // ---- 看板链接编码往返 ----
   group('#board= 编码');
   app.state = { accounts: [
-    app.normalizeAccount({ secret: 'JBSWY3DPEHPK3PXP', label: 'A', issuer: 'Acme', icon: ICON, digits: 8, period: 60, algorithm: 'SHA-256' }),
+    app.normalizeAccount({ secret: 'JBSWY3DPEHPK3PXP', label: 'A', issuer: 'Acme', group: 'Work', icon: ICON, digits: 8, period: 60, algorithm: 'SHA-256' }),
     app.normalizeAccount({ secret: 'GEZDGNBVGY3TQOJQ', label: 'B' }),
-  ] };
+  ], groups: ['Work', 'Empty'] };
   const bp = app.encodeBoardParam();
   check('encodeBoardParam 非空且 URL-safe', !!bp && !/[+/=]/.test(bp));
   const back = app.decodeBoardParam(bp);
   check('board round-trip preserves icon data URL', back[0] && back[0].icon === ICON);
   check('board 往返数量 = 2', back.length === 2, 'got ' + back.length);
+  check('board round-trip preserves groups and empty groups', back.groups.join('|') === 'Work|Empty' && back[0].group === 'Work');
   check('board 往返字段完整（A/8位/60s/SHA-256）',
     back[0] && back[0].secret === 'JBSWY3DPEHPK3PXP' && back[0].label === 'A' && back[0].issuer === 'Acme'
     && back[0].digits === 8 && back[0].period === 60 && back[0].algorithm === 'SHA-256');
@@ -337,7 +344,16 @@ async function run(){
   const u2 = new URLSearchParams(app.buildAccountUrl({ secret: 'JBSWY3DPEHPK3PXP', label: '', issuer: '', digits: 6, period: 30, algorithm: 'SHA-1' }).split('#')[1]);
   const uIcon = new URLSearchParams(app.buildAccountUrl({ secret: 'JBSWY3DPEHPK3PXP', label: 'GitHub', issuer: 'Acme', icon: ICON, digits: 6, period: 30, algorithm: 'SHA-1' }).split('#')[1]);
   check('buildAccountUrl includes icon data URL', uIcon.get('icon') === ICON);
+  const uGroup = app.buildAccountUrl({ secret: 'JBSWY3DPEHPK3PXP', label: 'GitHub', issuer: 'Acme', group: 'Work', digits: 6, period: 30, algorithm: 'SHA-1' });
+  check('buildAccountUrl includes group', new URLSearchParams(uGroup.split('#')[1]).get('group') === 'Work');
+  check('parseAccountUrl restores group', app.parseAccountUrl(uGroup).group === 'Work');
   check('默认参数省略（hash 只有 secret）', u2.get('secret') === 'JBSWY3DPEHPK3PXP' && !u2.has('digits') && !u2.has('period') && !u2.has('algorithm') && !u2.has('label'));
+  const exportedLinks = app.exportLinks();
+  const importedLinks = app.parseAccountsFromText(exportedLinks);
+  check('link export preserves group metadata and assignments', exportedLinks.startsWith('# easy2fa-groups:') && importedLinks.groups.join('|') === 'Work|Empty' && importedLinks[0].group === 'Work');
+  const exportedBackup = app.exportBackup();
+  const importedBackup = app.parseAccountsFromText(exportedBackup);
+  check('JSON backup restores groups and account assignments', importedBackup.length === 2 && importedBackup.groups.join('|') === 'Work|Empty' && importedBackup[0].group === 'Work');
 
   // ---- 验证码分组显示 ----
   group('fmtCode');
@@ -495,12 +511,58 @@ async function run(){
       refreshBoardAll() { mx.refreshed = true; },
       setState(update, callback) { mx.state = { ...mx.state, ...update }; if (callback) callback(); },
     };
+    mx.normalizeGroupName = app.normalizeGroupName;
     mx.moveAccount = app.moveAccount;
     app.moveAccount.call(mx, 0, 2);
     check('drag reorder moves the account to the drop index', mx.state.accounts.map((a) => a.label).join('') === 'BCA');
     check('drag reorder keeps each live code attached to its account', mx.state.boardLive.map((x) => x.code).join(',') === '222222,333333,111111');
     check('drag reorder is persisted in the saved board order', mx.saved.map((a) => a.label).join('') === 'BCA' && mx.synced.map((a) => a.label).join('') === 'BCA');
     check('drag reorder clears transient card state and refreshes codes', mx.state.dragFromIdx === null && mx.state.dragOverIdx === null && mx.state.removeArmedIdx === null && mx.state.copiedIdx === null && mx.refreshed === true);
+    const nx = {
+      state: {
+        accounts: [{ secret: 'JBSWY3DPEHPK3PXP', label: 'Old name', issuer: 'App', digits: 6, period: 30, algorithm: 'SHA-1', color: '#old' }],
+        editingAccountIdx: 0,
+        editingAccountName: ' New name ',
+        removeArmedIdx: 0,
+        copiedIdx: 1,
+      },
+      t: () => ({ renamedMsg: (label) => 'renamed:' + label }),
+      pickColor(account) { nx.colorSource = account; return '#new'; },
+      saveBoard(accounts) { nx.saved = accounts.slice(); },
+      syncBoardHash(accounts) { nx.synced = accounts.slice(); },
+      setState(update) { nx.state = { ...nx.state, ...update }; },
+    };
+    nx.renameAccount = app.renameAccount;
+    const renamed = app.renameAccount.call(nx, 0, '  New name  ');
+    check('rename trims and updates the account label', renamed === true && nx.state.accounts[0].label === 'New name');
+    check('rename persists the new name in storage and the board link', nx.saved[0].label === 'New name' && nx.synced[0].label === 'New name');
+    check('rename updates the derived color and closes the editor', nx.state.accounts[0].color === '#new' && nx.colorSource.label === 'New name' && nx.state.editingAccountIdx === null && nx.state.editingAccountName === '' && nx.state.removeArmedIdx === null && nx.state.copiedIdx === null);
+    const emptyRename = app.renameAccount.call(nx, 0, '   ');
+    check('rename rejects an empty account name', emptyRename === false && nx.state.accounts[0].label === 'New name');
+    const gx = Object.create(app);
+    gx.state = {
+      accounts: [{ secret: 'JBSWY3DPEHPK3PXP', label: 'A', issuer: '', group: '', digits: 6, period: 30, algorithm: 'SHA-1', color: '#old' }],
+      groups: [],
+    };
+    gx.t = () => ({
+      groupRequired: 'required', groupDuplicate: 'duplicate', groupCreated: (n) => 'created:' + n,
+      groupAssigned: (l, g) => 'assigned:' + l + ':' + g, accountFallback: (i) => 'account:' + i,
+      groupRenamed: (n) => 'renamed:' + n, groupDeleteConfirm: 'confirm', groupDeleted: (n) => 'deleted:' + n,
+    });
+    gx.saveBoard = (accounts, groups) => { gx.saved = { accounts: accounts.slice(), groups: groups.slice() }; };
+    gx.syncBoardHash = (accounts, groups) => { gx.synced = { accounts: accounts.slice(), groups: groups.slice() }; };
+    gx.setState = function(update) { this.state = { ...this.state, ...update }; };
+    check('addGroup creates and persists a group', gx.addGroup('  Work  ') === true && gx.state.groups.join('|') === 'Work' && gx.saved.groups.join('|') === 'Work');
+    check('addGroup rejects duplicate names case-insensitively', gx.addGroup('work') === false && gx.state.groups.length === 1);
+    check('assignAccountGroup moves an account into an existing group', gx.assignAccountGroup(0, 'Work') === true && gx.state.accounts[0].group === 'Work' && gx.saved.accounts[0].group === 'Work');
+    check('renameGroup updates the group and all assigned accounts', gx.renameGroup('Work', 'Office') === true && gx.state.groups.join('|') === 'Office' && gx.state.accounts[0].group === 'Office' && gx.synced.groups.join('|') === 'Office');
+    check('deleteGroup keeps accounts and moves them to unassigned', gx.deleteGroup('Office') === true && gx.state.groups.length === 0 && gx.state.accounts.length === 1 && gx.state.accounts[0].group === '');
+    const xg = fixture();
+    xg.state = { accounts: [], groups: [], boardLive: [], importOpen: false, exportOpen: false, pasteValue: '', mode: 'board' };
+    const groupedImport = [{ ...acct, label: 'grouped', group: 'Personal' }];
+    groupedImport.groups = ['Personal', 'Empty'];
+    xg.addAccounts(groupedImport);
+    check('addAccounts imports group order and assigns the account', xg.state.groups.join('|') === 'Personal|Empty' && xg.state.accounts[0].group === 'Personal');
     check('实际加入看板保留四种配置并跳过规范化重复',x.state.accounts.length===4);
   } finally { Date.now=originalNow; }
 
