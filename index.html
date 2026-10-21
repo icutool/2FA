@@ -126,6 +126,67 @@
     .app-shell .view-card{
       background:linear-gradient(145deg,rgba(255,255,255,.64),rgba(237,248,255,.46))!important;
     }
+    .view-identity{
+      width:100%;
+      min-width:0;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .view-account-icon{
+      flex:none;
+      width:44px;
+      height:44px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      border:1px solid color-mix(in srgb,var(--v) 18%,rgba(255,255,255,.9));
+      border-radius:14px;
+      background:color-mix(in srgb,var(--v) 14%,#fff);
+      color:var(--v);
+      font-family:var(--font-sans);
+      font-size:18px;
+      font-weight:700;
+    }
+    .view-account-icon img{
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:cover;
+    }
+    .view-identity-copy{
+      min-width:0;
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .view-app-name{
+      color:var(--ink);
+      font-family:var(--font-sans);
+      font-size:17px;
+      font-weight:700;
+      line-height:1.3;
+      letter-spacing:-.02em;
+      overflow-wrap:anywhere;
+    }
+    .view-account-name{
+      color:var(--secondary);
+      font-family:var(--font-sans);
+      font-size:12px;
+      font-weight:500;
+      line-height:1.45;
+      overflow-wrap:anywhere;
+    }
+    .qr-image{
+      width:min(180px,62vw)!important;
+      height:auto!important;
+      aspect-ratio:1;
+      display:block;
+      border-radius:12px;
+      background:#fff;
+    }
     .app-shell .setup-card{
       background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(238,248,255,.52))!important;
     }
@@ -325,6 +386,30 @@
       border-color:color-mix(in srgb,var(--c) 24%,rgba(255,255,255,.92))!important;
       box-shadow:0 22px 48px rgba(42,91,134,.16),0 0 0 1px color-mix(in srgb,var(--c) 9%,transparent),inset 0 1px 0 rgba(255,255,255,.98)!important;
     }
+    .account-card .account-meta{
+      width:100%;
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:3px;
+    }
+    .account-card .account-name{
+      color:var(--ink);
+      font-family:var(--font-sans);
+      font-size:14px;
+      font-weight:650;
+      line-height:1.4;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .account-card .account-app{
+      color:var(--secondary);
+      font-family:var(--font-sans);
+      font-size:11px;
+      line-height:1.45;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
     .account-card [style*="width:30px;height:30px"],
     .account-card [style*="width: 30px; height: 30px"]{
       background:color-mix(in srgb,var(--c) 12%,#fff)!important;
@@ -456,12 +541,27 @@
     <div style="position:relative;z-index:1;width:100%;max-width:{{ viewMaxW }};display:flex;flex-direction:column;align-items:center;gap:24px;animation:cardIn .6s cubic-bezier(.2,.8,.2,1) both;">
       <div class="view-card" style="position:relative;width:100%;background:linear-gradient(180deg,rgba(18,28,34,.66),rgba(8,13,17,.66));display:flex;flex-direction:column;align-items:center;gap:26px;overflow:hidden;">
 
-        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
-          <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent,#22d3ee);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ labelName }}</div>
-          <div style="display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;color:rgba(234,242,245,.55);">
-            <span style="width:7px;height:7px;border-radius:50%;background:var(--accent,#22d3ee);box-shadow:0 0 10px var(--accent,#22d3ee);animation:pulseDot 1.6s ease-in-out infinite;"></span>LIVE
+        <sc-if value="{{ showViewIdentity }}" hint-placeholder-val="{{ true }}">
+          <div class="view-identity">
+            <div class="view-account-icon" style="--v:{{ viewColor }};">
+              <sc-if value="{{ viewHasIcon }}" hint-placeholder-val="{{ false }}">
+                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" ref="{{ viewIconRef }}" alt="">
+              </sc-if>
+              <sc-if value="{{ viewHasNoIcon }}" hint-placeholder-val="{{ true }}">
+                <span>{{ viewInitial }}</span>
+              </sc-if>
+            </div>
+            <div class="view-identity-copy">
+              <div class="view-app-name">{{ viewAppName }}</div>
+              <sc-if value="{{ viewAccountName }}" hint-placeholder-val="">
+                <div class="view-account-name">{{ viewAccountName }}</div>
+              </sc-if>
+            </div>
+            <div style="flex:none;display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;color:rgba(234,242,245,.55);">
+              <span style="width:7px;height:7px;border-radius:50%;background:var(--accent,#22d3ee);box-shadow:0 0 10px var(--accent,#22d3ee);animation:pulseDot 1.6s ease-in-out infinite;"></span>LIVE
+            </div>
           </div>
-        </div>
+        </sc-if>
 
         <div class="code-row" style="display:flex;align-items:center;">
           <div class="code-group" style="display:flex;">
@@ -500,15 +600,15 @@
 
           <button onClick="{{ onToggleQr }}" style="width:100%;height:40px;border:1px solid rgba(255,255,255,.16);border-radius:9999px;background:rgba(255,255,255,.05);color:#eaf2f5;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(255,255,255,.1);">{{ qrLabel }}</button>
           <sc-if value="{{ showQr }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px;border-radius:12px;background:#fff;">
-              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" ref="{{ qrRef }}" alt="otpauth QR" loading="lazy" decoding="async" style="width:180px;height:180px;image-rendering:pixelated;display:block;">
-            </div>
+            <img class="qr-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" ref="{{ qrRef }}" alt="otpauth QR" loading="lazy" decoding="async" style="image-rendering:pixelated;">
           </sc-if>
         </sc-if>
       </div>
 
       <sc-if value="{{ showViewChrome }}" hint-placeholder-val="{{ true }}">
         <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center;">
+          <button onClick="{{ onGoBoard }}" style="height:34px;padding:0 14px;border:1px solid color-mix(in srgb,var(--accent,#22d3ee) 30%,rgba(255,255,255,.7));border-radius:9999px;background:rgba(255,255,255,.55);color:var(--accent,#0071e3);font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer;" style-hover="background:#fff;">← {{ t.backBoard }}</button>
+          <span style="color:rgba(234,242,245,.2);font-size:11px;">·</span>
           <button onClick="{{ onAddAnother }}" style="background:none;border:none;color:rgba(234,242,245,.5);font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;padding:8px 12px;border-radius:9999px;" style-hover="color:var(--accent,#22d3ee);">{{ t.newCode }}</button>
           <span style="color:rgba(234,242,245,.2);font-size:11px;">·</span>
           <button onClick="{{ onAddToBoard }}" style="background:none;border:none;color:rgba(234,242,245,.5);font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;padding:8px 12px;border-radius:9999px;" style-hover="color:var(--accent,#22d3ee);">{{ t.addToBoard }}</button>
@@ -577,8 +677,8 @@
 
             <button onClick="{{ onToggleQr }}" style="width:100%;height:42px;border:1px solid rgba(255,255,255,.16);border-radius:9999px;background:rgba(255,255,255,.05);color:#eaf2f5;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(255,255,255,.1);">{{ qrLabel }}</button>
             <sc-if value="{{ showQr }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;justify-content:center;padding:14px;border-radius:12px;background:#fff;">
-                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" ref="{{ qrRef }}" alt="otpauth QR" loading="lazy" decoding="async" style="width:180px;height:180px;image-rendering:pixelated;display:block;">
+              <div style="display:flex;justify-content:center;">
+                <img class="qr-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" ref="{{ qrRef }}" alt="otpauth QR" loading="lazy" decoding="async" style="image-rendering:pixelated;">
               </div>
             </sc-if>
 
@@ -674,7 +774,7 @@
         <div class="board-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(208px,1fr));gap:14px;">
           <sc-for list="{{ boardCards }}" as="card" hint-placeholder-count="6">
             <div class="account-card" onClick="{{ card.onCopy }}" onKeyDown="{{ card.onKey }}" role="button" tabindex="0" aria-label="{{ card.copyAria }}" title="{{ card.copyAria }}" style="--c:{{ card.color }};position:relative;cursor:pointer;padding:16px 17px 14px;background:linear-gradient(180deg,rgba(18,28,34,.6),rgba(8,13,17,.6));overflow:hidden;display:flex;flex-direction:column;gap:11px;">
-              <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-width:0;">
                 <button class="account-icon" onClick="{{ card.onPickIcon }}" title="{{ t.cardIconTitle }}" aria-label="{{ card.iconAria }}" style="flex:none;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:14px;font-weight:700;color:#04060a;background:var(--c);padding:0;cursor:pointer;overflow:hidden;">
                   <sc-if value="{{ card.hasIcon }}" hint-placeholder-val="{{ false }}">
                     <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" ref="{{ card.iconRef }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">
@@ -684,15 +784,15 @@
                   </sc-if>
                   <span class="account-icon-edit" aria-hidden="true">✎</span>
                 </button>
-                <div style="min-width:0;display:flex;flex-direction:column;gap:1px;flex:1;">
-                  <div style="font-family:var(--font-sans);font-size:13px;font-weight:600;color:#eaf2f5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ card.label }}</div>
-                  <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;color:rgba(234,242,245,.6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ card.sub }}</div>
-                </div>
                 <div style="display:flex;gap:2px;flex:none;">
                   <button onClick="{{ card.onOpen }}" title="{{ t.cardOpenTitle }}" aria-label="{{ t.cardOpenTitle }}" style="width:24px;height:24px;border:none;border-radius:6px;background:transparent;color:rgba(234,242,245,.45);font-family:var(--font-mono);font-size:13px;line-height:1;padding:0;cursor:pointer;" style-hover="background:rgba(255,255,255,.09);color:var(--accent,#22d3ee);">↗</button>
                   <button onClick="{{ card.onCopyLink }}" title="{{ t.cardLinkTitle }}" aria-label="{{ t.cardLinkTitle }}" style="width:24px;height:24px;border:none;border-radius:6px;background:transparent;color:rgba(234,242,245,.45);font-size:11px;line-height:1;padding:0;cursor:pointer;" style-hover="background:rgba(255,255,255,.09);color:var(--accent,#22d3ee);">🔗</button>
                   <button onClick="{{ card.onRemove }}" title="{{ card.removeTitle }}" aria-label="{{ card.removeTitle }}" style="width:24px;height:24px;border:none;border-radius:6px;background:{{ card.removeBg }};color:{{ card.removeColor }};font-family:var(--font-mono);font-size:13px;line-height:1;padding:0;cursor:pointer;" style-hover="background:rgba(251,113,133,.16);color:#fb7185;">✕</button>
                 </div>
+              </div>
+              <div class="account-meta">
+                <div class="account-name">{{ card.label }}</div>
+                <div class="account-app">{{ card.sub }}</div>
               </div>
               <div style="font-family:var(--font-mono);font-size:29px;font-weight:600;letter-spacing:.06em;color:#fff;text-shadow:0 0 18px color-mix(in srgb,var(--c) 55%,transparent);">{{ card.codeFmt }}</div>
               <div style="display:flex;align-items:center;gap:9px;">
@@ -721,7 +821,7 @@ const STR = {
     code: '验证码',
     copyCode: '复制验证码', showQr: '显示二维码 ⃞', hideQr: '隐藏二维码',
     newCode: '+ 新建验证码', addToBoard: '加入看板', presentMode: '🖥 演示模式', exitPresent: '✕ 退出演示',
-    newCodeTitle: '新建验证码', boardNav: '▦ 多账号看板',
+    newCodeTitle: '新建验证码', boardNav: '▦ 多账号看板', backBoard: '返回看板',
     secretLabel: '密钥 / SECRET', scanImport: '⃞ 扫码导入', secretPlaceholder: '粘贴 2FA 密钥、otpauth:// 或 Google Authenticator 迁移链接',
     labelLabel: '账号名称 / LABEL', labelPlaceholder: '例如 GitHub',
     bookmark: '专属链接 / BOOKMARK', copyLink: '复制链接',
@@ -739,9 +839,9 @@ const STR = {
     boardNone: '还没有账号', accountFallback: (i) => '账号 ' + i,
     accountsCount: (n) => n + ' 个账号', copyCodeOf: (l) => '复制 ' + l + ' 的验证码',
     cardOpenTitle: '打开单号页', cardLinkTitle: '复制该号链接', cardRemoveTitle: '移除',
-    cardRemoveConfirm: '再点一次确认移除',
+    cardRemoveConfirm: '再点一次确认移除', cardRemoveArmed: (l) => '再点一次移除「' + l + '」',
     cardIconTitle: '设置自定义图标', cardIconAria: (l) => '设置 ' + l + ' 的图标',
-    iconUpdated: (l) => (l ? l + ' 的图标已更新' : '图标已更新'), iconType: '请选择 PNG、JPEG、WebP、GIF 或 AVIF 图片',
+    iconUpdated: (l) => (l ? l + ' 的图标已更新' : '图标已更新'), iconType: '请选择 PNG、JPEG、WebP、GIF、AVIF 或 ICO 图片',
     iconTooLarge: '图片不能超过 5MB', iconFail: '图标处理失败，请换一张图片',
     removedMsg: (l) => '已移除「' + l + '」（重新导入即可恢复）',
     cardLinkCopied: '已复制该账号链接 ✓——链接含密钥，请走可信渠道',
@@ -766,7 +866,7 @@ const STR = {
     code: 'Code',
     copyCode: 'Copy code', showQr: 'Show QR ⃞', hideQr: 'Hide QR',
     newCode: '+ New code', addToBoard: 'Add to board', presentMode: '🖥 Presentation', exitPresent: '✕ Exit',
-    newCodeTitle: 'New code', boardNav: '▦ Multi-account board',
+    newCodeTitle: 'New code', boardNav: '▦ Multi-account board', backBoard: 'Back to board',
     secretLabel: 'SECRET', scanImport: '⃞ Scan QR', secretPlaceholder: 'Paste a 2FA secret, an otpauth:// link, or a Google Authenticator migration link',
     labelLabel: 'LABEL', labelPlaceholder: 'e.g. GitHub',
     bookmark: 'BOOKMARK LINK', copyLink: 'Copy link',
@@ -784,9 +884,9 @@ const STR = {
     boardNone: 'No accounts yet', accountFallback: (i) => 'Account ' + i,
     accountsCount: (n) => n + (n === 1 ? ' account' : ' accounts'), copyCodeOf: (l) => 'Copy code for ' + l,
     cardOpenTitle: 'Open single view', cardLinkTitle: 'Copy account link', cardRemoveTitle: 'Remove',
-    cardRemoveConfirm: 'Click again to confirm removal',
+    cardRemoveConfirm: 'Click again to confirm removal', cardRemoveArmed: (l) => 'Click again to remove “' + l + '”',
     cardIconTitle: 'Set a custom icon', cardIconAria: (l) => 'Set icon for ' + l,
-    iconUpdated: (l) => (l ? l + ' icon updated' : 'Icon updated'), iconType: 'Choose a PNG, JPEG, WebP, GIF, or AVIF image',
+    iconUpdated: (l) => (l ? l + ' icon updated' : 'Icon updated'), iconType: 'Choose a PNG, JPEG, WebP, GIF, AVIF, or ICO image',
     iconTooLarge: 'The image must be 5MB or smaller', iconFail: 'Could not process that image',
     removedMsg: (l) => 'Removed “' + l + '” (re-import to restore)',
     cardLinkCopied: 'Account link copied ✓ — it contains the secret, share with care',
@@ -1391,7 +1491,7 @@ class Component extends DCLogic {
     if (typeof value !== 'string') return '';
     const raw = value.trim();
     if (!raw || raw.length > 131072) return '';
-    const dataUrl = /^data:image\/(?:png|jpe?g|webp|gif|avif);base64,/i.test(raw)
+    const dataUrl = /^data:image\/(?:png|jpe?g|webp|gif|avif|ico|x-icon|vnd\.microsoft\.icon);base64,/i.test(raw)
       ? raw
       : (/^[A-Za-z0-9+/]+={0,2}$/.test(raw) ? 'data:image/png;base64,' + raw : '');
     if (!dataUrl) return '';
@@ -1402,19 +1502,38 @@ class Component extends DCLogic {
   }
 
   async iconFromFile(file) {
-    if (!file || !/^image\/(?:png|jpe?g|webp|gif|avif)$/i.test(file.type || '')) throw new Error('icon-type');
+    const mime = (file && file.type) || '';
+    const isIco = /\.ico$/i.test((file && file.name) || '');
+    const typeOk = /^image\/(?:png|jpe?g|webp|gif|avif|ico|x-icon|vnd\.microsoft\.icon)$/i.test(mime)
+      || (isIco && (!mime || /^application\/octet-stream$/i.test(mime)));
+    if (!file || !typeOk) throw new Error('icon-type');
     if (file.size > 5 * 1024 * 1024) throw new Error('icon-size');
-    const bitmap = await createImageBitmap(file);
+    let bitmap = null;
+    let objectUrl = '';
     try {
+      if (typeof createImageBitmap === 'function') {
+        try { bitmap = await createImageBitmap(file); } catch (e) {}
+      }
+      if (!bitmap) {
+        objectUrl = URL.createObjectURL(file);
+        bitmap = await new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error('icon-fail'));
+          img.src = objectUrl;
+        });
+      }
       const size = 128;
       const canvas = document.createElement('canvas');
       canvas.width = size;
       canvas.height = size;
       const ctx = canvas.getContext('2d');
       if (!ctx) throw new Error('icon-fail');
-      const scale = Math.max(size / bitmap.width, size / bitmap.height);
-      const width = Math.max(1, Math.round(bitmap.width * scale));
-      const height = Math.max(1, Math.round(bitmap.height * scale));
+      const sourceWidth = bitmap.naturalWidth || bitmap.width;
+      const sourceHeight = bitmap.naturalHeight || bitmap.height;
+      const scale = Math.max(size / sourceWidth, size / sourceHeight);
+      const width = Math.max(1, Math.round(sourceWidth * scale));
+      const height = Math.max(1, Math.round(sourceHeight * scale));
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(bitmap, Math.round((size - width) / 2), Math.round((size - height) / 2), width, height);
@@ -1424,7 +1543,8 @@ class Component extends DCLogic {
       if (!icon) throw new Error('icon-fail');
       return icon;
     } finally {
-      try { bitmap.close(); } catch (e) {}
+      try { if (bitmap && bitmap.close) bitmap.close(); } catch (e) {}
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
     }
   }
 
@@ -1434,7 +1554,7 @@ class Component extends DCLogic {
     const targetIdentity = this.accountIdentity(account);
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = 'image/png,image/jpeg,image/webp,image/gif,image/avif';
+    input.accept = '.ico,image/ico,image/x-icon,image/vnd.microsoft.icon,image/png,image/jpeg,image/webp,image/gif,image/avif';
     input.onchange = async () => {
       const file = input.files && input.files[0];
       if (!file) return;
@@ -1521,9 +1641,11 @@ class Component extends DCLogic {
   // 移除同「清空」一样走两步确认：第一次点武装该卡 2.2s，期间再点才真删
   armOrRemove(i) {
     if (this.state.removeArmedIdx === i) { clearTimeout(this._removeT); this.removeAccount(i); return; }
-    this.setState({ removeArmedIdx: i });
+    const account = (this.state.accounts || [])[i];
+    const label = account && (account.label || account.issuer || this.t().accountFallback(i + 1));
+    this.setState({ removeArmedIdx: i, boardMsg: this.t().cardRemoveArmed(label || '') });
     clearTimeout(this._removeT);
-    this._removeT = setTimeout(() => this.setState({ removeArmedIdx: null }), 2200);
+    this._removeT = setTimeout(() => this.setState({ removeArmedIdx: null, boardMsg: '' }), 2200);
   }
   removeAccount(i) {
     this.invalidateCodeWork();
@@ -2035,11 +2157,12 @@ class Component extends DCLogic {
 
     // —— 演示模式（present）：放大字号、隐藏会引出密钥的 UI ——
     const isPresent = isView && s.present;
-    const nolabel = isPresent && s.nolabel;
     const digitW = isPresent ? 'clamp(40px,11vw,70px)' : '46px';
     const digitH = isPresent ? 'clamp(58px,15.5vw,100px)' : '66px';
     const digitF = isPresent ? 'clamp(34px,9vw,58px)' : '40px';
     const viewMaxW = isPresent ? '680px' : '400px';
+    const viewAppName = s.issuer || s.label || t.code;
+    const viewAccountName = (s.issuer && s.label && s.label !== s.issuer) ? s.label : '';
 
     return {
       rootRef: this.rootRef,
@@ -2054,7 +2177,16 @@ class Component extends DCLogic {
       useBar: progressStyle === 'bar',
       leftDigits: chars.slice(0, mid),
       rightDigits: chars.slice(mid),
-      labelName: nolabel ? '' : (s.label || s.issuer || t.code),
+      showViewIdentity: !isPresent,
+      viewAppName,
+      viewAccountName,
+      viewInitial: ((viewAppName.trim()[0]) || '#').toUpperCase(),
+      viewColor: this.pickColor({ issuer: s.issuer, label: s.label, secret: s.secret }),
+      viewHasIcon: !!s.icon,
+      viewHasNoIcon: !s.icon,
+      viewIconRef: (img) => {
+        if (img && s.icon && img.getAttribute('src') !== s.icon) img.setAttribute('src', s.icon);
+      },
       secondsLeft: s.secondsLeft,
       ringR: R, ringC: C, ringOffset: C * (1 - frac),
       ringCsm: Csm, ringOffsetSm: Csm * (1 - frac),
