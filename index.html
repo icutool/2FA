@@ -184,8 +184,8 @@
       height:auto!important;
       aspect-ratio:1;
       display:block;
-      border-radius:12px;
-      background:#fff;
+      border-radius:0;
+      background:transparent;
     }
     .app-shell .setup-card{
       background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(238,248,255,.52))!important;
@@ -716,7 +716,7 @@
 
   <!-- ============ BOARD MODE ============ -->
   <sc-if value="{{ isBoard }}" hint-placeholder-val="{{ false }}">
-    <div class="board-view" style="position:relative;z-index:1;width:100%;max-width:920px;display:flex;flex-direction:column;gap:18px;animation:cardIn .6s cubic-bezier(.2,.8,.2,1) both;">
+    <div class="board-view" style="position:relative;z-index:1;width:100%;max-width:1180px;display:flex;flex-direction:column;gap:18px;animation:cardIn .6s cubic-bezier(.2,.8,.2,1) both;">
 
       <div class="board-toolbar" style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;">
         <div style="display:flex;flex-direction:column;gap:5px;">
@@ -1395,7 +1395,23 @@ class Component extends DCLogic {
     if (!url || typeof qrcode === 'undefined') { this.setState({ importMsg: this.t().qrUnavailable }); return; }
     try {
       const qr = qrcode(0, 'M'); qr.addData(url); qr.make();
-      this.setState({ showQr: true, qrDataUrl: qr.createDataURL(5, 2) });
+      const count = qr.getModuleCount();
+      const cell = 6;
+      const quiet = 4;
+      // Transparent quiet zone avoids baking a white square behind the QR.
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = (count + quiet * 2) * cell;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('canvas-unavailable');
+      ctx.fillStyle = '#1d1d1f';
+      for (let row = 0; row < count; row++) {
+        for (let col = 0; col < count; col++) {
+          if (qr.isDark(row, col)) {
+            ctx.fillRect((col + quiet) * cell, (row + quiet) * cell, cell, cell);
+          }
+        }
+      }
+      this.setState({ showQr: true, qrDataUrl: canvas.toDataURL('image/png') });
     } catch (e) { this.setState({ importMsg: this.t().qrGenFail }); }
   }
 
