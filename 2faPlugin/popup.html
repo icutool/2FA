@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>2FA Quick Code</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <div class="mark">02</div>
+    <div><p class="eyebrow">LOCAL TOTP COMPANION</p><h1>验证码浮窗</h1></div>
+    <span class="local">仅本地</span>
+  </header>
+  <main>
+    <section class="intro"><strong>导入账号，设置页面前缀</strong><p>匹配到已绑定前缀的网页时，自动显示验证码。仅在本机处理，不会联网。</p></section>
+    <section class="block">
+      <div class="section-title"><h2>账号库</h2><span id="accountCount">0</span></div>
+      <p class="hint">支持网页导出的分组备份 JSON，也兼容包含 accounts 数组的 JSON。</p>
+      <div class="actions"><label class="button" for="importFile">导入 JSON</label><input id="importFile" type="file" accept=".json,application/json"><button id="exportBtn" class="button quiet">导出备份</button></div>
+      <div id="accounts" class="account-list"></div>
+    </section>
+    <section class="block rules-block">
+      <div class="section-title"><h2>页面绑定</h2><span id="ruleCount">0</span></div>
+      <p class="hint">按完整 URL 前缀匹配；更长的前缀优先。示例：<code>https://example.com/login</code></p>
+      <form id="ruleForm">
+        <label>网页前缀<input id="prefix" type="url" placeholder="https://example.com/login" required></label>
+        <label>使用账号<select id="ruleAccount" required></select></label>
+        <button class="button primary" type="submit">添加绑定</button>
+      </form>
+      <div id="rules" class="rule-list"></div>
+    </section>
+    <footer><span id="status" role="status">密钥只保存在此浏览器的扩展存储中。</span></footer>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>
