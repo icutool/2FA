@@ -7,7 +7,13 @@ chrome.runtime.onInstalled.addListener(async () => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.type !== '2fa:get-code') return;
-  getCodeForUrl(sender.tab?.url || '').then(sendResponse).catch(() => sendResponse(null));
+  // Content scripts pass the current URL because SPA navigation can leave tab metadata stale.
+  const senderUrl = sender.url || sender.tab?.url || '';
+  let url = senderUrl;
+  try {
+    if (message.url && new URL(message.url).origin === new URL(senderUrl).origin) url = message.url;
+  } catch { /* Fall back to the browser-provided URL. */ }
+  getCodeForUrl(url).then(sendResponse).catch(() => sendResponse(null));
   return true;
 });
 
