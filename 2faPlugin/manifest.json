@@ -3,10 +3,14 @@
   "name": "2FA Quick Code",
   "version": "1.0.0",
   "description": "Show configured TOTP codes in a floating panel on matching pages.",
+  "icons": {
+    "128": "icon.png"
+  },
   "permissions": ["storage", "clipboardWrite"],
   "host_permissions": ["<all_urls>"],
   "action": {
     "default_title": "2FA Quick Code",
+    "default_icon": "icon.png",
     "default_popup": "popup.html"
   },
   "background": {
